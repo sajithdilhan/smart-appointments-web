@@ -40,7 +40,7 @@ Rules (from the template):
   - Note: `switch` already existed from F0 (smoke-tested here) and the helm `sheet` is F1's, not on this branch; only `alert-dialog`, `skeleton`, `badge` and `radio-group` were generated.
   - _Requirements: 2.1, 3.4, 6.2, 9.4_
 
-- [ ] 6. `AppointmentsStore`
+- [x] 6. `AppointmentsStore`
   - `signalStore` provided on the page: `setFilter` (abort in flight, `requestId` guard), `loadFirst`, `loadMore` with the double-call guard, `retryMore`, `quietRefresh` (one request sized `min(100, loaded)`, restart past 100, no skeleton status), `applyCancelled`, `byId`, the single "Loaded N more" announcement, and an effect reloading on `OutageState.recovered` (also reloading F3's lookup).
   - Runtime guard turning a response without `items` into an `AppError`.
   - Store specs (MSW, fake timers): first page, append and de-duplication, double-click, failure keeping the list and retrying the same page, a late response of an old filter discarded, refresh sizes, recovered reload, removal rules.
