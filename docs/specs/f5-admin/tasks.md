@@ -32,7 +32,7 @@ Rules (from the template):
   - Specs: known messages containing commas mid-string, unknown tail, no prefix, each outcome row; contract test that every table entry exists in the fixture.
   - _Requirements: 3.8, 3.9, 5.9, 7.5, 8.10, 8.11, 13.2_
 
-- [ ] 5. Catalog stores, resolvers and session activity store
+- [x] 5. Catalog stores, resolvers and session activity store
   - `data/catalog-store.ts`, `branches.store.ts`, `services.store.ts` (`load` with dedup and stale-while-revalidate, `ensure`, `upsert`, `setActive`, `reset`), `slot-activity.store.ts`, `reload-on-recovery.ts`, `resolvers.ts` (`branchCrumb`, `serviceCrumb`, `isGuid`).
   - Specs with MSW: first load, cached revisit refreshes in the background, a failed refresh keeps items, `ensure` hit and 404, `upsert`/`setActive`, reload on `OutageState.recovered`, `reset`.
   - _Requirements: 1.1, 1.6, 1.7, 2.1, 2.9, 9.3_
