@@ -1,0 +1,131 @@
+<app-auth-layout illustration="register">
+  <div authForm>
+    <h1 id="register-heading" appFocusHeading class="text-3xl font-semibold tracking-tight">
+      Create your account
+    </h1>
+    <p class="mt-2 text-muted-foreground">
+      Sign up to book appointments with the branches near you.
+    </p>
+
+    <form
+      novalidate
+      class="mt-8 flex flex-col gap-5"
+      aria-labelledby="register-heading"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+      <div>
+        <app-form-alert
+          #alertRegion
+          tone="error"
+          [message]="errorAlert()?.message ?? null"
+          [reference]="errorAlert()?.reference ?? null"
+        />
+        <app-rate-limit-notice [countdown]="countdown" />
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <app-form-field [view]="firstNameView" label="First name">
+          <input
+            hlmInput
+            class="h-11"
+            type="text"
+            maxlength="50"
+            autocomplete="given-name"
+            formControlName="firstName"
+            [id]="firstNameView.id"
+            [appField]="firstNameView"
+            [readOnly]="pending()"
+          />
+        </app-form-field>
+        <app-form-field [view]="lastNameView" label="Last name">
+          <input
+            hlmInput
+            class="h-11"
+            type="text"
+            maxlength="50"
+            autocomplete="family-name"
+            formControlName="lastName"
+            [id]="lastNameView.id"
+            [appField]="lastNameView"
+            [readOnly]="pending()"
+          />
+        </app-form-field>
+      </div>
+
+      <app-form-field [view]="emailView" label="Email">
+        <input
+          hlmInput
+          class="h-11"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          formControlName="email"
+          [id]="emailView.id"
+          [appField]="emailView"
+          [readOnly]="pending()"
+        />
+        @if (emailTaken()) {
+          <a
+            errorAction
+            routerLink="/login"
+            [queryParams]="{ email: takenEmail() }"
+            class="font-medium text-primary underline underline-offset-4"
+            >Log in instead</a
+          >
+        }
+      </app-form-field>
+
+      <app-form-field
+        [view]="phoneView"
+        label="Phone number"
+        hint="International format, for example +14155550123"
+      >
+        <input
+          hlmInput
+          class="h-11"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          formControlName="phoneNumber"
+          [id]="phoneView.id"
+          [appField]="phoneView"
+          [readOnly]="pending()"
+        />
+      </app-form-field>
+
+      <div class="flex flex-col gap-3">
+        <app-password-field
+          [view]="passwordView"
+          [control]="form.controls.password"
+          [pending]="pending()"
+          autocomplete="new-password"
+        />
+        <app-password-checklist [id]="checklistId" [results]="passwordResults()" />
+      </div>
+
+      <button
+        hlmBtn
+        type="submit"
+        class="h-11 w-full text-base"
+        [disabled]="pending() || countdown.active()"
+        [attr.aria-busy]="pending()"
+      >
+        @if (pending()) {
+          <ng-icon name="lucideLoaderCircle" size="18" class="animate-spin" aria-hidden="true" />
+        }
+        Create account
+      </button>
+    </form>
+
+    <p class="mt-6 text-sm text-muted-foreground">
+      Already have an account?
+      <a
+        routerLink="/login"
+        [queryParams]="{ returnUrl: safeReturn() }"
+        class="inline-block py-2 font-medium text-primary underline underline-offset-4"
+        >Log in</a
+      >
+    </p>
+  </div>
+</app-auth-layout>

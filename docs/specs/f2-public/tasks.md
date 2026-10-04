@@ -72,7 +72,7 @@ Rules (from the template):
   - Table-driven spec including a case-insensitive duplicate match and a changed message degrading to the general alert.
   - _Requirements: 3.4, 3.10, 3.11, 3.12_
 
-- [ ] 11. Register page
+- [x] 11. Register page
   - `register/register.page.ts / .html`: `AuthLayout` with first and last name (two columns from 640 px), email, phone (hint, `type="tel"`), password with `PasswordField` and `PasswordChecklist` (described-by wiring), `FormAlert`, countdown, links to `/login` carrying a safe `returnUrl`.
   - `submit()` per the design: validation and focus, one `POST /api/auth/register` with exactly five keys and the normalised phone, then `session.login`; success calls `ToastService.showSuccess`, resets the password control and navigates to `/book` with `replaceUrl`; a `login` failure navigates to `/login?reason=registered&email=<email>`; duplicate email on the email field (message, "Log in instead" link, `aria-invalid`, focus, no toast); other `400` in the alert with focus; pending stays until the navigation completes.
   - Component spec with MSW capturing the body: field order and `autocomplete` values, no role field, request body keys, phone normalised, validation messages and first-invalid focus, pending and double submit, both success paths, duplicate email, other `400`, `429`, offline, password control emptied on success.
