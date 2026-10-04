@@ -18,7 +18,7 @@ Rules (from the template):
   - Specs: each API method's URL, query and body with MSW; the model's own rules (replay returns the first status and body, `422` for another body, overlap, full slot, missing key `400`).
   - _Requirements: 5.1, 7.5, 13.1_
 
-- [ ] 2. Pure modules: params, steps, day parts, duration, strip
+- [x] 2. Pure modules: params, steps, day parts, duration, strip
   - `book/steps.ts` (`STEPS`, `stepFromParams`, `stepTitle`), `book/wizard-params.ts` (`parseParams`, `repairParams`, `buildParams`), `book/day-parts.ts` (`partOfDay`, `groupSlots`, `capacityHint`), `book/duration.ts` (`formatDuration`), `book/date-strip.ts` (`dayStrip`).
   - Table-driven specs: every repair rule and its cascade, `done` without a booking dropped, invalid and out-of-range dates (past, today plus 13, plus 14), unloaded data skipping rules; grouping boundaries 11:59, 12:00, 16:59, 17:00, 00:00, 23:59; hint thresholds 1, 3, 4; durations 15, 30, 45, 60, 90, 120, 135; `dayStrip` across a month boundary and a DST change; the request `date` equals the branch-zone date under a process time zone ahead of and one behind the branch zone near midnight.
   - _Requirements: 1.3, 1.4, 3.2, 4.1, 4.6, 6.1, 6.3_
