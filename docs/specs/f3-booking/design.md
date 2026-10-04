@@ -516,3 +516,18 @@ Resolved by the user after design approval; the design above already reflects th
 6. **`CLOCK.now()` is epoch milliseconds.** Verified against the F1 design: `interface Clock { now(): number; setTimer(fn, ms): () => void }`.
 7. **`gen:api` checks stay** as F1 specifies.
 8. **Open at implementation:** the generated types' `AppointmentResponse.status` JSON form and `workingHours[].dayOfWeek` form (string name or number), verified at the first `pnpm gen:api`; F1's final helper names are matched to the list in "Branch-zone calendar maths".
+
+## Implementation deviations
+
+Recorded while building the parts that depend only on F0 and the F1 tasks 1 to 5.
+
+- **Response types are temporary.** The generated Availability and Booking documents declare no response bodies, so `BranchResponse`, `ServiceTypeResponse`, `SlotResponse`, `AppointmentResponse` (enums as strings, `dayOfWeek` as a day name) and `SlotSearchParams` live in `core/api/models.ts` until the backend documents them. `pnpm gen:api` was not run (no gateway is started on this branch).
+- **MSW files are flat.** The model is `src/testing/booking-backend.ts` with `availability.handlers.ts`, `booking.handlers.ts` and `reply.ts` beside it (F1 has `src/testing/handlers.ts` as a file, not a folder). Handlers take the model and the base URL. The model stores every completed create outcome (201, 404, 409) under its key; `503`, `429` and "in progress" are not stored.
+- **`date-strip.ts` re-exports `dayStrip` from `core/time`.** F1 already ships `dayStrip` and `DayStripItem`; F3 holds no copy. The "branch zone ahead of the process zone" test case is not possible because the test process zone is UTC+14; the cases are branch zones behind it at a fixed "now" near midnight.
+- **`hasSchedule` and `toSchedule` live in `features/customer/shared/branch-schedule.ts`** (used by the params repair, the reference store and later the branch step), because the generated-style branch type has an optional zone and hours while `core/time` takes a required `BranchSchedule`.
+- **`IdempotencyKeyStore` has no own memory mirror.** `sessionSafe` from `core/util/safe-storage.ts` already falls back to memory, so the store uses it through an `IDEMPOTENCY_STORAGE` token (default `sessionSafe`) that tests replace. `just-booked.marker.ts` is two functions taking the storage and `now`, not a class.
+- **`ReferenceDataStore` does not yet watch `SessionStore`.** It exposes `clear()`; the effect that calls it when the status leaves `authenticated` is added with F1's `SessionStore`. `ensureBranches()` and `ensureServices()` also retry from the `error` state. `error` is a computed of the two per-list errors.
+- **`SlotSearchService` reports `retryAfterSeconds` in its state** (`rate-limited`, with `source` `server` or `budget`) instead of owning a `RetryCountdown`, adds a `not-found` state for `404`, and every `load()` first cancels the pending request and timer. It does not call `ToastService`. A failed background refresh keeps the stale chips.
+- **`downloadIcs` returns a boolean** instead of calling `ToastService.showError`; the caller toasts.
+- **Step indicator** takes the step as an input and emits `goTo`; "reachable" means every step before the current one. It uses `ViewportService.isSm` (640 px).
+- **`pnpm exec ng g @spartan-ng/cli:ui skeleton|badge`** output is committed unmodified apart from Prettier; only the two path aliases the CLI adds were touched in `tsconfig.json`.
