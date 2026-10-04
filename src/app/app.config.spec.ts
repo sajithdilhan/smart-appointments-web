@@ -1,7 +1,7 @@
 import { ApplicationInitStatus } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { http, HttpResponse } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 import { createAuthBackend } from '../testing/auth-backend';
 import { TEST_API_BASE } from '../testing/render-with-session';
 import { server } from '../testing/server';
@@ -12,7 +12,7 @@ import { SessionStore } from './core/auth/session.store';
 import type { Role } from './core/auth/session.model';
 
 /** Boots the real `appConfig` (config initializer, session initializer, router) against MSW. */
-async function boot(storedRole: Role | null) {
+async function boot(storedRole: Role | null, configDelayMs = 0) {
   const backend = createAuthBackend({ baseUrl: TEST_API_BASE });
   const user = backend.addUser({
     email: 'ann@example.com',
@@ -21,9 +21,10 @@ async function boot(storedRole: Role | null) {
   });
   server.use(
     ...backend.handlers,
-    http.get(`${location.origin}/config.json`, () =>
-      HttpResponse.json({ apiBaseUrl: TEST_API_BASE }),
-    ),
+    http.get(`${location.origin}/config.json`, async () => {
+      await delay(configDelayMs);
+      return HttpResponse.json({ apiBaseUrl: TEST_API_BASE });
+    }),
   );
   // The config loader fetches a relative URL, which Node's fetch cannot resolve.
   const realFetch = globalThis.fetch;
@@ -77,6 +78,12 @@ describe('the real application configuration', () => {
       expect(heading(fixture.nativeElement)).toBe(expected);
     },
   );
+
+  it('waits for a slow config.json before it restores the session (initializers start together)', async () => {
+    const { backend, store } = await boot('Customer', 150);
+    expect(store.status()).toBe('authenticated');
+    expect(backend.state.counters.refresh).toBe(1);
+  });
 
   it('mounts the progress bar host, the outage banner, the outlet, the toaster and the announcer', async () => {
     const { fixture } = await boot(null);
