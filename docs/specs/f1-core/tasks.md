@@ -41,7 +41,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Unit tests: one row per body shape (`{status, detail}`, `ValidationProblemDetails`, empty body, string body, no-JSON), status 0 network, timeout, `429` with, without and HTTP-date `Retry-After`, 401/5xx kinds, oversized detail, no stack or body ever in `message`.
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9_
 
-- [ ] 5. Correlation-id and error interceptors, `provideCoreHttp()`
+- [x] 5. Correlation-id and error interceptors, `provideCoreHttp()`
   - Add `correlation-id.interceptor.ts` and `error.interceptor.ts` (30 s `timeout`, `AppError` mapping, correlation id fallback to the sent id), `outage-state.ts` (`down`, `probing`, `recovered`, `onError`, `onResponse`; no banner UI yet) and `http.providers.ts` registering `correlationId, auth (placeholder pass-through for now), error` in that order.
   - Wire `provideCoreHttp()` into `app.config.ts`.
   - Integration tests (MSW + `HttpClient`): id header only for the API origin; an existing id kept; token and id absent for another origin; response id on `AppError`; `HttpResponse.error()` gives `network`; a never-resolving handler with fake timers gives `timeout` at 30 s; `credentials` is not `include`; outage state set by 502/503/504/network/timeout and not by 4xx; cleared by a later success; a probe failure never sets it.
