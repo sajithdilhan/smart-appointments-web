@@ -55,7 +55,7 @@ Rules (from the template):
   - Spec: `estimateSlots` equals each vector; closed days, `droppedPast` and day counts.
   - _Requirements: 8.7, 13.2_
 
-- [ ] 9. Time-zone options
+- [x] 9. Time-zone options
   - `schedule/zone-options.ts` (`buildZoneOptions` from `Intl.supportedValuesOf` with the fallback list, offsets from `zoneOffsetMinutes`, memoised; `filterZones` with ranking and the 100-item cap; `formatOffset`; browser-zone option).
   - Specs: filter treats `_` and space alike, offset label across a DST change, fallback when `Intl.supportedValuesOf` is missing, truncation flag.
   - _Requirements: 5.5, 5.6, 13.2_
