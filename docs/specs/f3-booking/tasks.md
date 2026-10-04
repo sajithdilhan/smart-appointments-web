@@ -28,8 +28,7 @@ Rules (from the template):
   - Specs: one test per verbatim `409` string plus case and whitespace variants, the three patterns with real codes, an unknown text; the status-by-status outcome table (404, 409 classes, 422, 429 seconds, unavailable, network, timeout, 401, 400, 403); budget window sliding and the 26th request refused; cache freshness at 59 s and 61 s.
   - _Requirements: 5.3, 5.5, 8.2, 8.11_
 
-- [ ] 4. Reference data store
-  - partial: the store exposes `clear()` but the `effect` that calls it when `SessionStore.status` leaves `authenticated` is not wired, waiting on F1 `SessionStore`; the other items are done and tested.
+- [x] 4. Reference data store
   - `features/customer/shared/reference-data/reference-data.store.ts`: `ensureBranches`, `ensureServices`, `refresh`, `branchById`, `serviceById`, states and error signals, one in-flight request, bookable-first sorting, clear on session end, reload on `OutageState.recovered` only after an error.
   - Specs: one request per session, concurrent first reads send one, refresh bypasses the cache, cleared when the session leaves `authenticated`, sorting, outage recovery reload.
   - _Requirements: 2.1, 2.6, 2.7, 3.1, 3.4, 11.5_

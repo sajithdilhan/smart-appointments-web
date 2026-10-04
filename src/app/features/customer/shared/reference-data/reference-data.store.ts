@@ -3,6 +3,7 @@ import type { Subscription } from 'rxjs';
 import { AvailabilityApiService } from '../../../../core/api/availability-api.service';
 import type { BranchResponse, ServiceTypeResponse } from '../../../../core/api/models';
 import type { AppError } from '../../../../core/http/app-error';
+import { SessionStore } from '../../../../core/auth/session.store';
 import { OutageState } from '../../../../core/http/outage-state';
 import { hasSchedule } from '../branch-schedule';
 
@@ -22,13 +23,14 @@ function sortServices(list: readonly ServiceTypeResponse[]): ServiceTypeResponse
 /**
  * Branches and services, fetched once per session and shared by the booking wizard and (later)
  * My appointments. Concurrent first reads send one request. `refresh()` bypasses the cache,
- * `clear()` forgets everything (call it when the session leaves `authenticated`), and an
+ * `clear()` forgets everything (it runs by itself when the session leaves `authenticated`), and an
  * outage that recovers reloads only what had failed.
  */
 @Injectable({ providedIn: 'root' })
 export class ReferenceDataStore {
   private readonly api = inject(AvailabilityApiService);
   private readonly outage = inject(OutageState);
+  private readonly session = inject(SessionStore);
 
   private readonly branchList = signal<BranchResponse[] | null>(null);
   private readonly serviceList = signal<ServiceTypeResponse[] | null>(null);
@@ -54,6 +56,15 @@ export class ReferenceDataStore {
       if (recovered === seen) return;
       seen = recovered;
       untracked(() => this.reloadFailed());
+    });
+
+    // A different user on the same tab must never see the previous session's lists.
+    let wasAuthenticated = this.session.status() === 'authenticated';
+    effect(() => {
+      const authenticated = this.session.status() === 'authenticated';
+      const left = wasAuthenticated && !authenticated;
+      wasAuthenticated = authenticated;
+      if (left) untracked(() => this.clear());
     });
   }
 
