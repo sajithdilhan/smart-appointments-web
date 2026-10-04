@@ -4,6 +4,13 @@ import angular from 'angular-eslint';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
+// Dates are formatted in an explicit zone through core/time (Req 13.6).
+const datePipePath = {
+  name: '@angular/common',
+  importNames: ['DatePipe'],
+  message: 'DatePipe formats in the browser zone. Use formatInZone from core/time.',
+};
+
 export default defineConfig(
   globalIgnores([
     'dist',
@@ -38,6 +45,30 @@ export default defineConfig(
       ],
     },
   },
+  // No date parsing or formatting outside core/time (Req 13.6).
+  {
+    files: ['src/**/*.ts'],
+    ignores: ['src/app/core/time/**', 'src/**/*.spec.ts', 'src/testing/**'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "NewExpression[callee.name='Date'][arguments.length>0]",
+          message:
+            'Use parseUtc/fromEpochMs from core/time. new Date(<value>) is only allowed in core/time.',
+        },
+        {
+          selector: "CallExpression[callee.object.name='Date'][callee.property.name='parse']",
+          message: 'Use parseUtc from core/time. Date.parse is only allowed in core/time.',
+        },
+        {
+          selector: 'CallExpression[callee.property.name=/^toLocale(Date|Time)?String$/]',
+          message: 'Use formatInZone from core/time so a time zone is always explicit.',
+        },
+      ],
+      'no-restricted-imports': ['error', { paths: [datePipePath] }],
+    },
+  },
   {
     files: ['**/*.html'],
     extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
@@ -50,6 +81,7 @@ export default defineConfig(
       'no-restricted-imports': [
         'error',
         {
+          paths: [datePipePath],
           patterns: [
             { group: ['**/shared/**', '@app/shared/**'], message: 'core must not import shared.' },
             { group: ['**/features/**'], message: 'core must not import features.' },
@@ -63,7 +95,10 @@ export default defineConfig(
     rules: {
       'no-restricted-imports': [
         'error',
-        { patterns: [{ group: ['**/features/**'], message: 'shared must not import features.' }] },
+        {
+          paths: [datePipePath],
+          patterns: [{ group: ['**/features/**'], message: 'shared must not import features.' }],
+        },
       ],
     },
   },

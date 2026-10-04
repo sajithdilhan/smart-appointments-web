@@ -24,7 +24,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Unit tests with MSW: each `AuthApiService` method's verb, absolute URL from a configured base, body; `ApiClient` adds no `Idempotency-Key`.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
 
-- [ ] 3. Time utilities and the date lint rules
+- [x] 3. Time utilities and the date lint rules
   - Add `core/time/` (`parse-utc.ts`, `format-in-zone.ts`, `zone-offset.ts` with `zoneOffsetMinutes(zone, at: Date | number)` exported, `fromEpochMs`, `toIsoUtc`, `index.ts`) with the formatter cache and the invalid-zone fallback (one warning per id).
   - Set `process.env.TZ = 'Pacific/Kiritimati'` at the top of `src/testing/setup.ts`; verify the Vitest builder honours it (otherwise pass explicit zones and assert via `Intl`).
   - Add the `no-restricted-syntax` (`new Date(<arg>)`, `Date.parse`, `toLocale*String`) and `no-restricted-imports` (`DatePipe`) rules to `eslint.config.js` with the `core/time/**`, `*.spec.ts` and `src/testing/**` exceptions.
