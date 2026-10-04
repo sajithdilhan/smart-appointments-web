@@ -60,7 +60,7 @@ Rules (from the template):
   - Specs: filter treats `_` and space alike, offset label across a DST change, fallback when `Intl.supportedValuesOf` is missing, truncation flag.
   - _Requirements: 5.5, 5.6, 13.2_
 
-- [ ] 10. Shared list pieces
+- [x] 10. Shared list pieces
   - Generate helm `badge`, `skeleton`, `table`, `textarea`. `shared/list-view.ts` (`createListView`, query-string sync, `Intl.Collator` sorters, debounced announcement), `sort-header`, `status-badge`, `list-states`.
   - Specs: search and status filter, unknown `status` becomes "All", sort cycle with `aria-sort`, stable ordering, state resolution (loading, error, empty, no-match, ready), announcement settles once per change.
   - _Requirements: 2.2, 2.3, 2.4, 2.6, 2.7, 6.2, 12.4_
