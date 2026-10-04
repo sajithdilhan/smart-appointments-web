@@ -4,17 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **Only the F0 scaffold is built: there is no feature screen.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F0 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F1 to F6 specs are added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold) and F1 (core) are built; there is no feature screen yet, only placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F1 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
 
 What exists today:
 
 - **Workspace**: Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
-- **Styling**: Tailwind v4 (CSS-first, `src/styles.css`, no `tailwind.config.js`), the teal/zinc token sheet with a light and a `.dark` theme, self-hosted Inter, Spartan/ui helm components `button`, `card`, `input`, `label`, `switch`, `sonner` under `src/app/shared/ui/` (aliases `@app/shared/ui/<name>`).
-- **Core**: `core/config` (runtime `/config.json` loader, `APP_CONFIG` token, standalone configuration error page, app initializer) and `core/theme/ThemeService` (`system | light | dark`, `localStorage` key `sa.theme`, pre-paint script `public/theme-init.js`). `shared/ui/theme-toggle` is the only app primitive.
-- **App**: a placeholder page (heading, theme toggle, a sample card) and one lazy placeholder route (`/about`) in `app.routes.ts`.
-- **Quality and delivery**: ESLint (angular-eslint, flat config), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW, Playwright smoke test, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
+- **Styling**: Tailwind v4 (CSS-first, `src/styles.css`, no `tailwind.config.js`), the teal/zinc token sheet with a light and a `.dark` theme, self-hosted Inter, Spartan/ui helm components (`button`, `card`, `input`, `label`, `switch`, `sonner`, `alert`, `dropdown-menu`, `separator`, `sheet`, `breadcrumb`) under `src/app/shared/ui/` (aliases `@app/shared/ui/<name>`).
+- **Core (F1)**, all non-visual, under `src/app/core/`:
+  - `config` (runtime `/config.json` loader, `APP_CONFIG`, `APP_CONFIG_READY`, error page), `theme` (`ThemeService`).
+  - `api`: `generated/{auth,availability,booking}.d.ts` (from `pnpm gen:api`), `ApiClient`, `AuthApiService`, empty `AvailabilityApiService` and `BookingApiService`, `models.ts` (temporary type extensions).
+  - `http`: `provideCoreHttp()` with the interceptors `correlationId -> auth -> error`, `AppError` and `normalizeError`, `OutageState`, `createRetryCountdown`.
+  - `auth`: `SessionStore` (`@ngrx/signals`), `TokenStorage`, JWT decode, `RefreshCoordinator` (single flight inside a Web Lock), `RefreshScheduler`, `CrossTabSync` and `SessionSync`, `SessionEnder`, `authGuard`/`guestGuard`/`roleGuard`, `landingRouteFor`, `safeReturnUrl`, `resolvePostLoginTarget`, `landingCtas`, `provideAuth()` (the restore initializer).
+  - `notify` (`ToastService`), `routing` (`AppTitleStrategy`), `time` (all UTC parsing, zone formatting, calendar, `localToUtc` and branch-hours maths), `util` (`CLOCK`, `localSafe`/`sessionSafe`, `ViewportService`), `ui` (`PaletteLauncher`).
+- **Layout (F1)** under `src/app/shared/layout/`: public, customer, admin and staff shells, user menu, skip link, route progress and announcer, breadcrumb trail, outage banner, not-found page. App primitives in `shared/ui/`: `theme-toggle`, `rate-limit-notice`.
+- **Routes**: all lazy; public (`/`, `/login`, `/register`), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page, each rendering a `PlaceholderPage` (or the staff placeholder) until F2 to F5.
+- **Quality and delivery**: ESLint (angular-eslint, flat config, date and layering rules), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW (with a stateful mock of the auth endpoints), Playwright with mocked routes, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
 
-Not present yet (do not assume): HTTP calls of any kind, auth, interceptors, guards, API types (`openapi-typescript` / `gen:api`), the error normaliser, `@ngrx/signals`, `core/time`, `shared/layout`, i18n.
+Not present yet (do not assume): any feature screen (login and register forms, booking, appointments, admin pages), the Availability and Booking API methods, i18n, the command palette (only the `PaletteLauncher` seam exists).
 
 ## Commands
 
@@ -28,7 +34,9 @@ pnpm lint                          # eslint . --max-warnings 0
 pnpm format                        # prettier --write . ; pnpm format:check to verify
 pnpm typecheck                     # tsc on tsconfig.app.json and tsconfig.spec.json
 pnpm size                          # gzip size of the initial files in dist; fails above 250 kB
-pnpm e2e                           # Playwright; starts pnpm start unless E2E_BASE_URL is set
+pnpm test:scripts                  # node --test of scripts/ (gen-api, the date lint rules)
+pnpm gen:api                       # regenerate core/api/generated from a running Development gateway (GATEWAY_URL overrides)
+pnpm e2e                           # Playwright (routes mocked); starts pnpm start unless E2E_BASE_URL is set
 
 # One spec file, or tests by name (use pnpm exec: `pnpm test --filter` is eaten by pnpm itself)
 pnpm test --include "src/app/core/config/*.spec.ts"
@@ -67,9 +75,9 @@ There are no secrets in this repository and none may be added: a SPA's bundle an
 
 Layout under `src/app`:
 
-- `core/`: non-visual code only (config, theme now; later auth, API clients, error handling, time). Imports neither `shared` nor `features`.
-- `shared/ui/`: Spartan helm components (generated, do not hand-edit beyond what a feature needs; regenerate with `pnpm exec ng g @spartan-ng/cli:ui <name> --interactive=false`, one name per call) and small app primitives such as `theme-toggle`. May import `core`. `shared/layout/` (shells) arrives in F1.
-- `features/`: one folder per area (`public/`, `customer/`, `admin/`, `staff/` later), each lazy-loaded from `app.routes.ts`. May import `shared` and `core`.
+- `core/`: non-visual code only (config, theme, api, http, auth, notify, routing, time, util, ui). Imports neither `shared` nor `features`. `core/time` owns all calendar, zone and branch-time maths (parsing UTC, formatting in a zone, `todayInZone`, `addDays`, `localToUtc`, `isOpenNow`, ...): never reimplement it elsewhere. `sessionSafe` / `localSafe` (`core/util/safe-storage`) are the only way to touch web storage; no direct `localStorage` or `sessionStorage` calls (they throw in blocked browsers).
+- `shared/ui/`: Spartan helm components (generated, do not hand-edit beyond what a feature needs; regenerate with `pnpm exec ng g @spartan-ng/cli:ui <name> --interactive=false`, one name per call) and small app primitives such as `theme-toggle` and `rate-limit-notice`. May import `core`. `shared/layout/` holds the application frames (the four shells, user menu, skip link, route progress and announcer, breadcrumbs, outage banner, not-found); shells accept projected content with the router outlet as the default (`<ng-content><router-outlet /></ng-content>`) so the 404 page renders inside the right shell.
+- `features/`: one folder per area (`public/`, `customer/`, `admin/`, `staff/`), each lazy-loaded from `app.routes.ts` through a `*.routes.ts` file. May import `shared` and `core`.
 - ESLint enforces the direction with `no-restricted-imports` zones; the generated helm folders have their own override (their selectors use `hlm`/`brn` prefixes).
 
 Angular rules:
@@ -77,7 +85,7 @@ Angular rules:
 - Standalone components only, `ChangeDetectionStrategy.OnPush` on every component (lint error otherwise), zoneless, state in signals (`signal`, `computed`, `effect`), `inject()` instead of constructor parameters, new control flow (`@if`, `@for` with `track`, `@switch`), `input()`/`output()` functions, typed reactive forms, functional guards and interceptors, `provideX()` functions for setup.
 - Routes are lazy (`loadComponent` / `loadChildren`) after F0.
 - Component selectors use the `app` prefix; templates must pass the angular-eslint accessibility rules.
-- Once F1 lands, dates and times go through `core/time` (UTC `*Utc` fields from the API are parsed and formatted there): no `new Date(string)`, `toLocale*` or `DatePipe` elsewhere. This is upcoming and not enforced by lint yet.
+- Dates and times go through `core/time` (UTC `*Utc` fields from the API are parsed with `parseUtc` and formatted with `formatInZone`): no `new Date(<value>)`, `Date.parse`, `toLocale*String` or `DatePipe` outside `core/time` (ESLint enforces it; specs and `src/testing` are exempt).
 
 ### Styling
 
@@ -87,7 +95,17 @@ Angular rules:
 - Honour `prefers-reduced-motion` (a global rule in `styles.css` disables non-essential motion); no `inlineCritical` (it needs an inline event handler the CSP forbids).
 - The CSP allows scripts from `'self'` only: no inline scripts or event-handler attributes, no third-party origins (fonts are self-hosted).
 
-### Backend contract (applies from F1 on)
+### HTTP, session and routing conventions (F1)
+
+- Failures are always `AppError` (`status`, `message`, `kind`, `correlationId`, `retryAfterSeconds`); never read `HttpErrorResponse` or response bodies in a component or service. `ToastService.handleError` applies the toast policy, `showError` always toasts; components render 400/404/409/422 inline.
+- Build API URLs through `ApiClient` (absolute, from `APP_CONFIG`); no base-URL interceptor exists. Only requests to the API origin get the bearer token and `X-Correlation-ID`.
+- Never touch the token storage keys (`sa.refreshToken`) directly; use `TokenStorage` through the store. The access token lives only in `SessionStore`. Never retry or replay a refresh request; refresh goes through `RefreshCoordinator` (`SessionStore.refresh()`).
+- Every `returnUrl` read from the URL goes through `safeReturnUrl`; use `resolvePostLoginTarget` for where a signed-in user goes. Role checks (`roleGuard`, `roleCanOpen`) are UX only.
+- Angular starts all app initializers at once and does not wait for the previous one: an initializer that needs `APP_CONFIG` must await `APP_CONFIG_READY` first (see `provideAuth`).
+- Route titles are strings or functions; the format "<Page> | Smart Appointments" comes from `AppTitleStrategy`. A function title that throws fails the navigation, so it must not throw.
+- Rate limits: use `createRetryCountdown()` with `<app-rate-limit-notice>`; do not write another countdown.
+
+### Backend contract
 
 - The SPA talks to the YARP gateway only (`APP_CONFIG.apiBaseUrl`); it never calls Auth, Availability or Booking directly, and `/internal/**` does not exist for it.
 - Errors are `application/problem+json` with one body shape, `{ status, detail }`; show `detail`, branch on `status`. The gateway adds `502`/`504` for a dead or slow service and `429` with `Retry-After` (always 60) for rate limits (login 5 per minute per address, create appointment 10 and slot search 30 per minute per user).
@@ -99,10 +117,11 @@ Angular rules:
 ## Testing conventions
 
 - Unit tests are Vitest through `@angular/build:unit-test` (jsdom), with Angular Testing Library. Query by role and accessible name (`screen.getByRole(...)`), not by CSS class or test id; use `@testing-library/user-event` for interaction. Zoneless: no `fakeAsync`/`tick`; await `fixture.whenStable()` or ATL's async helpers, and call `TestBed.tick()` to flush effects.
-- HTTP is mocked with MSW. `src/testing/setup.ts` starts the shared server with `onUnhandledFrame: 'error'` (MSW 3 name), so an unmocked request fails the test; register handlers per test with `server.use(...)`. Default handlers go in `src/testing/handlers.ts` (empty).
+- HTTP is mocked with MSW; `createAuthBackend` (`src/testing/auth-backend.ts`) is a stateful model of the auth endpoints that enforces single-use refresh tokens and family revocation, so use it instead of hand-written auth handlers. `createFakeSession` / `provideFakeSession` (`src/testing/fake-session.ts`) stub `SessionStore` and `ToastService` for guards, shells and routes; `stubViewport(width)` fakes `matchMedia`. `src/testing/setup.ts` starts the shared server with `onUnhandledFrame: 'error'` (MSW 3 name), so an unmocked request fails the test; register handlers per test with `server.use(...)`. Default handlers go in `src/testing/handlers.ts` (empty).
+- Use Vitest fake timers (`vi.useFakeTimers({ toFake: [...] })`, `src/testing/fake-timers.ts`), never `fakeAsync`. The process time zone is fixed to `Pacific/Kiritimati` in `src/testing/setup.ts`.
 - Stub browser globals with `vi.stubGlobal` (`matchMedia`, `localStorage`) and restore them in `afterEach`.
 - Specs sit beside the code (`*.spec.ts`). The pure `loadConfig` function takes a fetch stub; keep logic pure where possible.
-- Playwright (`e2e/`, Chromium only): CI runs against the built output with routes mocked (`page.route`), so no backend is needed; add axe accessibility checks as screens appear. A feature is not done until its unit tests pass.
+- Playwright (`e2e/`, Chromium only): CI runs against the built output with routes mocked (`page.route`), so no backend is needed (`e2e/mock-backend.ts` mocks `/config.json` and the auth endpoints with the CORS headers a cross-origin page needs; `seedRefreshToken` stores a token before the app starts); add axe accessibility checks as screens appear. A feature is not done until its unit tests pass.
 
 ## Git and workflow
 

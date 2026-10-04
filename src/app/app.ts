@@ -1,20 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HlmButtonImports } from '@app/shared/ui/button';
-import { HlmCardImports } from '@app/shared/ui/card';
-import { HlmInputImports } from '@app/shared/ui/input';
-import { HlmLabelImports } from '@app/shared/ui/label';
-import { ThemeToggle } from '@app/shared/ui/theme-toggle';
+import { OutageBanner } from '@app/shared/layout/outage-banner';
+import { HlmToaster } from '@app/shared/ui/sonner';
+import { RouteAnnouncer } from './shared/layout/route-announcer';
+import { RouteProgress } from './shared/layout/route-progress';
 
 @Component({
-  imports: [
-    RouterOutlet,
-    ThemeToggle,
-    HlmButtonImports,
-    HlmCardImports,
-    HlmInputImports,
-    HlmLabelImports,
-  ],
+  imports: [RouterOutlet, HlmToaster, OutageBanner, RouteProgress, RouteAnnouncer],
   selector: 'app-root',
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
