@@ -59,7 +59,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Component and unit tests: message, reference line, Copy action writes the id, denied or missing clipboard does not throw, the policy table (toast or not per kind and status), errors stay at least 8 s, announcer text, success toast auto-dismiss.
   - _Requirements: 3.10, 3.11, 3.12, 3.13_
 
-- [ ] 8. Retry countdown and `RateLimitNotice`
+- [x] 8. Retry countdown and `RateLimitNotice`
   - Add `core/http/retry-countdown.ts` (`createRetryCountdown`, deadline based, 250 ms tick only while active, `startFrom(error)`, `DestroyRef` cleanup).
   - Add `shared/ui/rate-limit-notice/` (visible text `aria-hidden`, `sr-only` `role="status"` text written exactly twice per countdown, wording "Too many attempts. Try again in N seconds.").
   - Tests with fake timers: start, decrement, replacement, cancel, a single large jump catches up, destroy clears; component test that the status text changes exactly twice across a full countdown.

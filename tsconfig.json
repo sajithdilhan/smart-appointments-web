@@ -20,7 +20,8 @@
       "@app/shared/ui/label": ["./src/app/shared/ui/label/src/index.ts"],
       "@app/shared/ui/switch": ["./src/app/shared/ui/switch/src/index.ts"],
       "@app/shared/ui/sonner": ["./src/app/shared/ui/sonner/src/index.ts"],
-      "@app/shared/ui/theme-toggle": ["./src/app/shared/ui/theme-toggle/index.ts"]
+      "@app/shared/ui/theme-toggle": ["./src/app/shared/ui/theme-toggle/index.ts"],
+      "@app/shared/ui/rate-limit-notice": ["./src/app/shared/ui/rate-limit-notice/index.ts"]
     }
   },
   "angularCompilerOptions": {
