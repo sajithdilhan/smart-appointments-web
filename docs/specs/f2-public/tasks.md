@@ -19,7 +19,7 @@ Rules (from the template):
   - Route-config spec: three `loadComponent` entries, guards, titles from `titles.ts`.
   - _Requirements: 5.1, 5.6, 5.7, 6.1_
 
-- [ ] 2. Generic field rules, password rules and messages
+- [x] 2. Generic field rules, password rules and messages
   - In `shared/forms/`: `phone.ts` (`normalizePhone` removing spaces, dashes and parentheses; `isE164`), `field-rules.ts` (required, max length, email, E.164 phone) and `validators.ts` (`ValidatorFn` wrappers, required checked first).
   - In `features/public/validation/`: `password-rules.ts` (`PASSWORD_RULES`, `evaluatePasswordRules`, `passwordIsValid`) with the special rule `/[^\p{L}\p{Mn}\p{Nd}\p{Pc}]/u`, `password-validator.ts`, and `messages.ts` (F2's validation strings).
   - Table-driven specs: the password boundary list (`Abcdefg1!`, `Abcdefg1_`, `abcdefg1!`, `ABCDEFG1!`, `Abcdefgh!`, `Abcdefg1`, `Abc1!`), `é` and `_` not special, `€`, space and `!` special, phone cases (`+14155550123`, `(415) 555-0123` after normalising, `0123`, `+0123`, 16 digits), name 50/51 characters, email cases.
