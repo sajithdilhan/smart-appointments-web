@@ -144,7 +144,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Add a smoke component test that boots the real `app.config` with MSW: anonymous `/book` redirects to `/login?returnUrl=%2Fbook`; a stored refresh token restores the session and lands on the role page.
   - _Requirements: 6.8, 10.1, 11.1, 11.2_
 
-- [ ] 24. Playwright e2e (mocked, no backend)
+- [x] 24. Playwright e2e (mocked, no backend)
   - Add `e2e/session.spec.ts` with `page.route` mocks (reusing helpers): anonymous `/book` redirects to `/login?returnUrl=%2Fbook`; with a stored refresh token a reload restores the session and lands on the role's page; a `401` from `POST /api/auth/refresh` clears the session and shows the login route.
   - _Requirements: 14.8, 6.8, 8.2_
 
