@@ -31,7 +31,7 @@ Rules (from the template):
   - Spec: focus moves after an in-app navigation and not on the first load.
   - _Requirements: 6.1_
 
-- [ ] 4. Field view, field a11y directive and form field (in `shared/forms/`)
+- [x] 4. Field view, field a11y directive and form field (in `shared/forms/`)
   - `shared/forms/field-view.ts` (`controlState` over `control.events`, `createFieldView` with `submitAttempted`, optional `serverError`, `extraDescribedBy`).
   - `shared/forms/field-a11y.directive.ts` (`aria-invalid`, `aria-describedby`, `aria-required`) and `shared/forms/form-field.component.ts` (label, hint, error with icon, `errorAction` slot, ids `{id}-hint` and `{id}-error`).
   - `shared/forms/focus-first-invalid.ts` (`afterNextRender` focus of the first `[aria-invalid="true"]`).
