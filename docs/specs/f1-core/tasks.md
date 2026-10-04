@@ -65,7 +65,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests with fake timers: start, decrement, replacement, cancel, a single large jump catches up, destroy clears; component test that the status text changes exactly twice across a full countdown.
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
 
-- [ ] 9. Outage banner and Retry
+- [x] 9. Outage banner and Retry
   - Add `OutageState.retry()` (probe `GET /healthz` with `OUTAGE_PROBE`, `Degraded` counts as reachable, re-navigate with `onSameUrlNavigation: 'reload'`, `probing` flag).
   - Add `shared/layout/outage-banner/` (helm `alert`, `role="alert"`, Retry button disabled with `aria-busy` while probing, `warning` tokens) and mount it in `app.ts` above the outlet (add helm `alert` through the Spartan CLI).
   - Tests: banner appears for 502/503/504/network/timeout and not for 4xx or 429; Retry calls `/healthz` once, clears on `200` or `Degraded` and navigates, stays on failure; `recovered` increments once per recovery.

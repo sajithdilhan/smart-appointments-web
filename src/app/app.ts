@@ -4,6 +4,7 @@ import { HlmButtonImports } from '@app/shared/ui/button';
 import { HlmCardImports } from '@app/shared/ui/card';
 import { HlmInputImports } from '@app/shared/ui/input';
 import { HlmLabelImports } from '@app/shared/ui/label';
+import { OutageBanner } from '@app/shared/layout/outage-banner';
 import { HlmToaster } from '@app/shared/ui/sonner';
 import { ThemeToggle } from '@app/shared/ui/theme-toggle';
 
@@ -16,6 +17,7 @@ import { ThemeToggle } from '@app/shared/ui/theme-toggle';
     HlmInputImports,
     HlmLabelImports,
     HlmToaster,
+    OutageBanner,
   ],
   selector: 'app-root',
   templateUrl: './app.html',
