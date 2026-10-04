@@ -107,7 +107,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests: no stored token means no request and `anonymous`; a stored token means exactly one refresh before the initializer resolves; refresh `401` clears the token; network, timeout, 5xx and `429` keep it and leave `anonymous` with the banner; `settled()` resolves once.
   - _Requirements: 6.8, 6.9, 10.1_
 
-- [ ] 17. Guards and landing CTAs
+- [x] 17. Guards and landing CTAs
   - Add `core/auth/guards.ts` (`authGuard`, `guestGuard` using `resolvePostLoginTarget` and the `returnUrl` query value, `roleGuard(...roles)` as both `CanActivate` and `CanActivateChild`) and `core/auth/landing-cta.ts` (`landingCtas()`).
   - Tests: the full matrix of status (including `unknown` resolving later) by role by required role with `UrlTree` targets; Customer on `/admin` lands on `/book` with the toast; `guestGuard` sends a signed-in user to a safe `returnUrl` the role may open, otherwise to the landing route; `landing-cta` anonymous versus each role.
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.8_
