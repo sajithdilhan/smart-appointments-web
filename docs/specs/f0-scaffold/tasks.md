@@ -56,7 +56,7 @@ Commits (enforced from task 6).
   - Add a spec proving an unmocked `fetch` fails the test; confirm `pnpm test -- --coverage` writes `coverage/`.
   - _Requirements: 4.1, 4.4, 4.5_
 
-- [ ] 8. Routes, lazy placeholder, budgets and the size script
+- [x] 8. Routes, lazy placeholder, budgets and the size script
   - Add `app.routes.ts` with one lazy `loadComponent` placeholder route and a `**` redirect.
   - Set the `budgets` (initial 500 kB / 700 kB, anyComponentStyle 4 kB / 8 kB) in the production configuration.
   - Write `scripts/size.mjs` (parse `index.html` for initial scripts, modulepreloads and stylesheets, gzip level 9, print the table, exit 1 above `MAX_GZIP_KB` default 250); add a small spec for the parsing/threshold function if it is factored into a testable module.
