@@ -25,7 +25,7 @@ Rules (from the template):
   - Table-driven specs: the password boundary list (`Abcdefg1!`, `Abcdefg1_`, `abcdefg1!`, `ABCDEFG1!`, `Abcdefgh!`, `Abcdefg1`, `Abc1!`), `é` and `_` not special, `€`, space and `!` special, phone cases (`+14155550123`, `(415) 555-0123` after normalising, `0123`, `+0123`, 16 digits), name 50/51 characters, email cases.
   - _Requirements: 2.5, 3.4, 3.5, 3.6, 7.2_
 
-- [ ] 3. Heading focus directive
+- [x] 3. Heading focus directive
   - (Stays in `shared/a11y/`, already shared.)
   - `shared/a11y/focus-heading.directive.ts` (`h1[appFocusHeading]`: `tabindex="-1"`, no outline, focuses after render when `router.navigated` is true, `preventScroll`).
   - Spec: focus moves after an in-app navigation and not on the first load.
