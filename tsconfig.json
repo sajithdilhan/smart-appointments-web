@@ -19,6 +19,9 @@
       "@app/shared/ui/alert": [
         "./src/app/shared/ui/alert/src/index.ts"
       ],
+      "@app/shared/ui/alert-dialog": [
+        "./src/app/shared/ui/alert-dialog/src/index.ts"
+      ],
       "@app/shared/ui/badge": [
         "./src/app/shared/ui/badge/src/index.ts"
       ],

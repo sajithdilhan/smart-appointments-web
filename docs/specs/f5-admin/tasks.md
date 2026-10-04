@@ -37,7 +37,7 @@ Rules (from the template):
   - Specs with MSW: first load, cached revisit refreshes in the background, a failed refresh keeps items, `ensure` hit and 404, `upsert`/`setActive`, reload on `OutageState.recovered`, `reset`.
   - _Requirements: 1.1, 1.6, 1.7, 2.1, 2.9, 9.3_
 
-- [ ] 6. Unsaved-changes guard and confirm dialog
+- [x] 6. Unsaved-changes guard and confirm dialog
   - Generate helm `alert-dialog`; `shared/ui/confirm-dialog/` (`ConfirmService`: single in-flight dialog, optional `run` with pending and inline error, initial focus option).
   - `features/admin/shared/dirty/` (`DirtyForm`, `unsavedChangesGuard`, `registerBeforeUnload`, `formSnapshot`).
   - Specs: pristine passes, dirty blocked until confirm, Keep editing is the default focus, two exits show one dialog, `beforeunload` registered and removed, snapshot ignores cosmetic differences.
