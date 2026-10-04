@@ -8,6 +8,11 @@ import { CLOCK } from '../../../core/util/clock';
 import { availabilityHandlers } from '../../../../testing/availability.handlers';
 import { BRANCH_IDS, SERVICE_IDS, createBookingBackend } from '../../../../testing/booking-backend';
 import { ManualClock } from '../../../../testing/manual-clock';
+import {
+  createFakeSession,
+  createFakeToast,
+  provideFakeSession,
+} from '../../../../testing/fake-session';
 import { server } from '../../../../testing/server';
 import { SlotSearchService, normaliseSlots, sameSlots } from './slot-search.service';
 import type { SlotKey } from './slot-cache';
@@ -27,6 +32,7 @@ const key = (
 function setup() {
   const backend = createBookingBackend({ nowMs: NOW });
   const clock = new ManualClock(NOW);
+  const toast = createFakeToast();
   server.use(...availabilityHandlers(backend, BASE));
   TestBed.configureTestingModule({
     providers: [
@@ -34,9 +40,10 @@ function setup() {
       SlotSearchService,
       { provide: APP_CONFIG, useValue: { apiBaseUrl: BASE } },
       { provide: CLOCK, useValue: clock },
+      ...provideFakeSession(createFakeSession('authenticated', 'Customer'), toast),
     ],
   });
-  return { backend, clock, service: TestBed.inject(SlotSearchService) };
+  return { backend, clock, toast, service: TestBed.inject(SlotSearchService) };
 }
 
 function slotsFrom(state: ReturnType<SlotSearchService['state']>): SlotResponse[] {
@@ -165,11 +172,12 @@ describe('SlotSearchService', () => {
     }
     await vi.advanceTimersByTimeAsync(50);
     expect(backend.state.counters.search).toBe(25);
-    expect(service.state()).toEqual({
+    expect(service.state()).toMatchObject({
       status: 'rate-limited',
       retryAfterSeconds: 60,
       source: 'budget',
     });
+    expect(service.countdown.active()).toBe(true);
   });
 
   it('serves a cached day while the budget is spent, and refuses uncached ones', async () => {
@@ -195,33 +203,45 @@ describe('SlotSearchService', () => {
   });
 
   it('a 429 shows the countdown, never retries by itself, and retries on request', async () => {
-    const { backend, service } = setup();
+    const { backend, clock, service } = setup();
     backend.state.flags.searchRateLimitAfter = 0;
     service.load(key('2026-10-05'));
     await vi.advanceTimersByTimeAsync(250);
     await vi.waitFor(() => expect(service.state().status).toBe('rate-limited'));
-    expect(service.state()).toEqual({
+    expect(service.state()).toMatchObject({
       status: 'rate-limited',
       retryAfterSeconds: 60,
       source: 'server',
     });
+    expect(service.countdown.remaining()).toBe(60);
     await vi.advanceTimersByTimeAsync(120_000);
     expect(backend.state.counters.search).toBe(1);
 
+    // While the countdown runs even a new, uncached day sends nothing.
     backend.state.flags.searchRateLimitAfter = null;
+    service.load(key('2026-10-06'));
+    await vi.advanceTimersByTimeAsync(250);
+    expect(service.state().status).toBe('rate-limited');
+    expect(backend.state.counters.search).toBe(1);
+
+    clock.advance(60_000);
+    expect(service.countdown.active()).toBe(false);
     service.load(key('2026-10-05'), { force: true });
     await vi.advanceTimersByTimeAsync(250);
     await vi.waitFor(() => expect(service.state().status).toBe('ready'));
     expect(backend.state.counters.search).toBe(2);
   });
 
-  it('a 404 refreshes the reference data and reports not-found', async () => {
-    const { backend, service } = setup();
+  it('a 404 refreshes the reference data, reports not-found and toasts once', async () => {
+    const { backend, service, toast } = setup();
     service.load(key('2026-10-05', 'gone-branch'));
     await vi.advanceTimersByTimeAsync(250);
     await vi.waitFor(() => expect(service.state().status).toBe('not-found'));
     await vi.waitFor(() =>
       expect(backend.state.counters).toMatchObject({ branches: 1, services: 1 }),
+    );
+    expect(toast.showInfo).toHaveBeenCalledExactlyOnceWith(
+      'That option is no longer available. Please choose again.',
     );
   });
 

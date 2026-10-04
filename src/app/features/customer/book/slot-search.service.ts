@@ -5,6 +5,8 @@ import { AvailabilityApiService } from '../../../core/api/availability-api.servi
 import type { SlotResponse } from '../../../core/api/models';
 import type { AppError } from '../../../core/http/app-error';
 import { OutageState } from '../../../core/http/outage-state';
+import { createRetryCountdown, type RetryCountdown } from '../../../core/http/retry-countdown';
+import { ToastService } from '../../../core/notify/toast.service';
 import { CLOCK } from '../../../core/util/clock';
 import { ReferenceDataStore } from '../shared/reference-data/reference-data.store';
 import { SlidingWindowBudget } from './request-budget';
@@ -18,7 +20,13 @@ export type SlotsState =
   | { status: 'ready'; slots: SlotResponse[]; fetchedAt: number }
   | { status: 'error'; error: AppError; kind: 'unavailable' | 'other' }
   /** The gateway answered `429`, or the client budget is spent. No automatic retry. */
-  | { status: 'rate-limited'; retryAfterSeconds: number; source: 'server' | 'budget' }
+  | {
+      status: 'rate-limited';
+      retryAfterSeconds: number;
+      source: 'server' | 'budget';
+      /** The service's own countdown, for `<app-rate-limit-notice>`; a "Try again" shows when it ends. */
+      countdown: RetryCountdown;
+    }
   /** `404`: the branch or service is gone; reference data was refreshed, the URL repairs itself. */
   | { status: 'not-found' };
 
@@ -55,12 +63,16 @@ export class SlotSearchService {
   private readonly clock = inject(CLOCK);
   private readonly outage = inject(OutageState);
   private readonly reference = inject(ReferenceDataStore);
+  private readonly toast = inject(ToastService);
 
   private readonly cache = new SlotCache();
   private readonly budget = new SlidingWindowBudget();
   private readonly requests = new Subject<SearchRequest | null>();
   private current: SlotKey | null = null;
   private readonly stateSignal = signal<SlotsState>({ status: 'idle' });
+
+  /** Counts down a `429` or a spent budget; no request is sent while it runs (Req 5.4, 5.5). */
+  readonly countdown = createRetryCountdown();
 
   /** The state of the most recently requested key. */
   readonly state = this.stateSignal.asReadonly();
@@ -130,16 +142,19 @@ export class SlotSearchService {
     const now = this.clock.now();
     const cacheKey = slotCacheKey(key);
     const cached = this.cache.get(cacheKey, now);
-    const budget = this.budget.tryAcquire(now);
-    if (!budget.ok) {
+    // After a `429` nothing is sent until the countdown ends (no automatic retry, Req 5.4).
+    const blocked = this.countdown.active() && this.limitSource === 'server';
+    const budget = blocked ? null : this.budget.tryAcquire(now);
+    if (blocked || (budget && !budget.ok)) {
       if (cached) {
         this.showCached(cached);
       } else {
-        this.stateSignal.set({
-          status: 'rate-limited',
-          retryAfterSeconds: budget.retryAfterSeconds,
-          source: 'budget',
-        });
+        this.limited(
+          blocked
+            ? this.countdown.remaining()
+            : (budget as { retryAfterSeconds: number }).retryAfterSeconds,
+          blocked ? 'server' : 'budget',
+        );
       }
       return EMPTY;
     }
@@ -163,6 +178,19 @@ export class SlotSearchService {
     );
   }
 
+  private limitSource: 'server' | 'budget' | null = null;
+
+  private limited(seconds: number, source: 'server' | 'budget'): void {
+    this.limitSource = source;
+    this.countdown.start(seconds);
+    this.stateSignal.set({
+      status: 'rate-limited',
+      retryAfterSeconds: seconds,
+      source,
+      countdown: this.countdown,
+    });
+  }
+
   /** Shows a cached list; keeps the very same state object when it is already on screen. */
   private showCached(cached: { slots: SlotResponse[]; fetchedAt: number }): void {
     const shown = this.stateSignal();
@@ -178,12 +206,9 @@ export class SlotSearchService {
     if (e.status === 404) {
       this.reference.refresh();
       this.stateSignal.set({ status: 'not-found' });
+      this.toast.showInfo('That option is no longer available. Please choose again.');
     } else if (e.kind === 'rate-limited') {
-      this.stateSignal.set({
-        status: 'rate-limited',
-        retryAfterSeconds: e.retryAfterSeconds ?? 60,
-        source: 'server',
-      });
+      this.limited(e.retryAfterSeconds ?? 60, 'server');
     } else if (!hasStale) {
       const unavailable = e.kind === 'unavailable' || e.kind === 'network' || e.kind === 'timeout';
       this.stateSignal.set({
