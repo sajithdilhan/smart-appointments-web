@@ -139,7 +139,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests: an unknown path renders the page in the public shell anonymously and in each role's own shell; the link target; the meta tag lifecycle; the URL is not echoed; a Customer on `/admin` is redirected, not shown the 404.
   - _Requirements: 11.1, 12.1, 12.2, 12.3, 12.4, 12.5_
 
-- [ ] 23. Root wiring and cross-cutting verification
+- [x] 23. Root wiring and cross-cutting verification
   - Confirm `app.ts` mounts progress, banner, `<router-outlet>`, toaster, announcers, and that provider order is config initializer, session initializer, router.
   - Add a smoke component test that boots the real `app.config` with MSW: anonymous `/book` redirects to `/login?returnUrl=%2Fbook`; a stored refresh token restores the session and lands on the role page.
   - _Requirements: 6.8, 10.1, 11.1, 11.2_
