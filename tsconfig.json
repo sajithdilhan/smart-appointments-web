@@ -1,5 +1,3 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -13,7 +11,16 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@app/shared/ui/button": ["./src/app/shared/ui/button/src/index.ts"],
+      "@app/shared/ui/utils": ["./src/app/shared/ui/utils/src/index.ts"],
+      "@app/shared/ui/card": ["./src/app/shared/ui/card/src/index.ts"],
+      "@app/shared/ui/input": ["./src/app/shared/ui/input/src/index.ts"],
+      "@app/shared/ui/label": ["./src/app/shared/ui/label/src/index.ts"],
+      "@app/shared/ui/switch": ["./src/app/shared/ui/switch/src/index.ts"],
+      "@app/shared/ui/sonner": ["./src/app/shared/ui/sonner/src/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

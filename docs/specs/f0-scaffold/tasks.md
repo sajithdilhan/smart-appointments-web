@@ -25,7 +25,7 @@ Commits (enforced from task 6).
   - Add `contrast.spec.ts` that parses the `:root` and `.dark` blocks and asserts every documented text pair meets 4.5:1 and UI pairs 3:1.
   - _Requirements: 2.1, 2.3, 2.4, 2.5, 2.10, 7.8_
 
-- [ ] 3. Spartan/ui baseline components
+- [x] 3. Spartan/ui baseline components
   - Install `@angular/cdk`, `@spartan-ng/brain`, `@spartan-ng/cli`, `lucide-angular`, `ngx-sonner`; run `ng g @spartan-ng/cli:init` and generate `button`, `card`, `input`, `label`, `switch` (and `sonner`) with the helm output under `src/app/shared/ui/` and an `@app/shared/ui/*` path alias (use the fallback in design open question 2 if the CLI forces `libs/ui`).
   - Render a button, and a card with a labelled input, on the placeholder page; add a render test using Angular Testing Library (queries by role) covering the app heading and the button.
   - Run `pnpm build`; IF the initial bundle trips the 500 kB warning, remove `sonner` from F0 (generate in F1) and note it in the README.

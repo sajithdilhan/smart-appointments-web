@@ -35,6 +35,8 @@ const pairs: [string, string, number][] = [
   ['muted-foreground', 'muted', 4.5],
   ['primary-foreground', 'primary', 4.5],
   ['accent-foreground', 'accent', 4.5],
+  ['popover-foreground', 'popover', 4.5],
+  ['secondary-foreground', 'secondary', 4.5],
   ['destructive-foreground', 'destructive', 4.5],
   ['success-foreground', 'success', 4.5],
   ['warning-foreground', 'warning', 4.5],

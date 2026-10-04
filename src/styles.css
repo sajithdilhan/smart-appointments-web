@@ -1,5 +1,10 @@
-@import 'tailwindcss';
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css';
+
 @import '@fontsource-variable/inter';
+@import '@spartan-ng/brain/hlm-tailwind-preset.css';
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -30,6 +35,10 @@
   --color-ring: var(--ring);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
@@ -49,10 +58,15 @@
 
 :root {
   /* light */
+  --radius: 0.75rem;
   --background: #ffffff;
   --foreground: #09090b; /* zinc-950 */
   --card: #ffffff;
   --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
   --muted: #f4f4f5;
   --muted-foreground: #52525b; /* zinc-100 / zinc-600 */
   --border: #e4e4e7;
@@ -75,6 +89,10 @@
   --foreground: #fafafa;
   --card: #18181b;
   --card-foreground: #fafafa; /* zinc-900 */
+  --popover: #18181b;
+  --popover-foreground: #fafafa;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
   --muted: #27272a;
   --muted-foreground: #a1a1aa; /* zinc-800 / zinc-400 */
   --border: #27272a;
@@ -98,6 +116,9 @@
   }
   html.dark {
     color-scheme: dark;
+  }
+  * {
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;

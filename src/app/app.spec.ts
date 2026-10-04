@@ -1,14 +1,16 @@
-import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { render, screen } from '@testing-library/angular';
 import { App } from './app';
 
 describe('App', () => {
   it('renders the application name', async () => {
-    await TestBed.configureTestingModule({ imports: [App], providers: [provideRouter([])] })
-      .compileComponents();
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const heading = (fixture.nativeElement as HTMLElement).querySelector('h1');
-    expect(heading?.textContent).toContain('Smart Appointments');
+    await render(App, { providers: [provideRouter([])] });
+    expect(screen.getByRole('heading', { level: 1, name: /smart appointments/i })).toBeTruthy();
+  });
+
+  it('renders the design-system sample: a button and a labelled input', async () => {
+    await render(App, { providers: [provideRouter([])] });
+    expect(screen.getByRole('button', { name: /get started/i })).toBeTruthy();
+    expect(screen.getByLabelText('Sample input')).toBeTruthy();
   });
 });
