@@ -35,7 +35,7 @@ import type { ListState } from './list-view';
       }
       @case ('no-match') {
         <div class="flex flex-col items-start gap-3 rounded-lg border p-6">
-          <p>No {{ noun() }} match your search.</p>
+          <p>No {{ noun() }} match your filters.</p>
           <button hlmBtn variant="outline" type="button" (click)="clearFilters.emit()">
             Clear filters
           </button>

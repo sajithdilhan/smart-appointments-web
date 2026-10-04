@@ -76,7 +76,7 @@ Rules (from the template):
   - Specs: figures and accessible names ("Active branches: 3 of 4"), per-card error independence, needs-attention rows and empty state, session counter text, recovery reload.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8_
 
-- [ ] 13. Branches list page
+- [x] 13. Branches list page
   - `branches.page` (table at `md` and up, cards below, labelled sort select, `<router-outlet/>` for the drawer), per-row actions with record-named accessible names, schedule column, filter and search with URL sync, list states, announcements.
   - Specs: columns and badges, "Not set" schedule, filter and sort, empty and no-match, Retry, card layout via a stubbed `ViewportService`, state preserved after a store update, recovery reload.
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 12.4, 12.5_

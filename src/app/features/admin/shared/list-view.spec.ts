@@ -338,7 +338,7 @@ describe('ListStates', () => {
 
   it('no-match offers Clear filters', async () => {
     const { clear } = await renderStates('no-match');
-    expect(screen.getByText('No branches match your search.')).toBeInTheDocument();
+    expect(screen.getByText('No branches match your filters.')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
     expect(clear).toHaveBeenCalledTimes(1);
   });
