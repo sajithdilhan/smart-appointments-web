@@ -153,7 +153,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Add a CI `build` step `! grep -ri msw dist/` and run the full F0 pipeline (`lint`, `test`, `build`, `size`, `e2e`) green.
   - _Requirements: 11.9, 14.5_
 
-- [ ] 26. Documentation
+- [x] 26. Documentation
   - Note in `CLAUDE.md` that `core/time` owns all calendar, zone and branch-time maths, and that `sessionSafe` / `localSafe` are the only way to touch web storage.
   - Update `README.md` (what F1 provides, `pnpm gen:api` and its prerequisites, the backend features F1 needs: refresh tokens, CORS, unified error body, `accessTokenExpiresAtUtc`).
   - Update `CLAUDE.md`: project status (F1 built), the `core`, `shared/layout` layout, the pipeline and session conventions (never read `HttpErrorResponse`, always `AppError`; never touch the token storage keys directly; `parseUtc` / `formatInZone` only; `safeReturnUrl` for every `returnUrl`; MSW `createAuthBackend` for tests; fake timers not `fakeAsync`).
