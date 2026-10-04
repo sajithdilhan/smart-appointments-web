@@ -59,6 +59,7 @@ Rules (from the template):
   - _Requirements: 2.6, 4.2, 6.2, 11.5, 12.1_
 
 - [ ] 9. Step indicator and page layout
+  - partial: `step-indicator.component.ts` is done and tested; `action-bar.component.ts` and the page layout wait on the F1 customer shell and bottom tab bar.
   - `components/step-indicator.component.ts` (`<ol aria-label="Booking progress">`, `aria-current="step"`, reachable earlier steps as buttons, "Step N of 4" under 640 px via `ViewportService`, "Booked" on success), `components/action-bar.component.ts` (sticky above the F1 bottom tab bar), page layout (one column below 640 px, two columns from 640 and three from 1024, summary panel from 1024), the slide transition disabled under reduced motion.
   - Specs: ordered list and `aria-current`, reachable and unreachable steps, the narrow variant with a stubbed `matchMedia`, Back button per step.
   - _Requirements: 1.2, 1.5, 1.7, 1.8, 12.6, 12.8_
@@ -100,6 +101,7 @@ Rules (from the template):
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
 - [ ] 17. Success step and confetti
+  - partial: `success-check.component.ts` and `confetti.component.ts` (with tests) are done; `success-step.component.ts`, the `@defer` wiring, copy-reference and the store/URL/cache effects wait on the wizard store, F1 `ToastService`/`SessionStore` and the routes.
   - `components/success-step.component.ts`, `success-check.component.ts` (SVG draw within 600 ms), `confetti.component.ts` (canvas, at most 60 particles, 2 s, `aria-hidden`, no pointer events, stopped on destroy) loaded with `@defer` only when reduced motion is off, copy-reference with the clipboard fallback, the three actions; on `201` replace the step 4 entry with `done=1`, remove the key, invalidate the cache entry, write the marker; step 1 or 3 shows the saved hint when the marker is present.
   - Specs: heading focus and one announcement, summary and reference, Copy with the clipboard blocked, no confetti under reduced motion and none after 2 s, Back lands on step 3 without `slot`, the key is gone, the cache entry is invalidated, a reload with `done=1` and no booking drops it, "Book another" resets, the saved hint shows once.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9_
