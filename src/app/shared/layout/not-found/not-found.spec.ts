@@ -38,7 +38,7 @@ describe('not-found page', () => {
       '/',
     );
     expect(screen.getAllByRole('main')).toHaveLength(1);
-  });
+  }, 20_000); // the first test pays the cold lazy-route imports (slow under coverage)
 
   it('renders in the customer shell with a link to /book', async () => {
     await open('Customer', '/no/such/page');
