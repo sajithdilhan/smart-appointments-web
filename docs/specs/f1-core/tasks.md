@@ -9,7 +9,7 @@ Rules (from docs/specs/_templates/tasks.md):
 Requirement numbers refer to requirements.md of this folder; design sections to design.md.
 -->
 
-- [ ] 1. Shared primitives: `Role`, `Clock`, safe storage
+- [x] 1. Shared primitives: `Role`, `Clock`, safe storage
   - Add `core/auth/session.model.ts` with `Role = 'Customer' | 'Staff' | 'Admin'` (one constant tuple), `SessionStatus`, `SessionUser`.
   - Add `core/util/clock.ts` (`Clock` interface, `CLOCK` injection token with the default `Date.now` / `setTimeout` implementation) and `src/testing/manual-clock.ts`.
   - Add `core/util/safe-storage.ts`: `createSafeStorage('local' | 'session')` (`get`, `set`, `remove`, `keys`, try/catch with an in-memory fallback, lazy storage lookup, `getStorage` test seam), `localSafe`, `sessionSafe` and the `safeGet`/`safeSet`/`safeRemove` shorthands; unit tests for a throwing `localStorage` and a throwing `sessionStorage` (write then read, `keys`, no throw).
