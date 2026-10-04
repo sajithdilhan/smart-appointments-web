@@ -38,7 +38,7 @@ Rules (from the template):
   - Specs (colocated in `shared/forms/`): error appears only after blur or submit and clears when valid, a server error wins and clears on edit, every `aria-describedby` id resolves to an element, first-invalid focus in DOM order.
   - _Requirements: 3.7, 6.2, 6.3, 6.4_
 
-- [ ] 5. Form alert (shared) and password field (F2)
+- [x] 5. Form alert (shared) and password field (F2)
   - `shared/forms/form-alert.component.ts` (stable `role="alert"` / `role="status"` region, `tabindex="-1"`, `focus()`, optional reference line).
   - `features/public/auth/password-field.component.ts` (input plus a 40 px show/hide button with `aria-label` and `aria-pressed`, default hidden, keeps value and restores the selection on toggle, read-only while pending, no paste blocking).
   - Specs: toggle name and pressed state, value and caret kept, alert role per tone and re-render does not duplicate the message.

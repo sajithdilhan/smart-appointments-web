@@ -5,3 +5,4 @@ export * from './focus-first-invalid';
 export * from './form-field.component';
 export * from './phone';
 export * from './validators';
+export * from './form-alert.component';
