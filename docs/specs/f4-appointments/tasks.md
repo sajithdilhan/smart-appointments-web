@@ -16,10 +16,11 @@ Rules (from the template):
   - MSW-based spec per method: HTTP method, absolute URL, query string, no `customerId`, abort cancels the request.
   - _Requirements: 1.4, 1.5, 6.3, 6.10_
 
-- [ ] 2. MSW appointments model and handlers
+- [x] 2. MSW appointments model and handlers
   - `src/testing/appointments-backend.ts` (stateful: filters, order with `id` tie-break, defaults, empty beyond last page, `400` naming every invalid parameter, idempotent cancel, `409`, a `503`-after-cancel flag, `404` for another customer's id) and `handlers/appointments.handlers.ts`; `make-appointment.ts` factory.
   - Branches and services handlers returning only active items so a test can deactivate a branch (reuse F3's if they exist).
   - Spec of the model itself (order, paging, filters, errors).
+  - Note: F3's branches/services handlers did not exist on this branch, so `appointments.handlers.ts` serves its own active-only `/api/Branches` and `/api/Services` (both casings); reconcile with F3's at merge.
   - _Requirements: 11.1_
 
 - [ ] 3. Pure helpers: tab params, dedupe, GUID matcher
