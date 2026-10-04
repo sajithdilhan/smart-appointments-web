@@ -148,7 +148,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Add `e2e/session.spec.ts` with `page.route` mocks (reusing helpers): anonymous `/book` redirects to `/login?returnUrl=%2Fbook`; with a stored refresh token a reload restores the session and lands on the role's page; a `401` from `POST /api/auth/refresh` clears the session and shows the login route.
   - _Requirements: 14.8, 6.8, 8.2_
 
-- [ ] 25. Bundle and CI guards
+- [x] 25. Bundle and CI guards
   - Run `pnpm build` and `pnpm size`; confirm the core services are in the initial chunk and the shells and pages are lazy; record the measured gzip total in the design.
   - Add a CI `build` step `! grep -ri msw dist/` and run the full F0 pipeline (`lint`, `test`, `build`, `size`, `e2e`) green.
   - _Requirements: 11.9, 14.5_

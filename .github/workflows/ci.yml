@@ -47,6 +47,8 @@ jobs:
       - run: pnpm size
       - name: No environment-specific API URL in the bundle
         run: "! grep -r 'localhost:5290' dist --exclude=config.json"
+      - name: No test doubles (MSW) in the bundle
+        run: '! grep -ri msw dist/'
       - uses: actions/upload-artifact@v4
         with:
           name: dist
