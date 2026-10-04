@@ -102,7 +102,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests with two store instances on `fake-channel`: one refresh adopted by the other without a request; simultaneous restore of two tabs sends one refresh; login in A authenticates anonymous B; logout in A clears B; `expired` goes to `/login?reason=session-expired&returnUrl=...`, `logout` to plain `/login`, `invalid` shows no toast; own and invalid messages ignored; five simultaneous failures give one navigation and one toast.
   - _Requirements: 6.10, 8.2, 8.3, 9.2, 9.3, 9.4, 9.5, 9.6, 9.9_
 
-- [ ] 16. Restore initializer
+- [x] 16. Restore initializer
   - Add `SessionStore.restore()` and `provideAuth()` registering `provideAppInitializer(() => inject(SessionStore).restore())` after the config initializer in `app.config.ts`; add the static "Loading..." content inside `<app-root>` in `index.html`.
   - Tests: no stored token means no request and `anonymous`; a stored token means exactly one refresh before the initializer resolves; refresh `401` clears the token; network, timeout, 5xx and `429` keep it and leave `anonymous` with the banner; `settled()` resolves once.
   - _Requirements: 6.8, 6.9, 10.1_

@@ -6,6 +6,7 @@ import {
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAppConfig } from './core/config/config.provider';
+import { provideAuth } from './core/auth/auth.providers';
 import { provideCoreHttp } from './core/http/http.providers';
 
 export const appConfig: ApplicationConfig = {
@@ -14,6 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideAppConfig(),
     provideCoreHttp(),
+    provideAuth(),
     provideRouter(routes),
   ],
 };
