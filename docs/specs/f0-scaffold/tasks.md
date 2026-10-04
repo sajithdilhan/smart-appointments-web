@@ -38,7 +38,7 @@ Commits (enforced from task 6).
   - Tests: `theme.service.spec.ts` (each preference, live system change, throwing `localStorage`, invalid stored value), `theme-init.spec.ts` (evaluate the script against stubs, same outcomes as the service), `theme-toggle.spec.ts` (roles, keyboard, state).
   - _Requirements: 2.6, 2.7, 2.8, 2.9, 4.3_
 
-- [ ] 5. Runtime configuration and the configuration error page
+- [x] 5. Runtime configuration and the configuration error page
   - Add `public/config.json` with `{ "apiBaseUrl": "http://localhost:5290" }`.
   - Implement `AppConfig`/`APP_CONFIG`, the pure `loadConfig(fetchFn, timeoutMs)` with the fixed reason strings, `renderConfigError(reason)` (DOM only, `textContent`, title `Configuration error`, `role="alert"`, "Try again" button reloading the page, focus on the button), and `provideAppConfig()` using `provideAppInitializer`; register it in `app.config.ts`; `main.ts` swallows the aborted-bootstrap rejection.
   - Tests: `load-config.spec.ts` table (valid, trailing slash and path normalised to the origin, 404, 500, network error, timeout, invalid JSON, missing, blank, `ftp://x`, `not a url`) and `config-error.spec.ts` (heading, reason text, title, button reloads, response body never shown).
