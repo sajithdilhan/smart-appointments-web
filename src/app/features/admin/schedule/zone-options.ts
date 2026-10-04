@@ -156,3 +156,8 @@ export function filterZones(
     .map((x) => x.o);
   return { items: matched.slice(0, limit), truncated: matched.length > limit };
 }
+
+/** "Asia/Colombo, UTC+05:30" for one zone without building the whole list. */
+export function zoneLabel(id: string, now: Date): string {
+  return `${id}, ${formatOffset(zoneOffsetMinutes(id, now))}`;
+}

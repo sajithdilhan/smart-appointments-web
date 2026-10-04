@@ -96,7 +96,7 @@ Rules (from the template):
   - Specs: wording asserts the "existing appointments and slots are not cancelled" statement, Cancel is the initial focus, request sent once, pending state, store badge updates, `404` closes and reloads, failure keeps the dialog with the message.
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 6.3_
 
-- [ ] 17. Time-zone combobox and schedule grid
+- [x] 17. Time-zone combobox and schedule grid
   - `schedule/time-zone-combobox.component` (ControlValueAccessor over `createListbox`, full ARIA, offsets, browser-zone suggestion, list-only values), `schedule.form.ts` (seven-row model, `fromBranch`, `toRequest`, copy Monday to weekdays, close all, `slice(0, 5)` normalisation, snapshot), `schedule-day-row.component` (switch, time inputs, per-row error, per-day card below 768 px).
   - Specs: row validation and messages, request shape and Monday-first order, copy and close-all, combobox attributes and keyboard, selection sets the value, free text not accepted, offsets shown, form model round trip.
   - _Requirements: 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.11_
