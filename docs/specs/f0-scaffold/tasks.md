@@ -31,7 +31,7 @@ Commits (enforced from task 6).
   - Run `pnpm build`; IF the initial bundle trips the 500 kB warning, remove `sonner` from F0 (generate in F1) and note it in the README.
   - _Requirements: 2.2, 4.2, 4.3, 5.4_
 
-- [ ] 4. Theme service, pre-paint script and toggle
+- [x] 4. Theme service, pre-paint script and toggle
   - Add `public/theme-init.js` (blocking, ES5, try/catch around storage) and reference it from `index.html` before the stylesheet.
   - Implement `ThemeService` (signals `preference`, `systemDark`, `computed isDark`, storage key `sa.theme`, try/catch on every storage access, class toggle on `<html>` via an effect, `matchMedia` listener).
   - Implement `ThemeToggle` in `shared/ui/theme-toggle/` (radiogroup of system/light/dark, `aria-checked`, arrow-key navigation, per-option labels such as "Use dark theme", focus ring) and place it on the placeholder page.
