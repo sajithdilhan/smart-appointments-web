@@ -123,7 +123,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Component tests: skip link first in tab order, one `main`, header shows "Sign in" / "Create account" anonymous and "Go to my dashboard" signed in, menu closes on Escape and returns focus, progress bar only after 150 ms, title announced.
   - _Requirements: 11.3, 11.6, 11.7, 11.8, 10.8_
 
-- [ ] 20. Customer shell
+- [x] 20. Customer shell
   - Add `shared/layout/customer-shell/`: `@if (viewport.isMd())` top nav (Book, My appointments, Profile, `aria-current`, theme toggle, user menu) else compact top bar plus fixed bottom tab bar (44 px targets, safe-area padding, content padding); replace the stub.
   - Component tests with a stubbed `matchMedia`: bottom tabs below 768 px and top links above, one labelled `nav`, active link `aria-current="page"`, sign out calls `logout`.
   - _Requirements: 11.4, 11.6, 11.10_
