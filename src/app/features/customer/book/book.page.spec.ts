@@ -17,6 +17,7 @@ async function settle(view: { harness: { fixture: { whenStable(): Promise<void> 
   await view.harness.fixture.whenStable();
 }
 
+const notice = () => document.getElementById('book-notice')!;
 const heading = (name: string) => screen.getByRole('heading', { level: 2, name });
 
 /** Records whether each wizard navigation replaced the history entry. */
@@ -113,9 +114,7 @@ describe('BookPage and BookingWizardStore', () => {
       });
       await vi.waitFor(() => expect(view.router.url).toBe('/book'));
       expect(replace).toEqual([true]);
-      expect(screen.getByRole('status')).toHaveTextContent(
-        'That link is out of date. Choose again.',
-      );
+      expect(notice()).toHaveTextContent('That link is out of date. Choose again.');
       expect(heading('Choose a branch')).toBeTruthy();
       expect(document.body.textContent).not.toContain(UNKNOWN);
     });
@@ -123,7 +122,7 @@ describe('BookPage and BookingWizardStore', () => {
     it('repairs a malformed id too, without echoing it', async () => {
       const view = await renderBook({ url: '/book?branch=%3Cscript%3Ex' });
       await vi.waitFor(() => expect(view.router.url).toBe('/book'));
-      expect(screen.getByRole('status')).toHaveTextContent('out of date');
+      expect(notice()).toHaveTextContent('out of date');
       expect(document.body.textContent).not.toContain('<script>');
     });
 
@@ -142,7 +141,7 @@ describe('BookPage and BookingWizardStore', () => {
         expect(view.router.url).toBe(`/book?branch=${LONDON}&service=${CHECKUP}&date=2026-10-05`),
       );
       expect(heading('Choose a date and time')).toBeTruthy();
-      expect(screen.getByRole('status')).toHaveTextContent('out of date');
+      expect(notice()).toHaveTextContent('out of date');
     });
 
     it('drops done without a booking silently', async () => {
@@ -153,14 +152,14 @@ describe('BookPage and BookingWizardStore', () => {
         expect(view.router.url).toBe(`/book?branch=${LONDON}&service=${CHECKUP}&date=2026-10-05`),
       );
       expect(heading('Choose a date and time')).toBeTruthy();
-      expect(screen.getByRole('status')).toBeEmptyDOMElement();
+      expect(notice()).toBeEmptyDOMElement();
     });
 
     it('clears the note on the next user navigation', async () => {
       const view = await renderBook({ url: `/book?branch=${UNKNOWN}` });
-      await vi.waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('out of date'));
+      await vi.waitFor(() => expect(notice()).toHaveTextContent('out of date'));
       view.store().chooseBranch(LONDON);
-      await vi.waitFor(() => expect(screen.getByRole('status').textContent?.trim()).toBe(''));
+      await vi.waitFor(() => expect(notice().textContent?.trim()).toBe(''));
     });
   });
 

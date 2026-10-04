@@ -46,6 +46,8 @@ export class ReferenceDataStore {
   readonly services = this.serviceList.asReadonly();
   readonly branchesState = this.branchState.asReadonly();
   readonly servicesState = this.serviceState.asReadonly();
+  readonly branchesError = this.branchError.asReadonly();
+  readonly servicesError = this.serviceError.asReadonly();
   /** The most recent failure of either list, or `null`. */
   readonly error = computed(() => this.branchError() ?? this.serviceError());
 

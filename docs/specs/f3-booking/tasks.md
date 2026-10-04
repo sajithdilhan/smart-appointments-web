@@ -61,7 +61,7 @@ Rules (from the template):
   - Specs: ordered list and `aria-current`, reachable and unreachable steps, the narrow variant with a stubbed `matchMedia`, Back button per step.
   - _Requirements: 1.2, 1.5, 1.7, 1.8, 12.6, 12.8_
 
-- [ ] 10. Branch step
+- [x] 10. Branch step
   - `components/branch-step.component.ts` and `branch-card.component.ts`: skeletons, 150 ms debounced search (diacritic-insensitive over name, code, address, no API call), result-count status, today's hours and Open/Closed badge from the F1 zone helpers with a one-minute tick, plain-text phone, the disabled no-schedule card, empty and error states, `OutageState.recovered` reload.
   - Specs: loading skeleton, search with fake timers and the no-match state, hours and badge for branches in Auckland, London and New York under another process zone (open at `opensAt`, closed at `closesAt`, closed today), the disabled card not selectable by click, Enter or Space and still focusable, empty list, outage then recovery, selection navigates with `branch`.
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 12.4_

@@ -29,6 +29,12 @@ export class RovingRadioGroupDirective {
   /** The accessible name of the group: `[appRadioGroup]="'Branch'"`. */
   readonly label = input('', { alias: 'appRadioGroup' });
   readonly selected = output<string>();
+  /**
+   * WAI-ARIA moves selection with the arrow keys. A group whose selection leaves the page (the
+   * branch and service cards navigate to the next step) sets this to false: arrows then only
+   * move focus and Space or Enter select, so an arrow key never changes the context (WCAG 3.2.2).
+   */
+  readonly selectOnMove = input(true);
 
   readonly items = contentChildren(
     forwardRef(() => RadioItemDirective),
@@ -89,7 +95,7 @@ export class RovingRadioGroupDirective {
     if (!target) return;
     this.active.set(target.value());
     target.focus();
-    this.select(target);
+    if (this.selectOnMove()) this.select(target);
   }
 
   protected onFocusOut(event: FocusEvent): void {

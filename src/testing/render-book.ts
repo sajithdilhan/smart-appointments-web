@@ -1,3 +1,4 @@
+import type { RequestHandler } from 'msw';
 import { TestBed } from '@angular/core/testing';
 import { Router, TitleStrategy, provideRouter, type Routes } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -36,6 +37,10 @@ export interface RenderBookOptions {
   /** Viewport width in CSS pixels; defaults to a desktop 1280. */
   width?: number;
   status?: 'authenticated' | 'unknown' | 'anonymous';
+  /** Skip waiting for the first HTTP work, to look at a loading state. Defaults to true. */
+  settle?: boolean;
+  /** Handlers that take precedence over the model's (a delayed or failing endpoint). */
+  handlers?: RequestHandler[];
   /** Runs after the providers exist and before the first navigation (install spies here). */
   beforeNavigate?: (router: Router) => void;
 }
@@ -71,7 +76,11 @@ export async function renderBook(options: RenderBookOptions = {}): Promise<Rende
   const clock = new ManualClock(nowMs);
   const session = createFakeSession(options.status ?? 'authenticated', 'Customer');
   const toast = createFakeToast();
-  server.use(...availabilityHandlers(backend, BOOK_BASE), ...bookingHandlers(backend, BOOK_BASE));
+  server.use(
+    ...(options.handlers ?? []),
+    ...availabilityHandlers(backend, BOOK_BASE),
+    ...bookingHandlers(backend, BOOK_BASE),
+  );
   TestBed.configureTestingModule({
     providers: [
       provideRouter(routes),
@@ -89,7 +98,8 @@ export async function renderBook(options: RenderBookOptions = {}): Promise<Rende
     await harness.navigateByUrl(url);
     await harness.fixture.whenStable();
   };
-  await go(options.url ?? '/book');
+  if (options.settle === false) await harness.navigateByUrl(options.url ?? '/book');
+  else await go(options.url ?? '/book');
   return {
     harness,
     backend,
