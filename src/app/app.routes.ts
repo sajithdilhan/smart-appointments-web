@@ -33,8 +33,6 @@ export const routes: Routes = [
   {
     path: '**',
     title: 'Page not found',
-    loadComponent: () =>
-      import('./features/placeholder/placeholder-page').then((m) => m.PlaceholderPage),
-    data: { heading: 'Page not found', phase: 'a later task' },
+    loadComponent: () => import('./shared/layout/not-found').then((m) => m.NotFoundHost),
   },
 ];

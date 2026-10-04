@@ -134,7 +134,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Component tests: collapse and expand persist across a re-render and survive a throwing `localStorage`, drawer opens below 1024 px and returns focus, breadcrumbs for each admin route; the search button is absent while `available()` is false, present when true, and a click increments `requests`.
   - _Requirements: 11.5, 11.6, 11.10, 11.12_
 
-- [ ] 22. Staff shell and the 404 page
+- [x] 22. Staff shell and the 404 page
   - Add `shared/layout/staff-shell/` (top bar, theme toggle, "Sign out") with `StaffPlaceholder` ("The staff workspace is coming."), and `shared/layout/not-found/` (`NotFoundHost` switching by role between the four shells with `<app-not-found>` projected, `NotFoundPage` with the heading, one sentence, landing link, `noindex` meta added and removed, title "Page not found | Smart Appointments").
   - Tests: an unknown path renders the page in the public shell anonymously and in each role's own shell; the link target; the meta tag lifecycle; the URL is not echoed; a Customer on `/admin` is redirected, not shown the 404.
   - _Requirements: 11.1, 12.1, 12.2, 12.3, 12.4, 12.5_
