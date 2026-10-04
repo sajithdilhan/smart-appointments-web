@@ -19,9 +19,11 @@ import { SkipLink } from '../skip-link';
     <app-skip-link />
     <div class="flex min-h-dvh flex-col bg-background text-foreground">
       <header class="border-b border-border">
-        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <div
+          class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3"
+        >
           <a routerLink="/" class="text-lg font-semibold tracking-tight">Smart Appointments</a>
-          <div class="flex items-center gap-3">
+          <div class="flex flex-wrap items-center gap-3">
             <app-theme-toggle />
             <nav aria-label="Account" class="flex items-center gap-2">
               @for (link of links(); track link.href) {

@@ -90,7 +90,7 @@ Rules (from the template):
   - `e2e/public.spec.ts`: register success to `/book`; duplicate email; login for Customer, Admin and Staff landing on `/book`, `/admin` and `/staff`; login `401`; login `429` with `page.clock` and re-enabling; `returnUrl=/appointments` honoured and `https://evil.example` ignored; signed-in visit to `/login` redirected; keyboard-only completion of both forms.
   - _Requirements: 2.6 to 2.11, 3.8 to 3.10, 4.4, 4.5, 5.2, 5.3, 7.4_
 
-- [ ] 14. Accessibility and reflow checks
+- [x] 14. Accessibility and reflow checks
   - Add `@axe-core/playwright`; `e2e/public.a11y.spec.ts` runs axe on `/`, `/login` and `/register` in light and dark (theme set through the F0 toggle, `bypassCSP` on the context only for the axe injection) and fails on `serious` or `critical`.
   - A 320 px viewport assertion for no horizontal scroll (`scrollWidth <= clientWidth`) on each page.
   - _Requirements: 1.4, 1.5, 6.5, 6.7, 6.9, 7.4_
