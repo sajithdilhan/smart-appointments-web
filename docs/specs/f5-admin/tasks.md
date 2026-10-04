@@ -43,7 +43,7 @@ Rules (from the template):
   - Specs: pristine passes, dirty blocked until confirm, Keep editing is the default focus, two exits show one dialog, `beforeunload` registered and removed, snapshot ignores cosmetic differences.
   - _Requirements: 4.1, 4.3, 5.8, 11.1, 11.2, 11.3, 11.5, 11.6, 11.7_
 
-- [ ] 7. Listbox engine and command registry
+- [x] 7. Listbox engine and command registry
   - `shared/listbox/create-listbox.ts` (query, items, active index and id, keyboard: arrows with wrap, Home, End, Enter, Escape, PageUp/PageDown).
   - `palette/command-registry.ts` (`buildCommands`, `filterCommands` with ranking, grouping and the 50-record cap) and `palette/shortcut.ts` (`isPaletteShortcut`, `platformKeyLabel`).
   - Table-driven specs: keyboard behaviour, wrap and empty list, ranking and grouping, `ctrlKey` and `metaKey` accepted, shift and alt rejected, platform labels.
