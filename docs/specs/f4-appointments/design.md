@@ -261,3 +261,10 @@ Vitest + Angular Testing Library (queries by role and label), MSW with `onUnhand
 3. **Cancel `409` text.** A fixed client message mapped from the known `detail`, as in F2's login `401`; an unknown `409` text shows a generic "couldn't cancel" message (Req 6.6, `cancelConflictMessage`).
 4. **`/my` types.** A temporary `MyAppointmentsPage` type in `models.ts` until `pnpm gen:api` is rerun; the backend endpoint is in a PR and will reach master.
 5. **Focus after a cancel** that removes the card goes to the nearest remaining card, else the `<h1>`. The 40 kB shared chunk budget is accepted.
+
+## Implementation deviations
+
+Where an assumption of this design proved wrong at implementation time, the option closest to the requirements was taken. Recorded as the tasks were built.
+
+1. **Temporary types cover the appointment bodies too (task 1).** The regenerated `booking.d.ts` now has the `/api/appointments/my` path, but like every Booking endpoint it declares no response body, so there is no generated `AppointmentResponse` either. `core/api/models.ts` gains the temporary `AppointmentStatus`, `AppointmentResponse` and `MyAppointmentsPage` (all removed when the backend documents the responses). The design only named `MyAppointmentsPage`. `status` is `'Booked' | 'Cancelled' | (string & {})` so an unknown status stays representable (Req 3.4).
+2. **Abort semantics (task 1).** The `BookingApiService` methods wrap the `ApiClient` observable in a small promise helper instead of `firstValueFrom`: on abort it unsubscribes (cancelling the HTTP request) and rejects with the signal's own reason, so a store can tell an abort (`AbortError`) from a failure. Each of the three methods takes the optional `{ signal }`.

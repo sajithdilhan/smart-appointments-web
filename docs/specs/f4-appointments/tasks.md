@@ -10,7 +10,7 @@ Rules (from the template):
 
 **Prerequisite.** F4 starts after F3 and F1 are done and tested. It consumes, and builds none of: `ApiClient`, `BookingApiService` shell, `AppError`, `ToastService` (`showSuccess`), `OutageState.recovered`, `RateLimitNotice`, `SessionStore` (`profile()`, `profileStatus()`, `reloadProfile()`, `logout()`), `CLOCK`, `ViewportService`, the time utilities, the customer shell and its route announcer, the F1 MSW setup, the F0 `ThemeService`, the helm `sheet`, and F3's `ReferenceDataStore` and `buildIcs`/`downloadIcs` under `features/customer/shared/` (F3 Req 11.5). If one is missing, finish it in its own phase first.
 
-- [ ] 1. API methods and temporary types
+- [x] 1. API methods and temporary types
   - Add `listMyAppointments(query, { signal })`, `getAppointment(id)` and `cancelAppointment(id)` to `BookingApiService` (typed; query built only from `status`, `when`, `page`, `pageSize`; no body and no `Idempotency-Key` on cancel).
   - Add the temporary `MyAppointmentsPage` type to `core/api/models.ts` with a comment naming the missing generated endpoint (removed when `pnpm gen:api` is rerun).
   - MSW-based spec per method: HTTP method, absolute URL, query string, no `customerId`, abort cancels the request.
