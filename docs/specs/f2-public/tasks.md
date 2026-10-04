@@ -62,7 +62,7 @@ Rules (from the template):
   - Component spec with a faked `SessionStore` and F1 MSW handlers: labels and attributes, every validation message with no request, pending and double-submit, `401` (password cleared, focus, no toast), `400`, `429` with fake timers (`Retry-After` 3, missing, invalid; button re-enables), outage rows, success navigation including the `false` fallback, prefill and notices, the password never appearing in the URL.
   - _Requirements: 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 2.13, 4.4, 4.5, 4.6, 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 9. Password checklist
+- [x] 9. Password checklist
   - `register/password-checklist.component.ts` (`results` input of booleans, five items with icon, label and sr-only "met" / "not met", not a live region, one polite status "All password requirements met").
   - Spec: each rule toggles its item, `_` alone leaves the special rule unmet, the status text appears once when the last rule is met, the input receives booleans only.
   - _Requirements: 3.6, 3.14_
