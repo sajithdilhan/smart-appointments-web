@@ -51,7 +51,7 @@ Commits (enforced from task 6).
   - Verify: `pnpm lint` and `pnpm format:check` pass with zero warnings; commit message `fix stuff` is rejected and `feat(core): add theme service` accepted (record the check in the commit body of this task's commit).
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.6_
 
-- [ ] 7. MSW and coverage in the unit-test setup
+- [x] 7. MSW and coverage in the unit-test setup
   - Install `msw`, `@testing-library/jest-dom`, `@testing-library/user-event`; add `src/testing/{setup,server,handlers}.ts` (empty handlers, `onUnhandledRequest: 'error'`, listen/reset/close hooks) and register `setupFiles` and coverage reporters in the `test` target of `angular.json`.
   - Add a spec proving an unmocked `fetch` fails the test; confirm `pnpm test -- --coverage` writes `coverage/`.
   - _Requirements: 4.1, 4.4, 4.5_
