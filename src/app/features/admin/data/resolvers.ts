@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import type { ResolveFn } from '@angular/router';
+import type { Crumb } from '../../../shared/layout/breadcrumb-trail';
 import { BranchesStore } from './branches.store';
 import { ServicesStore } from './services.store';
 
@@ -32,4 +33,19 @@ export const serviceCrumb: ResolveFn<string> = async (route) => {
   } catch {
     return 'Service';
   }
+};
+
+/**
+ * Breadcrumbs of `branches/:id/schedule`, one route spanning three levels: Branches, the branch's
+ * name (its edit drawer) and Schedule. The shell's trail renders a list stored under `breadcrumb`.
+ */
+export const scheduleCrumbs: ResolveFn<Crumb[]> = async (route) => {
+  const id = route.paramMap.get('id');
+  const name = (await branchCrumb(route, undefined as never)) as string;
+  const base = '/admin/branches';
+  return [
+    { label: 'Branches', url: base },
+    { label: name, url: `${base}/${id ?? ''}` },
+    { label: 'Schedule', url: `${base}/${id ?? ''}/schedule` },
+  ];
 };

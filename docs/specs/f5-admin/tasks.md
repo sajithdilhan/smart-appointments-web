@@ -65,7 +65,7 @@ Rules (from the template):
   - Specs: search and status filter, unknown `status` becomes "All", sort cycle with `aria-sort`, stable ordering, state resolution (loading, error, empty, no-match, ready), announcement settles once per change.
   - _Requirements: 2.2, 2.3, 2.4, 2.6, 2.7, 6.2, 12.4_
 
-- [ ] 11. Admin frame, routes and palette launcher wiring
+- [x] 11. Admin frame, routes and palette launcher wiring
   - `admin.routes.ts` per the design (store providers, schedule route before `branches`, drawer children, titles, breadcrumb data and resolvers, guards), replacing the F1 placeholders for `/admin`, `/admin/branches`, `/admin/services`, `/admin/slots`; page stubs with an `appFocusHeading` `<h1>`.
   - `admin-frame.component.ts` (`<router-outlet/>`, sets `PaletteLauncher.available`, store reset on destroy; the palette is added in task 20).
   - Specs: route table resolves, `branches/:id/schedule` is not swallowed by `:id`, non-GUID `:id` shows not-found without a request, resolver supplies the breadcrumb, stores reset on destroy, Customer on `/admin/branches` lands on `/book` (F1 guard).

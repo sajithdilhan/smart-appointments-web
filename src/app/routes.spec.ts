@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { provideAdminApi, useAdminBackend } from '../testing/admin-test-setup';
 import { createFakeSession, provideFakeSession } from '../testing/fake-session';
 import { routes } from './app.routes';
 import { AREA_ROLES, roleCanOpen } from './core/auth/post-login-target';
@@ -13,6 +14,7 @@ const WHOS: Who[] = ['anonymous', ...ROLES];
 
 async function visit(who: Who, url: string) {
   TestBed.resetTestingModule();
+  useAdminBackend();
   const session = createFakeSession(
     who === 'anonymous' ? 'anonymous' : 'authenticated',
     who === 'anonymous' ? null : who,
@@ -22,6 +24,7 @@ async function visit(who: Who, url: string) {
       provideRouter(routes, withComponentInputBinding()),
       { provide: TitleStrategy, useClass: AppTitleStrategy },
       ...provideFakeSession(session),
+      ...provideAdminApi(),
     ],
   });
   const harness = await RouterTestingHarness.create();
@@ -97,7 +100,7 @@ describe('route table', () => {
   it.each([
     ['/admin', 'Dashboard'],
     ['/admin/branches', 'Branches'],
-    ['/admin/services', 'Service types'],
+    ['/admin/services', 'Services'],
     ['/admin/slots', 'Slot generation'],
   ])('shows %s to an Admin', async (url, heading) => {
     expect(await visit('Admin', url)).toMatchObject({ url, heading });
