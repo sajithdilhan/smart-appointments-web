@@ -4,7 +4,7 @@
  * for the page's lifetime. This is the only way the app touches web storage.
  */
 export interface SafeStorage {
-  /** The stored value; on a throw, the in-memory copy. */
+  /** The stored value; when the storage throws or rejected the write, the in-memory copy. */
   get(key: string): string | null;
   /** Writes memory first, then the storage in try/catch. */
   set(key: string, value: string): void;
@@ -19,12 +19,15 @@ export function createSafeStorage(
     kind === 'local' ? globalThis.localStorage : globalThis.sessionStorage,
 ): SafeStorage {
   const memory = new Map<string, string>();
+  /** Keys whose last write did not reach the storage: only those are served from memory. */
+  const unsynced = new Set<string>();
   return {
     get(key) {
       try {
+        // When the storage works it is the source of truth (another tab may have removed a key).
         const value = getStorage().getItem(key);
         if (value !== null) return value;
-        return memory.get(key) ?? null;
+        return unsynced.has(key) ? (memory.get(key) ?? null) : null;
       } catch {
         return memory.get(key) ?? null;
       }
@@ -33,12 +36,14 @@ export function createSafeStorage(
       memory.set(key, value);
       try {
         getStorage().setItem(key, value);
+        unsynced.delete(key);
       } catch {
-        /* memory copy keeps the value for this page load */
+        unsynced.add(key);
       }
     },
     remove(key) {
       memory.delete(key);
+      unsynced.delete(key);
       try {
         getStorage().removeItem(key);
       } catch {
@@ -46,15 +51,16 @@ export function createSafeStorage(
       }
     },
     keys() {
-      const result = new Set<string>(memory.keys());
+      const result = new Set<string>();
       try {
         const storage = getStorage();
         for (let i = 0; i < storage.length; i++) {
           const k = storage.key(i);
           if (k !== null) result.add(k);
         }
+        for (const k of unsynced) result.add(k);
       } catch {
-        /* memory keys only */
+        for (const k of memory.keys()) result.add(k);
       }
       return [...result];
     },

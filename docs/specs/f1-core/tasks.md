@@ -76,7 +76,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Unit tests: valid, missing padding, non-ASCII email, malformed, missing `sub`/`exp`, role `Owner`; the full accept and reject list of Req 8.4 plus a percent-encoded `//` and a malformed `%`; `roleCanOpen` per role and area; `resolvePostLoginTarget` for safe, unsafe, wrong-role and absent values.
   - _Requirements: 6.5, 8.4, 10.4, 10.7_
 
-- [ ] 11. Token storage and cross-tab primitives
+- [x] 11. Token storage and cross-tab primitives
   - Add `core/auth/token-storage.ts` (`sa.refreshToken`, in-memory shadow, never throws) and `core/auth/cross-tab.ts` (`CrossTabSync`: `tabId`, `BroadcastChannel('sa.session')` with message validation, `withLock` via `navigator.locks` with a 15 s abort mapped to a `timeout` `AppError`, `waitForUpdate`, the in-process fallback and one console warning).
   - Tests: a throwing `localStorage` keeps working in memory; message validation (shape, own tab, invalid access token); lock timeout; fallback serialization with `navigator.locks` and `BroadcastChannel` deleted.
   - _Requirements: 6.2, 6.3, 9.1, 9.2, 9.3, 9.7, 9.8, 9.9_

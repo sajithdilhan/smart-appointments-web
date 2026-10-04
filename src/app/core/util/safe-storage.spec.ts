@@ -51,6 +51,28 @@ describe.each(['local', 'session'] as const)('createSafeStorage(%s)', (kind) => 
     expect(store.keys()).toEqual(['a']);
   });
 
+  it('does not serve a stale memory copy after the storage lost the key', () => {
+    const store = createSafeStorage(kind);
+    store.set('k', 'v');
+    (kind === 'local' ? localStorage : sessionStorage).removeItem('k');
+    expect(store.get('k')).toBeNull();
+    expect(store.keys()).not.toContain('k');
+  });
+
+  it('serves the memory copy for a key whose write was rejected (quota)', () => {
+    const real = kind === 'local' ? localStorage : sessionStorage;
+    const spy = vi.spyOn(Object.getPrototypeOf(real), 'setItem').mockImplementation(() => {
+      throw new DOMException('full', 'QuotaExceededError');
+    });
+    const store = createSafeStorage(kind);
+    store.set('q', '1');
+    spy.mockRestore();
+    expect(store.get('q')).toBe('1');
+    expect(store.keys()).toContain('q');
+    store.remove('q');
+    expect(store.get('q')).toBeNull();
+  });
+
   it('keeps an independent memory per instance', () => {
     const a = createSafeStorage(kind, throwingStorage);
     const b = createSafeStorage(kind, throwingStorage);
