@@ -34,7 +34,7 @@ Rules (from the template):
   - Specs: one request per session, concurrent first reads send one, refresh bypasses the cache, cleared when the session leaves `authenticated`, sorting, outage recovery reload.
   - _Requirements: 2.1, 2.6, 2.7, 3.1, 3.4, 11.5_
 
-- [ ] 5. Idempotency-key store and just-booked marker
+- [x] 5. Idempotency-key store and just-booked marker
   - `book/idempotency-key.store.ts` (`acquire`, `clear`, `rotate`, `pruneExcept`, memory mirror, UUID validation of a stored value, `crypto.randomUUID` then `getRandomValues` fallback, `NoSecureRandomError`) using the F1 session-storage helpers; `book/just-booked.marker.ts` (`sa.book.justBooked`, 10 minutes, consume once).
   - Specs: created once and reused, tampered value replaced, blocked storage falls back to memory with no error, slot change removes the old key, prune keeps only the current slot, no `localStorage` write, marker expiry and single consumption.
   - _Requirements: 7.2, 7.3, 7.4, 9.7_
