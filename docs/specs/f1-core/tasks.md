@@ -112,7 +112,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests: the full matrix of status (including `unknown` resolving later) by role by required role with `UrlTree` targets; Customer on `/admin` lands on `/book` with the toast; `guestGuard` sends a signed-in user to a safe `returnUrl` the role may open, otherwise to the landing route; `landing-cta` anonymous versus each role.
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.8_
 
-- [ ] 18. Router configuration, title strategy, placeholder pages
+- [x] 18. Router configuration, title strategy, placeholder pages
   - Add `core/routing/app-title.strategy.ts` ("<Page> | Smart Appointments", string or function route titles, fallback to the app name for an empty, non-string or throwing title), `PlaceholderPage` (heading and phase from route `data`), the four `features/*/*.routes.ts` files and `app.routes.ts` with all routes lazy, guards and `data.breadcrumb`; configure `provideRouter` with `withViewTransitions` (skipped under reduced motion), `withComponentInputBinding` and in-memory scrolling.
   - At this task the shells are stubbed as plain `<router-outlet>` wrappers so the table builds; the real shells replace them in tasks 19 to 22.
   - Tests with `RouterTestingHarness` for every path as anonymous, Customer, Staff and Admin (final URL and heading); title strategy unit tests for string, function, empty and throwing titles; a drift test that `roleCanOpen`'s area map agrees with the route table.
