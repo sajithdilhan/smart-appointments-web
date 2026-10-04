@@ -51,7 +51,8 @@ Rules (from the template):
   - Specs: step derivation from the URL, Back and forward through history, an invalid parameter repaired with `replaceUrl` and the note shown (and the value not echoed), the title per step, no focus move on first render and a focus move on a later step change, no wizard state in storage except the two `sa.*` keys.
   - _Requirements: 1.1, 1.3, 1.4, 1.5, 1.6, 12.2_
 
-- [ ] 8. Roving radio group directive and shared UI
+- [x] 8. Roving radio group directive and shared UI
+  - note: `empty-state` and `inline-alert` were not added (F1 and F2 have not built them on this branch); add them when a step component needs them.
   - `shared/a11y/roving-radio-group.directive.ts` (`appRadioGroup` and `appRadioItem`: roles, `aria-checked`, roving `tabindex`, arrows with wrap across descendants, Home and End, Space and Enter, `aria-disabled` items focusable but not selectable, `(selected)` output).
   - Generate helm `skeleton` and `badge` with the Spartan CLI; add `empty-state` and `inline-alert` to `shared/ui/` only if F1 or F2 have not.
   - Specs: one tab stop, arrow and Home/End behaviour, a disabled item, selection by Space and Enter.
