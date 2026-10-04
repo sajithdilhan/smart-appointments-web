@@ -56,8 +56,7 @@ Rules (from the template):
   - Specs: one tab stop, arrow and Home/End behaviour, a disabled item, selection by Space and Enter.
   - _Requirements: 2.6, 4.2, 6.2, 11.5, 12.1_
 
-- [ ] 9. Step indicator and page layout
-  - partial: `step-indicator.component.ts` is done and tested; `action-bar.component.ts` and the page layout wait on the F1 customer shell and bottom tab bar.
+- [x] 9. Step indicator and page layout
   - `components/step-indicator.component.ts` (`<ol aria-label="Booking progress">`, `aria-current="step"`, reachable earlier steps as buttons, "Step N of 4" under 640 px via `ViewportService`, "Booked" on success), `components/action-bar.component.ts` (sticky above the F1 bottom tab bar), page layout (one column below 640 px, two columns from 640 and three from 1024, summary panel from 1024), the slide transition disabled under reduced motion.
   - Specs: ordered list and `aria-current`, reachable and unreachable steps, the narrow variant with a stubbed `matchMedia`, Back button per step.
   - _Requirements: 1.2, 1.5, 1.7, 1.8, 12.6, 12.8_

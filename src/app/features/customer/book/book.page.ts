@@ -1,18 +1,21 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { StepIndicatorComponent } from './components/step-indicator.component';
 import { StepHeadingDirective } from './step-heading.directive';
 import { BookingWizardStore } from './wizard.store';
 
 /**
- * The booking wizard page (Req 1): the one `<h1>`, the out-of-date note and exactly one step.
- * The step comes from the store, which derives it from the URL.
+ * The booking wizard page (Req 1): the one `<h1>`, the step indicator, the out-of-date note
+ * and exactly one step. The step comes from the store, which derives it from the URL. Each
+ * step slides in (`book-step`, opacity and transform only, off under reduced motion).
  */
 @Component({
   selector: 'app-book-page',
-  imports: [StepHeadingDirective],
+  imports: [StepIndicatorComponent, StepHeadingDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-6">
       <h1 class="text-3xl font-semibold tracking-tight">Book an appointment</h1>
+      <app-step-indicator [step]="store.step()" (goTo)="store.goTo($event)" />
       <p
         role="status"
         class="text-sm text-muted-foreground empty:hidden"
@@ -20,19 +23,29 @@ import { BookingWizardStore } from './wizard.store';
       ></p>
       @switch (store.step()) {
         @case ('branch') {
-          <h2 appStepHeading class="text-xl font-semibold">Choose a branch</h2>
+          <section class="book-step">
+            <h2 appStepHeading class="text-xl font-semibold">Choose a branch</h2>
+          </section>
         }
         @case ('service') {
-          <h2 appStepHeading class="text-xl font-semibold">Choose a service</h2>
+          <section class="book-step">
+            <h2 appStepHeading class="text-xl font-semibold">Choose a service</h2>
+          </section>
         }
         @case ('datetime') {
-          <h2 appStepHeading class="text-xl font-semibold">Choose a date and time</h2>
+          <section class="book-step">
+            <h2 appStepHeading class="text-xl font-semibold">Choose a date and time</h2>
+          </section>
         }
         @case ('review') {
-          <h2 appStepHeading class="text-xl font-semibold">Review and confirm</h2>
+          <section class="book-step">
+            <h2 appStepHeading class="text-xl font-semibold">Review and confirm</h2>
+          </section>
         }
         @case ('success') {
-          <h2 appStepHeading class="text-xl font-semibold">You're booked</h2>
+          <section class="book-step">
+            <h2 appStepHeading class="text-xl font-semibold">You're booked</h2>
+          </section>
         }
       }
     </div>

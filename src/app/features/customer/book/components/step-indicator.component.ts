@@ -25,7 +25,8 @@ import { STEPS, stepNumber, type StepId } from '../steps';
             @if (i + 1 < number()) {
               <button
                 type="button"
-                class="rounded-md px-2 py-1 text-primary underline underline-offset-2 hover:bg-accent"
+                class="rounded-md px-2 py-1 text-primary underline underline-offset-2 hover:bg-accent disabled:pointer-events-none disabled:opacity-50"
+                [disabled]="disabled()"
                 (click)="goTo.emit(s.id)"
               >
                 {{ i + 1 }}. {{ s.label }}
@@ -51,6 +52,8 @@ export class StepIndicatorComponent {
   protected readonly steps = STEPS;
 
   readonly step = input.required<StepId>();
+  /** True while the booking request is in flight: the earlier steps cannot be left for (Req 7.6). */
+  readonly disabled = input(false);
   /** An earlier step was chosen from the indicator. */
   readonly goTo = output<StepId>();
 

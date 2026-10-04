@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
 import { BRANCH_IDS, SERVICE_IDS } from '../../../../testing/booking-backend';
 import { firstSlot, renderBook } from '../../../../testing/render-book';
 
@@ -81,6 +82,26 @@ describe('BookPage and BookingWizardStore', () => {
     expect(view.router.url).toBe('/book');
     TestBed.inject(Location).forward();
     await vi.waitFor(() => expect(heading('Choose a service')).toBeTruthy());
+  });
+
+  describe('step indicator', () => {
+    it('lists the steps, and an earlier step returns to it with the later parameters dropped', async () => {
+      const view = await renderBook({
+        url: `/book?branch=${LONDON}&service=${CHECKUP}&date=2026-10-05`,
+      });
+      await vi.waitFor(() => expect(heading('Choose a date and time')).toBeTruthy());
+      const list = screen.getByRole('list', { name: 'Booking progress' });
+      expect(list.querySelector('[aria-current="step"]')).toHaveTextContent('3. Date and time');
+      await userEvent.setup().click(screen.getByRole('button', { name: '2. Service' }));
+      await vi.waitFor(() => expect(heading('Choose a service')).toBeTruthy());
+      expect(view.router.url).toBe(`/book?branch=${LONDON}`);
+    });
+
+    it('collapses to "Step N of 4" under 640 px', async () => {
+      await renderBook({ url: `/book?branch=${LONDON}`, width: 400 });
+      await vi.waitFor(() => expect(screen.getByText('Step 2 of 4: Service')).toBeTruthy());
+      expect(screen.queryByRole('list', { name: 'Booking progress' })).toBeNull();
+    });
   });
 
   describe('repair', () => {
