@@ -16,7 +16,7 @@ Rules (from the template):
   - Spec with MSW per method: HTTP method, absolute URL, query string (`includeInactive`), body, no `Idempotency-Key`.
   - _Requirements: 1.1, 2.1, 3.6, 5.7, 6.1, 8.8, 13.1_
 
-- [ ] 2. Stateful MSW admin backend
+- [x] 2. Stateful MSW admin backend
   - `src/testing/availability-admin-backend.ts` (`handlers`, `state`, `reset`, failure and `429` flags): branch and service CRUD with an independent implementation of the validators (regexes copied verbatim), upper-case code normalisation, `409` duplicates, `403` for a non-admin token, `includeInactive` for Admin only, idempotent activate and deactivate `204`, the schedule rules, slot generation with a fake planner and the four `409` conditions, `404`, `400` "Invalid request data. Errors: a,b", `application/problem+json`, echoed `X-Correlation-ID`.
   - Spec: each rule and status.
   - _Requirements: 13.1_
