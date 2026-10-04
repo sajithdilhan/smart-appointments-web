@@ -73,7 +73,7 @@ Commits (enforced from task 6).
   - Build and verify with `curl -i` as in the design's CI list: `config.json` content, CSP `connect-src 'self' http://localhost:5290`, SPA fallback `200` for `/appointments/123`, `404` for `/missing.js`, gzip on, immutable on hashed assets, `no-cache` on `/`, `/index.html`, `/config.json`, `/theme-init.js`, `/healthz`, all security headers on `200` and `404`, `id -u` not `0`, and the hostile value `API_BASE_URL='http://x"; evil'` yielding valid JSON and `connect-src 'self'`; empty `API_BASE_URL` still starts.
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10_
 
-- [ ] 11. Docker Compose
+- [x] 11. Docker Compose
   - Add `docker-compose.yml` (service `web`, `${WEB_PORT:-8081}:8080`, `API_BASE_URL` default, `restart: unless-stopped`, `read_only`, `tmpfs: /tmp`, `no-new-privileges`, `cap_drop: ALL`) and `.env.example`.
   - Verify `docker compose up --build` works with no `.env`, serves `http://localhost:8081`, and `docker compose ps` reports `healthy` within 30 s; verify the read-only filesystem does not break start-up.
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.6_
