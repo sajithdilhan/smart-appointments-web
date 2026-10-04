@@ -21,7 +21,7 @@ Rules (from the template):
   - Spec: each rule and status.
   - _Requirements: 13.1_
 
-- [ ] 3. Validation rules and messages
+- [x] 3. Validation rules and messages
   - `features/admin/validation/`: `messages.ts`, `branch-rules.ts` (incl. `normaliseCode`), `service-rules.ts`, `schedule-rules.ts`, `generation-rules.ts`, `validators.ts`.
   - Table-driven specs from the design's vector list (`" pg "`, `"-AB"`, `"A"`, 11 characters, `+14155550123`, `0123`; duration 4/5/7/480/485; `_` at code ends; `9:00`, `24:00`, equal times; 30 vs 31 days; capacity 0/1/100/101). Contract test: client messages that mirror the backend equal the fixture.
   - _Requirements: 3.4, 5.3, 7.2, 8.5, 8.6, 13.2_

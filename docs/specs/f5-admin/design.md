@@ -636,3 +636,13 @@ Resolved by the user after design approval; the design above stands, with these 
 9. **`PUT` response bodies** (branch and service update) are handled as either a body or `204` (refetch); verified against the generated types at `gen:api`.
 
 Known gap added to the requirements' list: item 8 above. (Requirements Known gaps already list the estimate caveats; the negative-DST case is recorded there.)
+
+## Implementation deviations
+
+Recorded as the code is written; each is a difference from the design above, with the reason.
+
+1. **No `@ngrx/signals` yet (task 5).** The package is not installed on this branch (F1 adds it with `SessionStore`). `createCatalogStore` is a plain-signals class instead of a `signalStore`; its surface is the same (`items`, `status`, `error`, `loadedAt`, `active`, `inactive`, `byId`, `load`, `ensure`, `upsert`, `setActive`, `reset`), so swapping the implementation later changes no caller.
+2. **Response types are hand-written (task 1).** The generated Availability document declares no response bodies (every success is "no content"), so `Branch`, `ServiceType` and `GenerateSlotsResult` are written in `core/api/models.ts` from the controllers and response records, like Auth's temporary extensions. `dayOfWeek` is typed as the day name (the service serialises enums as strings) although the generated `DayOfWeek` is a number; `durationMinutes` and `capacity` are narrowed to `number`.
+3. **Phone and generic field rules (task 3).** F2's `shared/forms/phone.ts` and `field-rules.ts` do not exist on this branch and are not created here. `phoneError` takes an already-normalised value (the form passes F2's `normalizePhone` result in task 15), `branchValidators.phoneNumber(normalise)` takes the normaliser as an argument, and the name, description and address rules are local to `branch-rules.ts`. Switch to F2's `requiredTrimmed` and `maxTrimmed` if they turn out to match (the backend measures length untrimmed, which F2's helper may not).
+4. **Validation keys.** Rule keys are `required`, `pattern`, `max`, `range`, `step`, `order`, `span` and, for schedule rows, `opensRequired`, `opensFormat`, `closesRequired`, `closesFormat`, `order`; `messages.ts` is organised per form and field, with `MIRRORED` mapping each backend-equal text to its contract-fixture id.
+5. **MSW admin backend (task 2).** `makeAccessToken` (F1) does not exist, so the backend exports its own `tokenFor(role)` (an unsigned JWT with `sub` and `role`) and reads the role from the bearer token. It is also available as `createAdminBackend(baseUrl)` for a different base URL; the module-level `handlers`, `state`, `flags`, `reset` are the default instance. Replace `tokenFor` with F1's helper when it lands.
