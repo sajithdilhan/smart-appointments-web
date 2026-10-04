@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { createAuthBackend } from '../../../testing/auth-backend';
 import { type FakeCrossTab, createFakeChannelPair } from '../../../testing/fake-channel';
+import { makeAccessToken } from '../../../testing/make-access-token';
 import { ManualClock } from '../../../testing/manual-clock';
 import { TEST_API_BASE } from '../../../testing/render-with-session';
 import { server } from '../../../testing/server';
@@ -174,13 +175,17 @@ describe('cross-tab session', () => {
   });
 
   it('a tab ignores an older token from another tab', async () => {
-    const { A, B, backend, user } = setup();
+    const { A, B, user } = setup();
     await A.store.login('ann@example.com', 'pw');
     await vi.waitFor(() => expect(B.store.status()).toBe('authenticated'));
     const current = B.store.accessToken();
-    const older = backend.issueTokens(user.id);
-    backend.state.accessTokenSeconds = 10;
-    expect(B.store.adoptAccessToken(older.accessToken)).toBe(false);
+    const older = makeAccessToken({
+      sub: user.id,
+      email: user.email,
+      role: 'Customer',
+      expiresInSeconds: 5,
+    });
+    expect(B.store.adoptAccessToken(older)).toBe(false);
     expect(B.store.accessToken()).toBe(current);
   });
 });
