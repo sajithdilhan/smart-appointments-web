@@ -18,7 +18,7 @@ Commits (enforced from task 6).
   - Run `pnpm test` and `pnpm build` once to confirm green (lint is added in task 6; until then the gate is test + build + typecheck).
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 3.5_
 
-- [ ] 2. Tailwind v4, token sheet and Inter font
+- [x] 2. Tailwind v4, token sheet and Inter font
   - Install `tailwindcss` with the plugin matching the current builder (`@tailwindcss/postcss` with `.postcssrc.json`, or `@tailwindcss/vite`), `@fontsource-variable/inter`.
   - Write `src/styles.css`: `@import "tailwindcss"`, font import, `@custom-variant dark`, the `@theme` block (teal brand ramp, semantic tokens, radius, shadows, font), the `:root` and `.dark` value blocks, base layer (focus ring, `color-scheme`, body) and the reduced-motion block, exactly as in the design's token sheet. No `tailwind.config.js`.
   - Set `optimization.styles.inlineCritical: false` and `fonts: false` in the production build configuration.
