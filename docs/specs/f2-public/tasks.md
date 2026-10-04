@@ -67,7 +67,7 @@ Rules (from the template):
   - Spec: each rule toggles its item, `_` alone leaves the special rule unmet, the status text appears once when the last rule is met, the input receives booleans only.
   - _Requirements: 3.6, 3.14_
 
-- [ ] 10. Register error mapping
+- [x] 10. Register error mapping
   - `register/register.form.ts` (typed `FormGroup` of five controls) and `register/register-error.ts` (`mapRegisterError`: duplicate email by the exact backend message, other `400` as an alert, `429`, outage, network, timeout, 5xx).
   - Table-driven spec including a case-insensitive duplicate match and a changed message degrading to the general alert.
   - _Requirements: 3.4, 3.10, 3.11, 3.12_
