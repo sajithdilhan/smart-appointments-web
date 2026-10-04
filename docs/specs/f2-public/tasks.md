@@ -85,7 +85,7 @@ Rules (from the template):
   - Specs: one `<h1>`, section order and headings, CTAs for anonymous and for each role from a fake session, no request issued, no `<img>` or external URL in the templates, the `prefers-reduced-motion` block present in the hero CSS.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9_
 
-- [ ] 13. Playwright flows with mocked API
+- [x] 13. Playwright flows with mocked API
   - `e2e/support/mock-api.ts` (reuse F1's if present): `page.route` handlers with CORS headers and `OPTIONS`, plus an unsigned test JWT helper per role.
   - `e2e/public.spec.ts`: register success to `/book`; duplicate email; login for Customer, Admin and Staff landing on `/book`, `/admin` and `/staff`; login `401`; login `429` with `page.clock` and re-enabling; `returnUrl=/appointments` honoured and `https://evil.example` ignored; signed-in visit to `/login` redirected; keyboard-only completion of both forms.
   - _Requirements: 2.6 to 2.11, 3.8 to 3.10, 4.4, 4.5, 5.2, 5.3, 7.4_
