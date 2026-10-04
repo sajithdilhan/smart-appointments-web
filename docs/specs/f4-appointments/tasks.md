@@ -34,9 +34,10 @@ Rules (from the template):
   - Specs under a fixed process zone: `Pacific/Auckland`, `America/New_York`, `Asia/Kolkata`, a DST-change day, a date-boundary case, missing branch, missing service, unknown status.
   - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.7, 4.3, 4.4, 6.1, 7.1, 7.2_
 
-- [ ] 5. Add helm components
+- [x] 5. Add helm components
   - Generate `alert-dialog`, `skeleton`, `switch`, `badge`, `radio-group` into `shared/ui/` (the sheet exists from F1).
   - Smoke render spec for each used variant.
+  - Note: `switch` already existed from F0 (smoke-tested here) and the helm `sheet` is F1's, not on this branch; only `alert-dialog`, `skeleton`, `badge` and `radio-group` were generated.
   - _Requirements: 2.1, 3.4, 6.2, 9.4_
 
 - [ ] 6. `AppointmentsStore`
