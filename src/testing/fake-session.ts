@@ -15,6 +15,8 @@ export interface FakeSession {
   logout: ReturnType<typeof vi.fn>;
   reloadProfile: ReturnType<typeof vi.fn>;
   loadProfile: ReturnType<typeof vi.fn>;
+  /** No bearer: lets a spec use the real HTTP pipeline with a fake session. */
+  accessTokenForRequest: () => Promise<string | null>;
 }
 
 export function createFakeSession(status: SessionStatus, role: Role | null = null): FakeSession {
@@ -30,6 +32,7 @@ export function createFakeSession(status: SessionStatus, role: Role | null = nul
     logout: vi.fn(() => Promise.resolve()),
     reloadProfile: vi.fn(() => Promise.resolve()),
     loadProfile: vi.fn(() => Promise.resolve()),
+    accessTokenForRequest: () => Promise.resolve(null),
   };
 }
 

@@ -2,10 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { AppointmentsBackend } from '../testing/appointments-backend';
 import { createFakeSession, provideFakeSession } from '../testing/fake-session';
+import { appointmentsHandlers } from '../testing/handlers/appointments.handlers';
+import { server } from '../testing/server';
 import { routes } from './app.routes';
 import { AREA_ROLES, roleCanOpen } from './core/auth/post-login-target';
 import { ROLES, type Role } from './core/auth/session.model';
+import { APP_CONFIG } from './core/config/app-config';
+import { provideCoreHttp } from './core/http/http.providers';
 import { AppTitleStrategy } from './core/routing/app-title.strategy';
 
 type Who = 'anonymous' | Role;
@@ -17,8 +22,13 @@ async function visit(who: Who, url: string) {
     who === 'anonymous' ? 'anonymous' : 'authenticated',
     who === 'anonymous' ? null : who,
   );
+  // The screens load their data: an empty backend answers it.
+  const apiBase = 'http://gw.test:5290';
+  server.use(...appointmentsHandlers(apiBase, new AppointmentsBackend()));
   TestBed.configureTestingModule({
     providers: [
+      provideCoreHttp(),
+      { provide: APP_CONFIG, useValue: { apiBaseUrl: apiBase } },
       provideRouter(routes, withComponentInputBinding()),
       { provide: TitleStrategy, useClass: AppTitleStrategy },
       ...provideFakeSession(session),

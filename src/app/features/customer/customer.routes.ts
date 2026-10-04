@@ -13,8 +13,7 @@ export const CUSTOMER_ROUTES: Routes = [
   {
     path: 'appointments',
     title: 'My appointments',
-    loadComponent: placeholder,
-    data: { heading: 'My appointments', phase: 'F4' },
+    loadComponent: () => import('./appointments/appointments-page').then((m) => m.AppointmentsPage),
   },
   {
     path: 'appointments/:id',
