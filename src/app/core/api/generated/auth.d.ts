@@ -30,7 +30,126 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
+                    content: {
+                        "text/plain": components["schemas"]["TokenResponse"];
+                        "application/json": components["schemas"]["TokenResponse"];
+                        "text/json": components["schemas"]["TokenResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RefreshTokenRequest"];
+                    "text/json": components["schemas"]["RefreshTokenRequest"];
+                    "application/*+json": components["schemas"]["RefreshTokenRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["TokenResponse"];
+                        "application/json": components["schemas"]["TokenResponse"];
+                        "text/json": components["schemas"]["TokenResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiProblemDetails"];
+                        "application/json": components["schemas"]["ApiProblemDetails"];
+                        "text/json": components["schemas"]["ApiProblemDetails"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiProblemDetails"];
+                        "application/json": components["schemas"]["ApiProblemDetails"];
+                        "text/json": components["schemas"]["ApiProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["LogoutRequest"];
+                    "text/json": components["schemas"]["LogoutRequest"];
+                    "application/*+json": components["schemas"]["LogoutRequest"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
                     content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiProblemDetails"];
+                        "application/json": components["schemas"]["ApiProblemDetails"];
+                        "text/json": components["schemas"]["ApiProblemDetails"];
+                    };
                 };
             };
         };
@@ -151,12 +270,29 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ApiProblemDetails: {
+            /** Format: int32 */
+            status: number | string;
+            detail?: null | string;
+        };
+        LogoutRequest: {
+            refreshToken: null | string;
+        };
+        RefreshTokenRequest: {
+            refreshToken: null | string;
+        };
         RegisterCustomerRequest: {
             firstName: string;
             lastName: string;
             email: string;
             phoneNumber: string;
             password: string;
+        };
+        TokenResponse: {
+            accessToken: string;
+            refreshToken: string;
+            /** Format: date-time */
+            accessTokenExpiresAtUtc: string;
         };
         UserLoginRequest: {
             email: string;

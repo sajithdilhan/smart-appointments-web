@@ -1,33 +1,16 @@
 import type { components } from './generated/auth';
 
-/*
- * Temporary extensions of the generated types (Req 1.6). Checked against the gateway's
- * Development OpenAPI documents on the day of `pnpm gen:api`: the Auth document has no
- * refresh or logout endpoint, and no response schema at all (every response is typed as
- * "no content"), because the backend features `auth-refresh-tokens` and the typed responses
- * are not merged into the checkout F1 was generated from. Each type below is removed in
- * the commit that regenerates the types with the real schemas.
- */
-
 export type RegisterRequest = components['schemas']['RegisterCustomerRequest'];
 export type LoginRequest = components['schemas']['UserLoginRequest'];
+export type RefreshRequest = components['schemas']['RefreshTokenRequest'];
+export type LogoutRequest = components['schemas']['LogoutRequest'];
+export type TokenResponse = components['schemas']['TokenResponse'];
 
-/** Missing from the generated Auth document: no response schemas, refresh or logout yet. */
-export interface RefreshRequest {
-  refreshToken: string;
-}
-export type LogoutRequest = RefreshRequest;
-
-export interface TokenResponse {
-  accessToken: string;
-  refreshToken: string;
-  /**
-   * Missing from the generated schema until the backend ships `accessTokenExpiresAtUtc`
-   * (auth-refresh-tokens). Optional so the session derives the expiry from the token's `exp`.
-   */
-  accessTokenExpiresAtUtc?: string;
-}
-
+/*
+ * Temporary extensions (Req 1.6): the generated Auth document declares no response body for
+ * `register` and `me` (both are typed as "no content"). Remove each type in the commit that
+ * regenerates the types once the backend documents the response.
+ */
 export interface RegisterResponse {
   userId: string;
   email: string;
