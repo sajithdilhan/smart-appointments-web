@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test('shows the application title and name', async ({ page }) => {
+test('shows the landing placeholder under the application title', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle('Smart Appointments');
-  await expect(page.getByRole('heading', { level: 1, name: 'Smart Appointments' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Welcome' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Smart Appointments' })).toBeVisible();
 });
 
 test('the dark theme persists across a reload', async ({ page }) => {

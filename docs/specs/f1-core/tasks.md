@@ -118,7 +118,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests with `RouterTestingHarness` for every path as anonymous, Customer, Staff and Admin (final URL and heading); title strategy unit tests for string, function, empty and throwing titles; a drift test that `roleCanOpen`'s area map agrees with the route table.
   - _Requirements: 10.2, 10.7, 11.1, 11.2, 11.7, 11.9, 11.13_
 
-- [ ] 19. Shell building blocks and the public shell
+- [x] 19. Shell building blocks and the public shell
   - Add under `shared/layout/`: `skip-link`, `route-progress` (shown after 150 ms, `aria-hidden`), `route-announcer` (live region after each `NavigationEnd`), `user-menu` (helm `dropdown-menu`, "Sign out" calls `logout`), `public-shell` (header with `ThemeToggle` and `landingCtas()`, `<main id="main-content">` with `<ng-content><router-outlet /></ng-content>`, footer); generate the helm `dropdown-menu` and `separator` with the Spartan CLI; mount progress and announcer in `app.ts`; replace the public shell stub.
   - Component tests: skip link first in tab order, one `main`, header shows "Sign in" / "Create account" anonymous and "Go to my dashboard" signed in, menu closes on Escape and returns focus, progress bar only after 150 ms, title announced.
   - _Requirements: 11.3, 11.6, 11.7, 11.8, 10.8_

@@ -23,7 +23,9 @@
       "@app/shared/ui/theme-toggle": ["./src/app/shared/ui/theme-toggle/index.ts"],
       "@app/shared/ui/rate-limit-notice": ["./src/app/shared/ui/rate-limit-notice/index.ts"],
       "@app/shared/ui/alert": ["./src/app/shared/ui/alert/src/index.ts"],
-      "@app/shared/layout/outage-banner": ["./src/app/shared/layout/outage-banner/index.ts"]
+      "@app/shared/layout/outage-banner": ["./src/app/shared/layout/outage-banner/index.ts"],
+      "@app/shared/ui/dropdown-menu": ["./src/app/shared/ui/dropdown-menu/src/index.ts"],
+      "@app/shared/ui/separator": ["./src/app/shared/ui/separator/src/index.ts"]
     }
   },
   "angularCompilerOptions": {
