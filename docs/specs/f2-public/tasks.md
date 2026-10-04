@@ -78,13 +78,12 @@ Rules (from the template):
   - Component spec with MSW capturing the body: field order and `autocomplete` values, no role field, request body keys, phone normalised, validation messages and first-invalid focus, pending and double submit, both success paths, duplicate email, other `400`, `429`, offline, password control emptied on success.
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14, 4.6, 6.2, 6.3, 6.4_
 
-- [ ] 12. Landing sections
+- [x] 12. Landing sections
   - `landing/hero.component.ts / .html / .css` (headline, supporting sentence, `landingCtas()` buttons, gradient and `data:` SVG grain layers, `.reveal` entrance with the reduced-motion rule) and `landing/hero-preview.component.ts` (decorative `aria-hidden`, `inert` booking-card mock).
   - `landing/value-props.component.ts` (four items), `landing/how-it-works.component.ts` (ordered list of three steps), `landing/cta-band.component.ts` (labelled sections, `<h2>` each).
   - Compose them in `landing/landing.page.ts` with a single `<h1>`; register only the lucide icons used.
   - Specs: one `<h1>`, section order and headings, CTAs for anonymous and for each role from a fake session, no request issued, no `<img>` or external URL in the templates, the `prefers-reduced-motion` block present in the hero CSS.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9_
-  - partial: `value-props`, `how-it-works` and `hero-preview` are built and tested (`landing/`). Remaining, waiting on F1's `landingCtas()` (and `SessionStore` for the fake-session specs): `hero.component.ts / .html / .css` (CTAs, `.reveal`, reduced-motion rule), `cta-band.component.ts`, the `LandingPage` composition with its single `<h1 appFocusHeading>`, and the CTA, one-`<h1>`, section-order and no-request specs.
 
 - [ ] 13. Playwright flows with mocked API
   - `e2e/support/mock-api.ts` (reuse F1's if present): `page.route` handlers with CORS headers and `OPTIONS`, plus an unsigned test JWT helper per role.
