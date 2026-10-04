@@ -31,7 +31,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Unit tests: every case of Req 13.5 (incl. DST boundaries, half-hour zones, invalid zone); a node test that lints sample strings inside and outside `core/time`.
   - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6, 13.7_
 
-- [ ] 3.1 Calendar, zone and branch-time helpers
+- [x] 3.1 Calendar, zone and branch-time helpers
   - Add `core/time/calendar-date.ts` (`DayName`, `todayInZone`, `addDays`, `diffDays`, `weekdayOf`, `eachDate`), `core/time/zone-math.ts` (`localToUtc` with gap flag and standard-time fold) and `core/time/branch-time.ts` (`BranchSchedule`, `ZonedParts`, `DayStripItem`, `zonedParts`, `dayStrip`, `todaysHours`, `isOpenNow`, `hhmm`, numeric or named `dayOfWeek`); export all from `core/time/index.ts`. Signatures exactly as in the design; no `new Date(<value>)` outside the `fromEpochMs` helper (the lint rule from task 3 stays unexempted).
   - Unit tests per Req 13.11: rollover and leap day, `diffDays` across a DST week, `todayInZone` near midnight ahead of and behind the process zone, `weekdayOf`, `eachDate` bounds, `localToUtc` on London (2026-03-29, 2026-10-25), New York (2026-03-08, 2026-11-01), Auckland (2026-09-27) and Kolkata, `isOpenNow` at `opensAt` and `closesAt`, closed day, `no-schedule`, invalid zone with one warning.
   - _Requirements: 13.6, 13.8, 13.9, 13.10, 13.11_

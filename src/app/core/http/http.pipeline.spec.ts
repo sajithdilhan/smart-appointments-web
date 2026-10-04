@@ -179,8 +179,12 @@ describe('HTTP pipeline', () => {
     it.each([400, 401, 403, 404, 409, 429, 500])('is not set by %i', async (status) => {
       server.use(http.get(`${BASE}/api/x`, () => HttpResponse.json({}, { status })));
       const { client, outage } = setup();
-      await failureOf(firstValueFrom(client.get(`${BASE}/api/x`)));
-      expect(outage.down()).toBe(false);
+      const error = await failureOf(firstValueFrom(client.get(`${BASE}/api/x`)));
+      expect({ down: outage.down(), kind: error.kind, status: error.status }).toEqual({
+        down: false,
+        kind: error.kind,
+        status,
+      });
     });
 
     it('is cleared by a later success, once, counting the recovery', async () => {
