@@ -44,7 +44,7 @@ Rules (from the template):
   - Specs: toggle name and pressed state, value and caret kept, alert role per tone and re-render does not duplicate the message.
   - _Requirements: 2.4, 6.4, 6.5, 6.6_
 
-- [ ] 6. Auth layout and illustration
+- [x] 6. Auth layout and illustration
   - `auth/auth-layout.component.ts` (two columns from `lg`, form slot, `aria-hidden` illustration panel hidden below `lg`, deep-teal gradient and grain, no text on the panel).
   - `auth/auth-illustration.component.ts` (inline SVG, variants `login` and `register`, `focusable="false"`).
   - Spec: panel is `aria-hidden` and has the responsive hiding classes; form slot renders.
