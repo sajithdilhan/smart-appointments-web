@@ -5,8 +5,6 @@ import type { AppointmentResponse, MyAppointmentsPage } from './models';
 import type { components } from './generated/booking';
 
 type CreateAppointmentRequest = components['schemas']['CreateAppointmentRequest'];
-import { ApiClient } from './api-client';
-import type { AppointmentResponse, MyAppointmentsPage } from './models';
 
 export interface MyAppointmentsQuery {
   status?: 'Booked';
