@@ -28,7 +28,7 @@ Rules (from the template):
   - Table-driven specs: unknown tab, `cancelled=1` honoured only on `upcoming`, exact query for each tab and the switch, de-duplication keeps first and order, GUID accepted/rejected.
   - _Requirements: 1.2, 1.4, 1.5, 2.3, 5.3_
 
-- [ ] 4. View model and grouping
+- [x] 4. View model and grouping
   - `appointment.model.ts` and `appointment-view.ts`: `toViewModel`, `groupByDate`, `cancelConflictMessage` not here (task 8).
   - Branch-zone dates, zone label only when `zoneDiffersFromBrowser`, "your time" fallback for an absent or invalid `timeZoneId` or a missing branch, "Unavailable branch/service", past by tab, `canCancel`/`canAddToCalendar` by `CLOCK`, accessible name, no re-sorting.
   - Specs under a fixed process zone: `Pacific/Auckland`, `America/New_York`, `Asia/Kolkata`, a DST-change day, a date-boundary case, missing branch, missing service, unknown status.
