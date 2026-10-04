@@ -624,3 +624,22 @@ All seven were approved at the stated defaults.
 5. **Resolved: fall back to `'self'`.** **IPv6 or internationalised hostnames in `API_BASE_URL`** are not matched by the strict origin regex and degrade to `connect-src 'self'`; acceptable for local and typical deployments. Widen only if needed.
 6. **Resolved: keep it revalidated (`no-cache`).** **`theme-init.js` is `no-cache`.** It is revalidated on each load (a conditional request, usually `304`). If that proves noticeable, it could be content-hashed by a build step; deferred.
 7. **Resolved: a local composite action is allowed.** **Shared CI setup.** Whether to use a local composite action for the repeated checkout/pnpm/node/install steps (proposed) or repeat them inline.
+
+## Scaffold-time deviations
+
+Recorded during implementation (Angular CLI 22.2.1, Node 24.18, pnpm 12.4.1). Requirements are unchanged.
+
+- **Versions:** Angular 22.2, TypeScript 6.0, Vitest 5, Tailwind 4.3, Spartan brain 1.5, Playwright 1.63, MSW 3, ESLint 10. `ng new` gained `--skip-install --defaults` for non-interactive use; the other flags were accepted as designed.
+- **Strict flags:** the generated `tsconfig.json` lacked `strict` and `strictTemplates`; both were added. The CLI default already enables zoneless but does not register `provideZonelessChangeDetection()`; it was added explicitly (Req 1.5).
+- **pnpm 12:** dependency build scripts need approval; `pnpm-workspace.yaml` `allowBuilds` records them, and the Dockerfile copies that file before installing. pnpm is installed directly (no corepack prepare needed); `packageManager` is `pnpm@12.4.1`.
+- **`"type": "module"`** added to `package.json` so `eslint.config.js` and `commitlint.config.js` use ESM as designed.
+- **Spartan:** `ng g @spartan-ng/cli:init` rewrites `styles.css` with its own theme; only its layered Tailwind imports and the `hlm-tailwind-preset.css` import were kept, and the project token sheet was retained (with `--popover`, `--secondary` and their foregrounds, and `--radius`, added because helm components use them; contrast pairs added to the spec). `components.json` (`componentsPath: src/app/shared/ui`, `importAlias: @app/shared/ui`) made the CLI honour the output path, so the `libs/ui` fallback was not needed. The CLI writes one `paths` entry per component instead of a `@app/shared/ui/*` wildcard, and it takes one component name per call (`--interactive=false`). The default style is `vega`; hover on `bg-primary/80` slightly lowers contrast on hover only.
+- **Icons:** `lucide-angular` has no Angular 22 support (peer range 13 to 21) and Spartan itself uses `@ng-icons/lucide`; `lucide-angular` was removed and the theme toggle uses `@ng-icons/lucide`.
+- **`sonner`** was kept: the initial bundle is 353 kB raw, below the 500 kB warning.
+- **MSW 3** renamed `onUnhandledRequest` to `onUnhandledFrame`.
+- **Test commands:** pnpm 12 forwards a literal `--`, so coverage is `pnpm test --coverage` (not `pnpm test -- --coverage`). `pnpm test --filter` is consumed by pnpm; use `pnpm exec ng test --watch=false --filter <name>`. `@vitest/coverage-v8` and `@types/node` (spec files read `styles.css` and `theme-init.js`) were added.
+- **Prettier** reformatted existing files (including these spec documents) in the task 6 commit.
+- **Nginx:** an exact `location = /index.html` with `Cache-Control: no-cache` was added, because `/` and the SPA fallback are internally redirected to `/index.html`, which otherwise matched the extension regex and lost the header. `/healthz` also sends `no-cache`. The JSON-escape `sed` in `40-config.sh` uses `#` delimiters. Image tag pinned to `nginxinc/nginx-unprivileged:1.29-alpine`.
+- **Docker build:** `pnpm fetch` plus an offline install worked as designed.
+- **CI:** `actionlint` (run through its Docker image) is clean; the workflow has not run on GitHub because the repository has no remote. `pnpm/action-setup@v4` with pnpm 12 in `packageManager` is unverified until the first run.
+- **Config error flow:** Angular also logs the initializer rejection to the console (`ERROR Error: config.json returned 500`); this is expected.

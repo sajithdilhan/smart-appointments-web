@@ -83,7 +83,7 @@ Commits (enforced from task 6).
   - Validate the YAML locally (for example `actionlint` if available) and push a branch to confirm the first run passes; fix until green.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 3.6_
 
-- [ ] 13. Documentation: README.md and CLAUDE.md
+- [x] 13. Documentation: README.md and CLAUDE.md
   - Write `README.md` per the design outline (purpose, CI badge, stack and chosen versions, prerequisites, run/test/docker commands including the Playwright browser install, runtime configuration and the error page, backend link and its `WEB_ORIGIN`/CORS requirement, layout, specs link).
   - Write `CLAUDE.md` per the design outline (status: scaffold only; commands; layout and layering; conventions; backend contract rules; testing conventions; spec-driven loop; subagent Sonnet rule).
   - Update `docs/specs/README.md` F0 status to "Implemented" and tick all F0 tasks.
