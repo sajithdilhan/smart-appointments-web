@@ -68,7 +68,7 @@ Commits (enforced from task 6).
   - Run `pnpm exec playwright install chromium` and `pnpm e2e` locally against `ng serve`, then once against `sirv` on the built output.
   - _Requirements: 4.6, 4.7, 4.8_
 
-- [ ] 10. Container image: nginx config, entrypoint and Dockerfile
+- [x] 10. Container image: nginx config, entrypoint and Dockerfile
   - Add `docker/nginx.conf`, `docker/security.conf`, `docker/config.json.template`, `docker/40-config.sh` (executable, LF), `Dockerfile` (node build stage with `pnpm fetch` cache, `nginxinc/nginx-unprivileged` final stage, `HEALTHCHECK`) and `.dockerignore`.
   - Build and verify with `curl -i` as in the design's CI list: `config.json` content, CSP `connect-src 'self' http://localhost:5290`, SPA fallback `200` for `/appointments/123`, `404` for `/missing.js`, gzip on, immutable on hashed assets, `no-cache` on `/`, `/index.html`, `/config.json`, `/theme-init.js`, `/healthz`, all security headers on `200` and `404`, `id -u` not `0`, and the hostile value `API_BASE_URL='http://x"; evil'` yielding valid JSON and `connect-src 'self'`; empty `API_BASE_URL` still starts.
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 7.10_
