@@ -16,7 +16,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Add `core/util/viewport.service.ts` (`matchMedia` signals `isMd`, `isLg`) with a stubbable `matchMedia` test.
   - _Requirements: 6.1, 6.3, 6.12, 7.1, 11.4, 11.5_
 
-- [ ] 2. API generation script, generated types, `ApiClient` and `AuthApiService`
+- [x] 2. API generation script, generated types, `ApiClient` and `AuthApiService`
   - Add `openapi-typescript` and `scripts/gen-api.mjs` (fetch the three documents with a 10 s timeout, `GATEWAY_URL` override, write temp files and rename only after all three succeed, header comment); add the `gen:api` script, `.prettierignore` and ESLint `ignores` for `core/api/generated/`.
   - Add a node unit test for the script with a stubbed `fetch`: failure leaves existing files byte-identical, exits 1, names the URL.
   - Run `pnpm gen:api` against a local Development gateway and commit `auth.d.ts`, `availability.d.ts`, `booking.d.ts`; record the real route casing (`/api/Auth/...` or `/api/auth/...`) in the design (resolved Open question 2) and any missing field (`accessTokenExpiresAtUtc`) in `core/api/models.ts` with a comment.

@@ -1004,3 +1004,11 @@ All nine open questions of the first draft were resolved by the user after appro
 8. **Signed-in header swap:** owned by the public shell via `landingCtas()`.
 9. **Staff:** lands on the "coming soon" placeholder.
 10. **Absorbed from F2:** `post-login-target.ts`, `landing-cta.ts`, `guestGuard` honouring a safe `returnUrl`, one `RateLimitNotice` announcing at the edges with "Try again in N seconds", `ToastService.showSuccess`, title format "<Page> | Smart Appointments".
+
+## Implementation deviations
+
+Where an assumption of this design proved wrong at implementation time, the option closest to the requirements was taken. Recorded as the tasks were built.
+
+1. **Path casing (resolved Open question 2, task 2).** The gateway's Development OpenAPI documents emit `/api/Auth/login`, `/api/Auth/register`, `/api/Auth/profile` and `/api/Auth/me` (the controller route `api/[controller]`), `/api/Branches...`, `/api/Services...`, `/api/Slots/...`, and lowercase `/api/appointments...` for Booking. `AuthApiService` therefore calls `/api/Auth/...`. The test handlers (task 6) answer both casings, and `isAuthEndpoint` compares case-insensitively as designed.
+2. **The generated Auth document has no `refresh`, `logout`, response schemas or `accessTokenExpiresAtUtc` (task 2).** The backend checkout the types were generated from does not include `auth-refresh-tokens` and types every response as "no content". `core/api/models.ts` therefore defines `TokenResponse` (with `accessTokenExpiresAtUtc?`), `RegisterResponse`, `ProfileResponse`, `RefreshRequest` and `LogoutRequest` as the temporary extensions of Req 1.6; the `refresh` and `logout` paths are string literals until the types are regenerated, and `JsonBody` / `JsonResponse` in `api-types.ts` are provided but only the request-body one has a use today.
+3. **Node unit tests of `scripts/` (task 2).** `scripts/gen-api.spec.mjs` runs under `node --test` (`pnpm test:scripts`), not Vitest, because the Angular builder only collects `src/**` specs. `gen-api.mjs` exports a `generate()` function so the test injects `fetch`; the CLI path is also tested by running it against a closed port.

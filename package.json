@@ -20,7 +20,9 @@
     "size": "node scripts/size.mjs",
     "e2e": "playwright test",
     "preinstall": "npx only-allow pnpm",
-    "prepare": "husky"
+    "prepare": "husky",
+    "gen:api": "node scripts/gen-api.mjs",
+    "test:scripts": "node --test \"scripts/*.spec.mjs\""
   },
   "dependencies": {
     "@angular/cdk": "^22.2.1",
@@ -65,6 +67,7 @@
     "jsdom": "^30.0.0",
     "lint-staged": "^17.6.0",
     "msw": "^3.0.2",
+    "openapi-typescript": "^7.13.0",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "sirv-cli": "^3.0.1",
