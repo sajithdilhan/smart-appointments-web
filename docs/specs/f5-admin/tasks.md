@@ -71,7 +71,7 @@ Rules (from the template):
   - Specs: route table resolves, `branches/:id/schedule` is not swallowed by `:id`, non-GUID `:id` shows not-found without a request, resolver supplies the breadcrumb, stores reset on destroy, Customer on `/admin/branches` lands on `/book` (F1 guard).
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 12. Dashboard
+- [x] 12. Dashboard
   - `dashboard.page`, `stat-card`, `needs-attention`: four stat cards, per-card skeleton and error with Retry, needs-attention list and empty text, quick actions with the missing-prerequisite note, "slots generated this session", `reloadOnRecovery`, responsive grid.
   - Specs: figures and accessible names ("Active branches: 3 of 4"), per-card error independence, needs-attention rows and empty state, session counter text, recovery reload.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8_
