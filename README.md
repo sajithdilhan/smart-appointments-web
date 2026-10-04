@@ -63,7 +63,7 @@ Dependency direction is `features -> shared, core`, `shared -> core`; `core` imp
 
 - **One API, the gateway.** The app only ever calls the YARP API gateway (default `http://localhost:5290`), never Auth, Availability or Booking directly.
 - **Runtime configuration.** The API origin is read from `/config.json` before the app renders; nothing environment-specific is compiled in.
-- **CORS.** Browser calls need the backend gateway to allow this app's origin. F0 makes no API calls; the gateway CORS support is a backend change tracked in the backend repo, and F1 depends on it. The expected origins are `http://localhost:4200` (`pnpm start`) and `http://localhost:8081` (Docker).
+- **CORS.** Browser calls need the backend gateway to allow this app's origin. F0 makes no API calls. The gateway's CORS support ([backend PR #12](https://github.com/sajithdilhan/SmartAppointments/pull/12), spec `docs/specs/gateway-cors/`) allows `http://localhost:4200` (`pnpm start`) and `http://localhost:8081` (Docker) in Development, and Compose sets the Docker origin from `WEB_ORIGIN`.
 
 ## Getting started
 
@@ -74,7 +74,7 @@ pnpm install
 pnpm start          # http://localhost:4200
 ```
 
-The app needs a backend only from F1 on. To run the backend, clone [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), copy `.env.example` to `.env` and run `docker compose up --build`; its gateway listens on `http://localhost:5290`. Check that gateway's CORS setting allows `http://localhost:4200` and `http://localhost:8081` once its CORS spec has shipped.
+The app needs a backend only from F1 on. To run the backend, clone [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), copy `.env.example` to `.env` and run `docker compose up --build`; its gateway listens on `http://localhost:5290`. Its Development CORS settings already allow `http://localhost:4200` and `http://localhost:8081` (`Cors:AllowedOrigins`; Compose reads `WEB_ORIGIN`).
 
 One-time browser install for the end-to-end tests:
 

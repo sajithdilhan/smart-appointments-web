@@ -61,7 +61,7 @@ There are no secrets in this repository and none may be added: a SPA's bundle an
 - `public/config.json` is `{ "apiBaseUrl": "http://localhost:5290" }`, the gateway of the backend's local setup. It is copied to the build output and read by `provideAppConfig()` before the app renders (`cache: 'no-store'`, 5 s timeout). `loadConfig(fetch)` normalises the URL to its origin and returns `{ ok: false, reason }` on any problem; the initializer then renders the plain-DOM configuration error page and aborts bootstrap.
 - In the container, `docker/40-config.sh` renders `/config.json` from `API_BASE_URL` and writes the CSP `connect-src` origin from it, all under `/tmp/runtime` (a `tmpfs`, so the root filesystem is read-only).
 - Never bake an API URL into the bundle: `grep -r "localhost:5290" dist` may match only `config.json` (CI checks it). Read the origin through `inject(APP_CONFIG)`, never from `environment` files (none exist).
-- The backend gateway must list this app's origin in its CORS settings (`http://localhost:4200` for `pnpm start`, `http://localhost:8081` for Docker) for browser calls to work from F1 on. That is a backend change; spec and ship it in the backend repo first.
+- The backend gateway must list this app's origin in its CORS settings (`http://localhost:4200` for `pnpm start`, `http://localhost:8081` for Docker) for browser calls to work. The gateway has this (`Cors:AllowedOrigins`, backend spec `docs/specs/gateway-cors/`): exact origins, no credentials, exposed headers `X-Correlation-ID`, `Retry-After` and `Location`. A new origin is a backend config change, never a workaround in the SPA.
 
 ## Architecture conventions
 
@@ -91,7 +91,7 @@ Angular rules:
 
 - The SPA talks to the YARP gateway only (`APP_CONFIG.apiBaseUrl`); it never calls Auth, Availability or Booking directly, and `/internal/**` does not exist for it.
 - Errors are `application/problem+json` with one body shape, `{ status, detail }`; show `detail`, branch on `status`. The gateway adds `502`/`504` for a dead or slow service and `429` with `Retry-After` (always 60) for rate limits (login 5 per minute per address, create appointment 10 and slot search 30 per minute per user).
-- `X-Correlation-ID` is echoed on every response, `Location` carries the gateway's host, and `Idempotency-Key` is required when creating an appointment: generate one per user intent and reuse it on retry. CORS must expose the headers the SPA reads.
+- `X-Correlation-ID` is echoed on every response, `Location` carries the gateway's host, and `Idempotency-Key` is required when creating an appointment: generate one per user intent and reuse it on retry. The gateway's CORS policy exposes exactly these three headers.
 - JWT claims are `sub`, `email` and `role` (`Customer`, `Staff`, `Admin`); the gateway validates the token but makes no role decisions, so a wrong role gets the service's `403`. Role checks in the SPA are for UX only.
 - Refresh-token rotation is strict: a refresh token is single-use, so never retry or replay a refresh request, and serialise concurrent refreshes into one.
 - Consult the backend's `docs/requirements.md` (FR-IDs) and `docs/specs/` for behaviour; verify against its code for what actually exists.
