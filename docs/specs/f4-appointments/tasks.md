@@ -47,6 +47,7 @@ Rules (from the template):
   - _Requirements: 1.3, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 4.2, 6.5, 10.4_
 
 - [ ] 7. List UI: tabs, timeline, cards, skeleton, empty and error
+  - partial: presentational components done (`AppointmentTabs`, `AppointmentTimeline`, `AppointmentCard`, `StatusBadge`, `AppointmentsSkeleton`, `LoadMore`, `EmptyState`, `InlineError`, with specs); remaining: `AppointmentsPage` (needs `AppointmentsStore`, task 6, and F3 `ReferenceDataStore`), the \"N appointments\" status, the lookup notice, the `/appointments` route replacing F1's placeholder (needs F1 routes and shell), and the page-level component specs.
   - `AppointmentTabs` (ARIA tab list with arrows/Home/End, URL via `replaceUrl`, "Show cancelled" only on Upcoming), `AppointmentTimeline`, `AppointmentCard` (one link, `[state]="{ fromList: true }"`), `StatusBadge` (incl. past `(past)` text and "Cancelling..."), `AppointmentsSkeleton`, `LoadMore`, `EmptyState`, `InlineError`, the "N appointments" status, and `AppointmentsPage` binding `queryParamMap` to the store and showing the lookup notice.
   - Wire the `/appointments` route (title `My appointments`) replacing the F1 placeholder; call F3's `ensureLoaded()`; skeletons wait for the lookup.
   - Component specs: tab keyboard and URL, request change for the switch, skeleton then cards, empty states not flashing, card name and single link, zone label only when it differs, lookup failure not blocking, `403` message.
