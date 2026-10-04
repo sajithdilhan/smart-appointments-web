@@ -5,9 +5,10 @@ import { firstValueFrom } from 'rxjs';
 import { AuthApiService } from '../api/auth-api.service';
 import type { TokenResponse } from '../api/models';
 import { AppError } from '../http/app-error';
-import { fromEpochMs, toIsoUtc } from '../time';
+import { fromEpochMs, parseUtc, toIsoUtc } from '../time';
 import { decodeAccessToken } from './jwt';
 import type { Role, SessionStatus, SessionUser } from './session.model';
+import { RefreshCoordinator } from './refresh-coordinator';
 import { RefreshScheduler } from './refresh-scheduler';
 import { TokenStorage } from './token-storage';
 
@@ -61,6 +62,9 @@ export const SessionStore = signalStore(
     const auth = inject(AuthApiService);
     const tokens = inject(TokenStorage);
     const scheduler = inject(RefreshScheduler);
+
+    /** Resolved lazily: the coordinator injects this store. */
+    const coordinator = () => injector.get(RefreshCoordinator);
 
     let resolveSettled!: () => void;
     const settledPromise = new Promise<void>((resolve) => (resolveSettled = resolve));
@@ -121,17 +125,14 @@ export const SessionStore = signalStore(
         ...(sameUser ? {} : { profile: null, profileStatus: 'idle' as const }),
       });
       resolveSettled();
-      scheduler.schedule(claims.exp * 1000, () => void refresh().catch(() => undefined));
+      scheduler.schedule(
+        claims.exp * 1000,
+        () =>
+          void coordinator()
+            .refresh()
+            .catch(() => undefined),
+      );
       void fetchProfile();
-    }
-
-    /** Plain refresh with the stored token; task 14 replaces this with the coordinator. */
-    async function refresh(): Promise<void> {
-      const token = tokens.read();
-      if (!token) return;
-      const response = await firstValueFrom(auth.refresh(token));
-      scheduler.markRefreshed();
-      applyTokens(response);
     }
 
     /** Ends the session locally (and in storage). Task 15 routes this through `SessionEnder`. */
@@ -145,9 +146,42 @@ export const SessionStore = signalStore(
       /** Resolves once, at the first transition out of `unknown`. */
       settled: (): Promise<void> => settledPromise,
       applyTokens,
-      refresh,
       clearLocal,
       endSession,
+      /** Single-flight, lock-guarded refresh. Rejects with an AppError; never retried. */
+      refresh: (): Promise<void> => coordinator().refresh(),
+
+      /** True when the held access token expires in more than `ms`. */
+      hasFreshAccessToken(ms: number): boolean {
+        const exp = store.accessTokenExpiresAtUtc();
+        return (
+          store.status() === 'authenticated' &&
+          store.accessToken() !== null &&
+          exp !== null &&
+          parseUtc(exp).getTime() - Date.now() > ms
+        );
+      },
+
+      /** The bearer for the next request: waits for a refresh in flight or due within 10 s. */
+      async accessTokenForRequest(): Promise<string | null> {
+        if (store.status() !== 'authenticated') return null;
+        const c = coordinator();
+        const exp = store.accessTokenExpiresAtUtc();
+        const expiring = exp !== null && parseUtc(exp).getTime() - Date.now() < 10_000;
+        if (c.inFlight || expiring) await c.refresh();
+        return store.accessToken();
+      },
+
+      /** After a 401 for `usedToken`: the current token if another request already refreshed. */
+      async refreshAfterUnauthorized(usedToken: string): Promise<string> {
+        const held = store.accessToken();
+        if (held !== null && held !== usedToken) return held;
+        await coordinator().refresh(usedToken);
+        const fresh = store.accessToken();
+        if (fresh === null) throw new AppError(401, 'You need to sign in.', 'unauthorized');
+        return fresh;
+      },
+
       loadProfile: fetchProfile,
       reloadProfile: fetchProfile,
 

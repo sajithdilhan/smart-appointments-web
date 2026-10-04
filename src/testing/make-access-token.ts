@@ -25,6 +25,7 @@ export function makeAccessToken(options: AccessTokenOptions): string {
     email: options.email,
     role: options.role,
     iat: nowSeconds,
+    jti: crypto.randomUUID(),
     exp: nowSeconds + options.expiresInSeconds,
   };
   return `${base64Url(header)}.${base64Url(payload)}.test-signature`;

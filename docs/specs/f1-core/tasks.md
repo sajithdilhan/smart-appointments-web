@@ -91,7 +91,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests: pure delay table (past, near, far, 5 s floor); with fake timers the refresh fires at exp minus 60 s; `visibilitychange` recomputes; cleared on logout.
   - _Requirements: 7.1, 7.2, 7.9_
 
-- [ ] 14. Refresh coordinator and the auth interceptor
+- [x] 14. Refresh coordinator and the auth interceptor
   - Add `core/auth/refresh-coordinator.ts` (single-flight promise, lock-guarded run, skip when a fresh token is held, 1 s broadcast wait, always refresh with the freshly read token, no retry of the refresh call, `429` `blockedUntil`) and store methods `refresh`, `accessTokenForRequest`, `refreshAfterUnauthorized`.
   - Add `core/auth/auth.interceptor.ts` (bearer for the API origin only, none on the four auth endpoints, pre-flight wait when expiring within 10 s, one retry with `RETRIED`, second 401 ends the session) and register it in `provideCoreHttp()` in place of the placeholder.
   - Integration tests: 401, refresh, retry succeeds; five concurrent 401s send exactly one refresh (`counters.refresh === 1`); a retried 401 ends the session with no second refresh; near-expiry request waits for refresh; refresh has no `Authorization` and is not retried on 503 or network; refresh `401` ends the session, network/timeout/5xx and `429` keep it and block early retries; `403` leaves the session; the reuse scenario (a consumed token presented again) ends `anonymous` with the family revoked.
