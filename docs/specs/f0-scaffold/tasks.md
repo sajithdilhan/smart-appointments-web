@@ -8,7 +8,7 @@ Check a box in the same commit as the code. Commit messages follow Conventional
 Commits (enforced from task 6).
 -->
 
-- [ ] 1. Initialise the repository and generate the Angular workspace
+- [x] 1. Initialise the repository and generate the Angular workspace
   - Create `.gitignore` (node_modules, dist, .angular, coverage, playwright-report, test-results, `.env`), `.editorconfig` and `.gitattributes` (LF; binaries), then `git init` (branch `main`) and make the initial commit of the existing `docs/` and these files.
   - Check `node -v` matches the current LTS; `corepack enable`.
   - Generate in a scratch folder: `ng new smart-appointments-web --directory scaffold-tmp --style=css --routing --ssr=false --zoneless --test-runner=vitest --package-manager=pnpm --skip-git --strict`; move its contents (not `.git`) into the repo root; delete the scratch folder. Adjust flags to the current CLI and note any deviation.
