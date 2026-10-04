@@ -52,6 +52,7 @@ Rules (from the template):
   - _Requirements: 1.1, 1.2, 1.4, 1.6, 1.7, 2.1, 2.2, 2.4, 3.1, 3.2, 3.3, 3.4, 3.6, 4.1, 4.2, 8.1, 8.2, 8.3, 8.4, 10.2_
 
 - [ ] 8. Cancel reducer, conflict mapping and detail store
+  - partial: `cancelReducer` and `cancelConflictMessage` with their specs are done; `AppointmentDetailStore` and its MSW specs remain, waiting on F1 `ToastService` and `OutageState.recovered` wiring, and on `AppointmentsStore` (task 6, needs F3's `ReferenceDataStore`).
   - Pure `cancelReducer(phase, event)` and `cancelConflictMessage(detail)` (known "already started" text gives the fixed client message and `too-late`; any other `409` text gives the generic "We couldn't cancel this appointment. Refresh and try again." and keeps the button; the raw `detail` is never exposed).
   - `AppointmentDetailStore` running the effects: load (seeded from the list item, background re-GET), cancel, the `204` re-GET, the `503`/network/timeout re-GET-first rule, `404`, `403`, `429`, announcements, `applyCancelled` and quiet refresh of the list.
   - Table-driven reducer specs for every transition, a repeated `confirm` ignored, 503 then re-GET `Cancelled`, 503 then `Booked`, re-GET failing; store specs with MSW; a spec pinning the known 409 string.
