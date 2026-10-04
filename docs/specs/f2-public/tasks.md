@@ -55,7 +55,7 @@ Rules (from the template):
   - Table-driven spec: `401` gives the fixed "Invalid email or password." and never reads `detail`; `400`, `429`, `502/503/504`, network, timeout, other 5xx with reference, anything else.
   - _Requirements: 2.5, 2.7, 2.8, 2.9, 2.10_
 
-- [ ] 8. Login page
+- [x] 8. Login page
   - `login/login.page.ts / .html`: `AuthLayout` with the form, `FormField`s, `PasswordField`, `FormAlert`, F1's countdown component, submit button with spinner, `aria-busy` and disabled while pending or counting down, links to `/register` carrying only a `safeReturnUrl`-accepted `returnUrl`.
   - `submit()` per the design: validation and first-invalid focus, one `session.login(trimmedEmail, password)` call, outcome handling (clear password and focus it on `401`, `429` starts the countdown from `retryAfterSeconds`), navigation to `resolvePostLoginTarget(role, returnUrl())` with `replaceUrl: true`, falling back to `landingRouteFor(role)` when it resolves `false`.
   - Route inputs `email`, `reason` and `returnUrl`: silent email prefill; info notices for `reason=registered` (with password focus) and `reason=session-expired`.
