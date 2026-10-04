@@ -81,7 +81,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests: a throwing `localStorage` keeps working in memory; message validation (shape, own tab, invalid access token); lock timeout; fallback serialization with `navigator.locks` and `BroadcastChannel` deleted.
   - _Requirements: 6.2, 6.3, 9.1, 9.2, 9.3, 9.7, 9.8, 9.9_
 
-- [ ] 12. `SessionStore`: state, login, profile, logout
+- [x] 12. `SessionStore`: state, login, profile, logout
   - Add `core/auth/session.store.ts` (`@ngrx/signals`: state incl. `profile` and `profileStatus`, `isAuthenticated`, `role`, `displayName`, `login`, `applyTokens`, `loadProfile`, `reloadProfile`, `clearLocal`, `logout`, `settled()`), adding `@ngrx/signals` if absent. Expiry comes from `exp`, derived when `accessTokenExpiresAtUtc` is absent; an invalid decode ends the session.
   - Tests with the mock backend: login sets state and loads names; expiry derivation and `exp` wins on mismatch; the access token never appears in `localStorage` or `sessionStorage` (spies); `me` failure keeps the session, sets `profileStatus: 'error'` and falls back to the email, and `reloadProfile()` retries to `ready` (`profileStatus` idle, loading, ready; never rejects); logout sends one call with the stored token, clears everything, is silent on failure and skips the call without a token.
   - _Requirements: 6.1, 6.2, 6.4, 6.5, 6.6, 6.7, 6.10, 6.13_
