@@ -23,7 +23,7 @@ Rules (from the template):
   - Table-driven specs: every repair rule and its cascade, `done` without a booking dropped, invalid and out-of-range dates (past, today plus 13, plus 14), unloaded data skipping rules; grouping boundaries 11:59, 12:00, 16:59, 17:00, 00:00, 23:59; hint thresholds 1, 3, 4; durations 15, 30, 45, 60, 90, 120, 135; `dayStrip` across a month boundary and a DST change; the request `date` equals the branch-zone date under a process time zone ahead of and one behind the branch zone near midnight.
   - _Requirements: 1.3, 1.4, 3.2, 4.1, 4.6, 6.1, 6.3_
 
-- [ ] 3. `conflict-map`, `confirm-outcome` and `request-budget`, `slot-cache`
+- [x] 3. `conflict-map`, `confirm-outcome` and `request-budget`, `slot-cache`
   - `book/conflict-map.ts` with the verbatim strings of Req 8.2 (exact map plus the three patterns), `book/confirm-outcome.ts` (`mapConfirmError`), `book/request-budget.ts` (`SlidingWindowBudget`, 25 per 60 s, `retryAfterSeconds`), `book/slot-cache.ts` (`SlotCache`, 60 s freshness, `invalidate`, `dropBefore`).
   - Specs: one test per verbatim `409` string plus case and whitespace variants, the three patterns with real codes, an unknown text; the status-by-status outcome table (404, 409 classes, 422, 429 seconds, unavailable, network, timeout, 401, 400, 403); budget window sliding and the 26th request refused; cache freshness at 59 s and 61 s.
   - _Requirements: 5.3, 5.5, 8.2, 8.11_
