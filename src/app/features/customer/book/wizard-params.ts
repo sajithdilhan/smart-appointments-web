@@ -1,6 +1,7 @@
 import type { ParamMap } from '@angular/router';
 import type { BranchResponse, ServiceTypeResponse, SlotResponse } from '../../../core/api/models';
 import { addDays, diffDays } from '../../../core/time';
+import { hasSchedule } from '../shared/branch-schedule';
 
 export interface WizardParams {
   branch?: string;
@@ -44,10 +45,6 @@ export function parseParams(q: ParamMap): WizardParams {
 /** A real `yyyy-MM-dd` calendar date (rejects 2026-02-30 and 2026-13-01). */
 export function isCalendarDate(value: string): boolean {
   return DATE_SHAPE.test(value) && addDays(value, 0) === value;
-}
-
-function hasSchedule(b: BranchResponse): boolean {
-  return !!b.timeZoneId?.trim() && (b.workingHours?.length ?? 0) > 0;
 }
 
 /**

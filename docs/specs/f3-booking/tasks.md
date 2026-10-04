@@ -29,6 +29,7 @@ Rules (from the template):
   - _Requirements: 5.3, 5.5, 8.2, 8.11_
 
 - [ ] 4. Reference data store
+  - partial: the store exposes `clear()` but the `effect` that calls it when `SessionStore.status` leaves `authenticated` is not wired, waiting on F1 `SessionStore`; the other items are done and tested.
   - `features/customer/shared/reference-data/reference-data.store.ts`: `ensureBranches`, `ensureServices`, `refresh`, `branchById`, `serviceById`, states and error signals, one in-flight request, bookable-first sorting, clear on session end, reload on `OutageState.recovered` only after an error.
   - Specs: one request per session, concurrent first reads send one, refresh bypasses the cache, cleared when the session leaves `authenticated`, sorting, outage recovery reload.
   - _Requirements: 2.1, 2.6, 2.7, 3.1, 3.4, 11.5_
