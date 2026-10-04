@@ -50,7 +50,7 @@ Rules (from the template):
   - Spec: panel is `aria-hidden` and has the responsive hiding classes; form slot renders.
   - _Requirements: 2.2, 3.1, 6.8_
 
-- [ ] 7. Login error mapping
+- [x] 7. Login error mapping
   - `login/login.form.ts` (typed `FormGroup`, validators, messages) and `login/login-error.ts` (`mapLoginError(AppError): Outcome` per the design table).
   - Table-driven spec: `401` gives the fixed "Invalid email or password." and never reads `detail`; `400`, `429`, `502/503/504`, network, timeout, other 5xx with reference, anything else.
   - _Requirements: 2.5, 2.7, 2.8, 2.9, 2.10_
