@@ -17,7 +17,8 @@ export const SEARCH_DEBOUNCE_MS = 250;
 export type SlotsState =
   | { status: 'idle' }
   | { status: 'loading' }
-  | { status: 'ready'; slots: SlotResponse[]; fetchedAt: number }
+  /** `key` is `slotCacheKey` of the list shown, so a reader can tell it from a previous day's. */
+  | { status: 'ready'; slots: SlotResponse[]; fetchedAt: number; key: string }
   | { status: 'error'; error: AppError; kind: 'unavailable' | 'other' }
   /** The gateway answered `429`, or the client budget is spent. No automatic retry. */
   | {
@@ -110,11 +111,11 @@ export class SlotSearchService {
     this.requests.next(null);
     const cached = this.cache.get(slotCacheKey(key), this.clock.now());
     if (cached?.fresh && !opts.force) {
-      this.showCached(cached);
+      this.showCached(slotCacheKey(key), cached);
       return;
     }
     if (cached && !opts.force) {
-      this.showCached(cached);
+      this.showCached(slotCacheKey(key), cached);
     } else {
       this.stateSignal.set({ status: 'loading' });
     }
@@ -147,7 +148,7 @@ export class SlotSearchService {
     const budget = blocked ? null : this.budget.tryAcquire(now);
     if (blocked || (budget && !budget.ok)) {
       if (cached) {
-        this.showCached(cached);
+        this.showCached(cacheKey, cached);
       } else {
         this.limited(
           blocked
@@ -169,7 +170,7 @@ export class SlotSearchService {
         const shown = this.stateSignal();
         // A background refresh replaces the chips only when the list really differs.
         if (cached && shown.status === 'ready' && sameSlots(shown.slots, normalised)) return;
-        this.stateSignal.set({ status: 'ready', slots: normalised, fetchedAt: at });
+        this.stateSignal.set({ status: 'ready', slots: normalised, fetchedAt: at, key: cacheKey });
       }),
       catchError((e: AppError) => {
         if (this.isCurrent(cacheKey)) this.onError(e, cached !== undefined);
@@ -192,10 +193,15 @@ export class SlotSearchService {
   }
 
   /** Shows a cached list; keeps the very same state object when it is already on screen. */
-  private showCached(cached: { slots: SlotResponse[]; fetchedAt: number }): void {
+  private showCached(key: string, cached: { slots: SlotResponse[]; fetchedAt: number }): void {
     const shown = this.stateSignal();
-    if (shown.status === 'ready' && shown.slots === cached.slots) return;
-    this.stateSignal.set({ status: 'ready', slots: cached.slots, fetchedAt: cached.fetchedAt });
+    if (shown.status === 'ready' && shown.slots === cached.slots && shown.key === key) return;
+    this.stateSignal.set({
+      status: 'ready',
+      slots: cached.slots,
+      fetchedAt: cached.fetchedAt,
+      key,
+    });
   }
 
   private isCurrent(cacheKey: string): boolean {

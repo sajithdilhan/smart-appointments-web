@@ -43,7 +43,7 @@ Rules (from the template):
   - Specs with fake timers: debounce, a superseded request aborted, a fresh hit sends nothing, a stale hit renders then refreshes and replaces only on change, 26 rapid distinct dates send at most 25, `429` countdown and the manual retry, `404`, outage then recovery.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.7_
 
-- [ ] 7. Wizard store and routing shell
+- [x] 7. Wizard store and routing shell
   - `book/wizard.store.ts` (`BookingWizardStore`: URL-derived params, resolved branch, service, date, slot, step and strip; `selectedSlotId`, `notice`, `searchText`, `booking`, `initialised`; navigation methods; the repair effect with `replaceUrl` and the out-of-date notice; `booking` cleared when `done` leaves the URL), `book/book.routes.ts` (route providers, function `title`, `runGuardsAndResolvers: 'paramsOrQueryParamsChange'`), `book/step-heading.directive.ts`, and replace the F1 `book` placeholder with `loadChildren`.
   - A minimal `BookPage` with the `<h1>`, the notice and an `@switch` over the step showing placeholder step content.
   - Specs: step derivation from the URL, Back and forward through history, an invalid parameter repaired with `replaceUrl` and the note shown (and the value not echoed), the title per step, no focus move on first render and a focus move on a later step change, no wizard state in storage except the two `sa.*` keys.
