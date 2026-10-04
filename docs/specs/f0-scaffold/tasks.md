@@ -78,7 +78,7 @@ Commits (enforced from task 6).
   - Verify `docker compose up --build` works with no `.env`, serves `http://localhost:8081`, and `docker compose ps` reports `healthy` within 30 s; verify the read-only filesystem does not break start-up.
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.6_
 
-- [ ] 12. GitHub Actions CI
+- [x] 12. GitHub Actions CI
   - Add the composite action `.github/actions/setup` (pnpm/action-setup, setup-node with `node-version-file: .nvmrc` and pnpm cache, `pnpm install --frozen-lockfile`) and `.github/workflows/ci.yml` with jobs `lint` → `test` → `build` → `e2e` → `docker`, `concurrency`, `permissions: contents: read`, `HUSKY=0`, artefact upload/download, the `grep` check, and the container curl assertions from the design. Pin actions to majors.
   - Validate the YAML locally (for example `actionlint` if available) and push a branch to confirm the first run passes; fix until green.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 3.6_
