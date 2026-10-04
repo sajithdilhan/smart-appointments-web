@@ -23,7 +23,7 @@ Rules (from the template):
   - Note: F3's branches/services handlers did not exist on this branch, so `appointments.handlers.ts` serves its own active-only `/api/Branches` and `/api/Services` (both casings); reconcile with F3's at merge.
   - _Requirements: 11.1_
 
-- [ ] 3. Pure helpers: tab params, dedupe, GUID matcher
+- [x] 3. Pure helpers: tab params, dedupe, GUID matcher
   - `tab-params.ts` (`parseTab`, `toListQuery`), `dedupeById`, `guidIdMatcher`.
   - Table-driven specs: unknown tab, `cancelled=1` honoured only on `upcoming`, exact query for each tab and the switch, de-duplication keeps first and order, GUID accepted/rejected.
   - _Requirements: 1.2, 1.4, 1.5, 2.3, 5.3_
