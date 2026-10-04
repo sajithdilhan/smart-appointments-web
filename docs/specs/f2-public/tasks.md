@@ -84,6 +84,7 @@ Rules (from the template):
   - Compose them in `landing/landing.page.ts` with a single `<h1>`; register only the lucide icons used.
   - Specs: one `<h1>`, section order and headings, CTAs for anonymous and for each role from a fake session, no request issued, no `<img>` or external URL in the templates, the `prefers-reduced-motion` block present in the hero CSS.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9_
+  - partial: `value-props`, `how-it-works` and `hero-preview` are built and tested (`landing/`). Remaining, waiting on F1's `landingCtas()` (and `SessionStore` for the fake-session specs): `hero.component.ts / .html / .css` (CTAs, `.reveal`, reduced-motion rule), `cta-band.component.ts`, the `LandingPage` composition with its single `<h1 appFocusHeading>`, and the CTA, one-`<h1>`, section-order and no-request specs.
 
 - [ ] 13. Playwright flows with mocked API
   - `e2e/support/mock-api.ts` (reuse F1's if present): `page.route` handlers with CORS headers and `OPTIONS`, plus an unsigned test JWT helper per role.

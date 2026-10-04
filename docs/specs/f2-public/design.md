@@ -525,3 +525,12 @@ All ten were approved with these resolutions.
 8. **Resolved: a post-login navigation that resolves `false`** falls back to `landingRouteFor(role)`.
 9. **Resolved: landing copy** may mention booking and cancelling; both ship in v1, so the copy stays as drafted.
 10. **Assumptions about F1** (the `SessionStore.login` promise, the `AuthApiService.register` observable, `AppError` rejections, route inputs through `withComponentInputBinding()`) stand until F1's design is final; a mismatch is fixed in F2's tasks, not in this design.
+
+## Implementation deviations
+
+- **`createFieldView` takes a `WritableSignal` for `serverError`** (the design typed it `Signal`), because the view itself clears a server error when the control's value changes. `controlState` uses `toSignal(..., { initialValue })` with a snapshot taken at creation instead of `requireSync` (the `events` stream does not emit synchronously on subscribe, so `startWith(null)` plus the snapshot as the initial value keeps it typed and correct).
+- **Shared validators are composed, not stacked.** `validators.ts` adds `firstFailing(...rules)` and `fromRule`; the ready-made `emailValidator`, `phoneValidator`, `maxLengthValidator(n)` (required first, then the rule) each report one key, so a field never carries two errors. The forms use these instead of the `[requiredTrimmedV, maxLen50]` arrays in the sketch.
+- **Password required is checked on the raw value** (an empty string only), in both login and register, so a password of spaces counts as typed and is judged by the strength rules in register.
+- **`PasswordChecklistComponent.results` carries `{ id, label, met }`** (structurally `PasswordRuleResult`) rather than bare booleans, so the labels come from `PASSWORD_RULES` in one place. It still never receives the password. `PasswordFieldComponent` wraps its own `app-form-field` (label, hint, error) and exposes `focus()` and `pending`/`hint` inputs.
+- **`Outcome`, `mapCommonError` and `toAppError` live in `features/public/auth/outcome.ts`**, shared by `mapLoginError` and `mapRegisterError`, so the common rows (429, outage, network, timeout, 5xx, other) cannot drift. The outcome focus for a non-400, non-network "other" status is `alert`.
+- **Auth layout and illustration** use inline templates (no `.html` files) and the grain layer is a component style, not an inline `style` attribute.
