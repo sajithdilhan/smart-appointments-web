@@ -121,10 +121,10 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background font-sans text-foreground antialiased;
   }
   *:focus-visible {
-    @apply outline-ring outline-2 outline-offset-2;
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 }
 

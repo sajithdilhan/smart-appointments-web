@@ -12,7 +12,8 @@ describe('ThemeToggle', () => {
   });
   afterEach(() => vi.unstubAllGlobals());
 
-  const checked = (name: string) => screen.getByRole('radio', { name }).getAttribute('aria-checked');
+  const checked = (name: string) =>
+    screen.getByRole('radio', { name }).getAttribute('aria-checked');
 
   it('is a radiogroup with three named options and system selected', async () => {
     await render(ThemeToggle);

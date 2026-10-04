@@ -7,7 +7,14 @@ import { HlmLabelImports } from '@app/shared/ui/label';
 import { ThemeToggle } from '@app/shared/ui/theme-toggle';
 
 @Component({
-  imports: [RouterOutlet, ThemeToggle, HlmButtonImports, HlmCardImports, HlmInputImports, HlmLabelImports],
+  imports: [
+    RouterOutlet,
+    ThemeToggle,
+    HlmButtonImports,
+    HlmCardImports,
+    HlmInputImports,
+    HlmLabelImports,
+  ],
   selector: 'app-root',
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

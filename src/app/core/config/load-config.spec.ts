@@ -38,7 +38,11 @@ describe('loadConfig', () => {
     ['a JSON null body', respond('null'), 'apiBaseUrl is missing'],
     ['a blank apiBaseUrl', respond({ apiBaseUrl: '   ' }), 'apiBaseUrl is missing'],
     ['an empty apiBaseUrl', respond({ apiBaseUrl: '' }), 'apiBaseUrl is missing'],
-    ['a non-http scheme', respond({ apiBaseUrl: 'ftp://x' }), 'apiBaseUrl is not a valid http(s) URL'],
+    [
+      'a non-http scheme',
+      respond({ apiBaseUrl: 'ftp://x' }),
+      'apiBaseUrl is not a valid http(s) URL',
+    ],
     ['a non-URL', respond({ apiBaseUrl: 'not a url' }), 'apiBaseUrl is not a valid http(s) URL'],
     ['a non-string', respond({ apiBaseUrl: 42 }), 'apiBaseUrl is not a valid http(s) URL'],
   ])('rejects %s', async (_name, fetchFn, reason) => {

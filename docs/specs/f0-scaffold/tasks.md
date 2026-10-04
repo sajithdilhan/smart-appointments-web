@@ -44,7 +44,7 @@ Commits (enforced from task 6).
   - Tests: `load-config.spec.ts` table (valid, trailing slash and path normalised to the origin, 404, 500, network error, timeout, invalid JSON, missing, blank, `ftp://x`, `not a url`) and `config-error.spec.ts` (heading, reason text, title, button reloads, response body never shown).
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 4.3_
 
-- [ ] 6. Lint, format and commit hooks
+- [x] 6. Lint, format and commit hooks
   - Install and configure angular-eslint + typescript-eslint flat config (rules and the layering `no-restricted-imports` zones, helm override for `src/app/shared/ui/**`, ignores) and wire the real `lint` script (`eslint . --max-warnings 0`).
   - Install Prettier with `prettier-plugin-tailwindcss` (`tailwindStylesheet`), `.prettierrc.json`, `.prettierignore`; run `pnpm format` once and commit the formatting.
   - Install Husky (`prepare`), lint-staged config, commitlint with `@commitlint/config-conventional`; create `.husky/pre-commit` and `.husky/commit-msg`.

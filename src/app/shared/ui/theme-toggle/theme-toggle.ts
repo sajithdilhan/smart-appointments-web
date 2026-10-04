@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChildren } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  viewChildren,
+} from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMonitor, lucideMoon, lucideSun } from '@ng-icons/lucide';
 import { ThemePreference, ThemeService } from '../../../core/theme/theme.service';
@@ -18,14 +24,14 @@ interface ThemeOption {
     <div
       role="radiogroup"
       aria-label="Theme"
-      class="border-input bg-background inline-flex gap-1 rounded-lg border p-1"
+      class="inline-flex gap-1 rounded-lg border border-input bg-background p-1"
     >
       @for (option of options; track option.value) {
         <button
           #radio
           type="button"
           role="radio"
-          class="text-foreground hover:bg-muted aria-checked:bg-primary aria-checked:text-primary-foreground inline-flex size-8 items-center justify-center rounded-md transition-colors"
+          class="inline-flex size-8 items-center justify-center rounded-md text-foreground transition-colors hover:bg-muted aria-checked:bg-primary aria-checked:text-primary-foreground"
           [attr.aria-checked]="theme.preference() === option.value"
           [attr.aria-label]="option.label"
           [attr.title]="option.label"

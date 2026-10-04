@@ -1,4 +1,8 @@
-import { EnvironmentProviders, makeEnvironmentProviders, provideAppInitializer } from '@angular/core';
+import {
+  EnvironmentProviders,
+  makeEnvironmentProviders,
+  provideAppInitializer,
+} from '@angular/core';
 import { APP_CONFIG, type AppConfig } from './app-config';
 import { renderConfigError } from './config-error';
 import { loadConfig } from './load-config';

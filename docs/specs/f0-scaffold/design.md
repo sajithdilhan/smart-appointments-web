@@ -13,18 +13,18 @@ Verified at scaffold time, not now (versions float, Req 1.4): the exact CLI flag
 
 ## Architecture
 
-| Area | Contents |
-|---|---|
-| `src/app/core/` | `config/` (`app-config.ts` token and type, `load-config.ts` pure loader, `config-error.ts` DOM error page, `config.provider.ts` initializer), `theme/theme.service.ts` |
-| `src/app/shared/ui/` | Spartan helm components: `button`, `card`, `input`, `label`, `switch`, `sonner`; and `theme-toggle/` (app primitive) |
-| `src/app/features/` | empty (`.gitkeep`); F1+ add `public/`, `customer/`, `admin/`, `staff/` |
-| `src/app/` | `app.ts` (placeholder page), `app.config.ts`, `app.routes.ts` (one lazy placeholder route) |
-| `public/` | `config.json` (dev default), `theme-init.js`, `favicon.ico` |
-| `src/testing/` | `setup.ts` (MSW server lifecycle), `server.ts`, `handlers.ts` |
-| `e2e/` | `smoke.spec.ts` |
-| `docker/` | `nginx.conf`, `security.conf`, `config.json.template`, `40-config.sh` |
-| `scripts/` | `size.mjs` |
-| root | `Dockerfile`, `.dockerignore`, `docker-compose.yml`, `.env.example`, `.github/workflows/ci.yml`, `.nvmrc`, `.editorconfig`, `.gitattributes`, `eslint.config.js`, `.prettierrc.json`, `commitlint.config.js`, `.husky/`, `playwright.config.ts`, `README.md`, `CLAUDE.md` |
+| Area                 | Contents                                                                                                                                                                                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/core/`      | `config/` (`app-config.ts` token and type, `load-config.ts` pure loader, `config-error.ts` DOM error page, `config.provider.ts` initializer), `theme/theme.service.ts`                                                                                                    |
+| `src/app/shared/ui/` | Spartan helm components: `button`, `card`, `input`, `label`, `switch`, `sonner`; and `theme-toggle/` (app primitive)                                                                                                                                                      |
+| `src/app/features/`  | empty (`.gitkeep`); F1+ add `public/`, `customer/`, `admin/`, `staff/`                                                                                                                                                                                                    |
+| `src/app/`           | `app.ts` (placeholder page), `app.config.ts`, `app.routes.ts` (one lazy placeholder route)                                                                                                                                                                                |
+| `public/`            | `config.json` (dev default), `theme-init.js`, `favicon.ico`                                                                                                                                                                                                               |
+| `src/testing/`       | `setup.ts` (MSW server lifecycle), `server.ts`, `handlers.ts`                                                                                                                                                                                                             |
+| `e2e/`               | `smoke.spec.ts`                                                                                                                                                                                                                                                           |
+| `docker/`            | `nginx.conf`, `security.conf`, `config.json.template`, `40-config.sh`                                                                                                                                                                                                     |
+| `scripts/`           | `size.mjs`                                                                                                                                                                                                                                                                |
+| root                 | `Dockerfile`, `.dockerignore`, `docker-compose.yml`, `.env.example`, `.github/workflows/ci.yml`, `.nvmrc`, `.editorconfig`, `.gitattributes`, `eslint.config.js`, `.prettierrc.json`, `commitlint.config.js`, `.husky/`, `playwright.config.ts`, `README.md`, `CLAUDE.md` |
 
 Dependency direction: `features → shared, core`; `shared → core`; `core` imports neither (Req 1.8). ESLint enforces it with `no-restricted-imports` zones (Req 3.1).
 
@@ -80,10 +80,17 @@ pnpm ng g @spartan-ng/cli:ui button card input label switch sonner
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
   /* Brand ramp: teal. Only 700 (light) and 400 (dark) carry text or filled buttons. */
-  --color-brand-50: #f0fdfa;   --color-brand-100: #ccfbf1; --color-brand-200: #99f6e4;
-  --color-brand-300: #5eead4;  --color-brand-400: #2dd4bf; --color-brand-500: #14b8a6;
-  --color-brand-600: #0d9488;  --color-brand-700: #0f766e; --color-brand-800: #115e59;
-  --color-brand-900: #134e4a;  --color-brand-950: #042f2e;
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-300: #5eead4;
+  --color-brand-400: #2dd4bf;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+  --color-brand-800: #115e59;
+  --color-brand-900: #134e4a;
+  --color-brand-950: #042f2e;
 
   /* Semantic tokens: values switch with the theme (see :root and .dark below). */
   --color-background: var(--background);
@@ -106,69 +113,103 @@ pnpm ng g @spartan-ng/cli:ui button card input label switch sonner
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
 
-  --radius-sm: 0.375rem; --radius-md: 0.5rem; --radius-lg: 0.75rem; --radius-xl: 1rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
   --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.05), 0 4px 12px rgb(0 0 0 / 0.06);
   --shadow-lifted: 0 2px 4px rgb(0 0 0 / 0.06), 0 12px 32px rgb(0 0 0 / 0.12);
 }
 
-:root {                         /* light */
-  --background: #ffffff;        --foreground: #09090b;      /* zinc-950 */
-  --card: #ffffff;              --card-foreground: #09090b;
-  --muted: #f4f4f5;             --muted-foreground: #52525b; /* zinc-100 / zinc-600 */
-  --border: #e4e4e7;            --input: #71717a;            /* zinc-200 / zinc-500 */
-  --ring: #0d9488;                                           /* teal-600 */
-  --primary: #0f766e;           --primary-foreground: #ffffff; /* teal-700 */
-  --accent: #f0fdfa;            --accent-foreground: #115e59;  /* teal-50 / teal-800 */
-  --destructive: #dc2626;       --destructive-foreground: #ffffff;
-  --success: #15803d;           --success-foreground: #ffffff;
-  --warning: #b45309;           --warning-foreground: #ffffff;
+:root {
+  /* light */
+  --background: #ffffff;
+  --foreground: #09090b; /* zinc-950 */
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --muted: #f4f4f5;
+  --muted-foreground: #52525b; /* zinc-100 / zinc-600 */
+  --border: #e4e4e7;
+  --input: #71717a; /* zinc-200 / zinc-500 */
+  --ring: #0d9488; /* teal-600 */
+  --primary: #0f766e;
+  --primary-foreground: #ffffff; /* teal-700 */
+  --accent: #f0fdfa;
+  --accent-foreground: #115e59; /* teal-50 / teal-800 */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --warning: #b45309;
+  --warning-foreground: #ffffff;
 }
 
 .dark {
-  --background: #09090b;        --foreground: #fafafa;
-  --card: #18181b;              --card-foreground: #fafafa;  /* zinc-900 */
-  --muted: #27272a;             --muted-foreground: #a1a1aa; /* zinc-800 / zinc-400 */
-  --border: #27272a;            --input: #71717a;
-  --ring: #2dd4bf;                                           /* teal-400 */
-  --primary: #2dd4bf;           --primary-foreground: #09090b;
-  --accent: #134e4a;            --accent-foreground: #99f6e4;
-  --destructive: #f87171;       --destructive-foreground: #09090b;
-  --success: #4ade80;           --success-foreground: #09090b;
-  --warning: #fbbf24;           --warning-foreground: #09090b;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #18181b;
+  --card-foreground: #fafafa; /* zinc-900 */
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa; /* zinc-800 / zinc-400 */
+  --border: #27272a;
+  --input: #71717a;
+  --ring: #2dd4bf; /* teal-400 */
+  --primary: #2dd4bf;
+  --primary-foreground: #09090b;
+  --accent: #134e4a;
+  --accent-foreground: #99f6e4;
+  --destructive: #f87171;
+  --destructive-foreground: #09090b;
+  --success: #4ade80;
+  --success-foreground: #09090b;
+  --warning: #fbbf24;
+  --warning-foreground: #09090b;
 }
 
 @layer base {
-  html { color-scheme: light; }
-  html.dark { color-scheme: dark; }
-  body { @apply bg-background text-foreground font-sans antialiased; }
-  *:focus-visible { @apply outline-2 outline-offset-2 outline-ring; }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 ```
 
 **Measured WCAG contrast** (WCAG relative-luminance formula; computed during design). Thresholds: 4.5:1 text, 3:1 large text and UI components (Req 2.4).
 
-| Pair | Ratio | Use | Result |
-|---|---|---|---|
-| teal-600 `#0d9488` on white | 3.74 | focus ring, icons, large text | passes 3:1 only |
-| white on teal-600 | 3.74 | (not used for buttons) | **fails 4.5:1** — reason the brand-fill is teal-700 |
-| white on teal-700 `#0f766e` | 5.47 | light primary button, text links | passes |
-| zinc-950 on teal-400 `#2dd4bf` | 10.69 | dark primary button | passes |
-| teal-400 on zinc-950 / on zinc-900 | 10.69 / 9.52 | dark ring, links | passes |
-| zinc-950 on white | 19.9 | body text, light | passes |
-| zinc-600 on white | 7.73 | muted text, light | passes |
-| zinc-400 on zinc-950 / zinc-900 | 7.76 / 6.91 | muted text, dark | passes |
-| zinc-500 `#71717a` on white / on zinc-950 | 4.83 / 4.12 | input border (needs 3:1) | passes |
-| white on red-600; zinc-950 on red-400 | 4.83; 7.19 | destructive, light; dark | passes |
-| white on green-700; zinc-950 on green-400 | 5.02; 11.42 | success | passes |
-| white on amber-700; zinc-950 on amber-400 | 5.02; 11.92 | warning | passes |
-| zinc-200 border on white | ~1.2 | decorative card dividers only | not required (non-interactive) |
+| Pair                                      | Ratio        | Use                              | Result                                              |
+| ----------------------------------------- | ------------ | -------------------------------- | --------------------------------------------------- |
+| teal-600 `#0d9488` on white               | 3.74         | focus ring, icons, large text    | passes 3:1 only                                     |
+| white on teal-600                         | 3.74         | (not used for buttons)           | **fails 4.5:1** — reason the brand-fill is teal-700 |
+| white on teal-700 `#0f766e`               | 5.47         | light primary button, text links | passes                                              |
+| zinc-950 on teal-400 `#2dd4bf`            | 10.69        | dark primary button              | passes                                              |
+| teal-400 on zinc-950 / on zinc-900        | 10.69 / 9.52 | dark ring, links                 | passes                                              |
+| zinc-950 on white                         | 19.9         | body text, light                 | passes                                              |
+| zinc-600 on white                         | 7.73         | muted text, light                | passes                                              |
+| zinc-400 on zinc-950 / zinc-900           | 7.76 / 6.91  | muted text, dark                 | passes                                              |
+| zinc-500 `#71717a` on white / on zinc-950 | 4.83 / 4.12  | input border (needs 3:1)         | passes                                              |
+| white on red-600; zinc-950 on red-400     | 4.83; 7.19   | destructive, light; dark         | passes                                              |
+| white on green-700; zinc-950 on green-400 | 5.02; 11.42  | success                          | passes                                              |
+| white on amber-700; zinc-950 on amber-400 | 5.02; 11.92  | warning                          | passes                                              |
+| zinc-200 border on white                  | ~1.2         | decorative card dividers only    | not required (non-interactive)                      |
 
 Rules that follow: teal-600 is never text on white; interactive control boundaries (input, checkbox) use `--input` (3:1+), not `--border`; and muted text never uses zinc-500 on a dark background (4.12 fails 4.5). A unit test reads the token sheet and asserts each text pair meets the ratio (a small `contrast.spec.ts` with the luminance formula, parsing `:root` and `.dark` blocks), so a later token edit cannot regress this silently (Req 2.4).
 
@@ -202,16 +243,14 @@ export class ThemeService {
 ### Runtime configuration (Req 6.1-6.7)
 
 ```ts
-export interface AppConfig { readonly apiBaseUrl: string }
+export interface AppConfig {
+  readonly apiBaseUrl: string;
+}
 export const APP_CONFIG = new InjectionToken<AppConfig>('APP_CONFIG');
 
-export type ConfigResult =
-  | { ok: true; config: AppConfig }
-  | { ok: false; reason: string };            // human-readable, no response body
+export type ConfigResult = { ok: true; config: AppConfig } | { ok: false; reason: string }; // human-readable, no response body
 
-export async function loadConfig(
-  fetchFn: typeof fetch, timeoutMs = 5000,
-): Promise<ConfigResult>;
+export async function loadConfig(fetchFn: typeof fetch, timeoutMs = 5000): Promise<ConfigResult>;
 ```
 
 `loadConfig` fetches `'/config.json'` with `{ cache: 'no-store', signal: AbortSignal.timeout(timeoutMs) }`, then: network error / abort → `"could not reach config.json"`; non-2xx → `"config.json returned <status>"`; invalid JSON → `"config.json is not valid JSON"`; missing/blank → `"apiBaseUrl is missing"`; fails `new URL()` or protocol not `http:`/`https:` → `"apiBaseUrl is not a valid http(s) URL"`; success → `{ apiBaseUrl: url.origin }` (Req 6.3, 6.4). It is pure apart from the fetch it is handed, so unit tests pass a stub (Req 6.6).
@@ -224,7 +263,10 @@ export function provideAppConfig(): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideAppInitializer(async () => {
       const result = await loadConfig(fetch);
-      if (!result.ok) { renderConfigError(result.reason); throw new Error(result.reason); }
+      if (!result.ok) {
+        renderConfigError(result.reason);
+        throw new Error(result.reason);
+      }
       loaded = result.config;
     }),
     { provide: APP_CONFIG, useFactory: () => loaded },
@@ -263,7 +305,8 @@ export default defineConfig({
   retries: process.env['CI'] ? 2 : 0,
   use: { baseURL, trace: 'on-first-retry' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: process.env['E2E_BASE_URL'] ? undefined
+  webServer: process.env['E2E_BASE_URL']
+    ? undefined
     : { command: 'pnpm start', url: baseURL, reuseExistingServer: true, timeout: 120_000 },
 });
 ```
@@ -433,7 +476,7 @@ services:
     build: .
     image: smart-appointments-web:local
     ports:
-      - "${WEB_PORT:-8081}:8080"
+      - '${WEB_PORT:-8081}:8080'
     environment:
       API_BASE_URL: ${API_BASE_URL:-http://localhost:5290}
     restart: unless-stopped
@@ -546,29 +589,29 @@ The `wait-on` tool is a devDependency. The `# checkout, pnpm, node, install` lin
 
 ## Error handling
 
-| Condition | Where | Result |
-|---|---|---|
-| `config.json` unreachable, non-2xx, timeout, bad JSON, missing or malformed `apiBaseUrl` | `loadConfig` | `{ ok:false, reason }`; initializer renders the DOM error page and rejects (Req 6.4) |
-| `localStorage` throws on read/write | `ThemeService`, `theme-init.js` | in-memory preference, no error (Req 2.7) |
-| `API_BASE_URL` empty or invalid at container start | `40-config.sh` | container starts; `config.json` has the raw/empty value; CSP `connect-src 'self'`; SPA shows the error page (Req 7.4, 7.5) |
-| Missing file with extension | nginx | `404` with security headers (Req 7.6.1, 7.7) |
-| Budget exceeded / gzip over 250 kB | build, `size.mjs` | build or CI job fails (Req 5) |
+| Condition                                                                                | Where                           | Result                                                                                                                     |
+| ---------------------------------------------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `config.json` unreachable, non-2xx, timeout, bad JSON, missing or malformed `apiBaseUrl` | `loadConfig`                    | `{ ok:false, reason }`; initializer renders the DOM error page and rejects (Req 6.4)                                       |
+| `localStorage` throws on read/write                                                      | `ThemeService`, `theme-init.js` | in-memory preference, no error (Req 2.7)                                                                                   |
+| `API_BASE_URL` empty or invalid at container start                                       | `40-config.sh`                  | container starts; `config.json` has the raw/empty value; CSP `connect-src 'self'`; SPA shows the error page (Req 7.4, 7.5) |
+| Missing file with extension                                                              | nginx                           | `404` with security headers (Req 7.6.1, 7.7)                                                                               |
+| Budget exceeded / gzip over 250 kB                                                       | build, `size.mjs`               | build or CI job fails (Req 5)                                                                                              |
 
 ## Testing strategy
 
-| Requirement | Verified by |
-|---|---|
-| 1.1-1.8 | `pnpm build` and `typecheck` in CI; a unit test asserting `package.json` has no `zone.js` and the scripts exist; `only-allow` by manual check |
-| 2.1-2.5 | `styles.css` contrast spec; `pnpm build`; `app.spec.ts` renders the button; manual: no third-party requests in the network panel |
-| 2.6-2.10 | `theme.service.spec.ts`, `theme-init.spec.ts`, `theme-toggle.spec.ts` (role queries, keyboard), e2e smoke test 2 |
-| 3.1-3.6 | CI `lint`/`format:check`; manual commitlint accept/reject cases recorded in the task |
-| 4.1-4.8 | `pnpm test` itself; `setup.ts` fails on unhandled requests (a spec performs an unmocked `fetch` and expects rejection) |
-| 5.1-5.5 | `pnpm build` with budgets; `pnpm size` in CI |
-| 6.1-6.7 | `load-config.spec.ts`, `config-error.spec.ts`, e2e smoke test 3, CI `grep` step |
-| 7.1-7.10 | CI `docker` job curl assertions, including the hostile `API_BASE_URL` case; `docker run id -u` |
-| 8.1-8.6 | manual `docker compose up --build`, `docker compose ps`; CI builds the image only |
-| 9.1-9.6 | the workflow itself on the first PR |
-| 10.1-10.4 | review against the outlines above |
+| Requirement | Verified by                                                                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1-1.8     | `pnpm build` and `typecheck` in CI; a unit test asserting `package.json` has no `zone.js` and the scripts exist; `only-allow` by manual check |
+| 2.1-2.5     | `styles.css` contrast spec; `pnpm build`; `app.spec.ts` renders the button; manual: no third-party requests in the network panel              |
+| 2.6-2.10    | `theme.service.spec.ts`, `theme-init.spec.ts`, `theme-toggle.spec.ts` (role queries, keyboard), e2e smoke test 2                              |
+| 3.1-3.6     | CI `lint`/`format:check`; manual commitlint accept/reject cases recorded in the task                                                          |
+| 4.1-4.8     | `pnpm test` itself; `setup.ts` fails on unhandled requests (a spec performs an unmocked `fetch` and expects rejection)                        |
+| 5.1-5.5     | `pnpm build` with budgets; `pnpm size` in CI                                                                                                  |
+| 6.1-6.7     | `load-config.spec.ts`, `config-error.spec.ts`, e2e smoke test 3, CI `grep` step                                                               |
+| 7.1-7.10    | CI `docker` job curl assertions, including the hostile `API_BASE_URL` case; `docker run id -u`                                                |
+| 8.1-8.6     | manual `docker compose up --build`, `docker compose ps`; CI builds the image only                                                             |
+| 9.1-9.6     | the workflow itself on the first PR                                                                                                           |
+| 10.1-10.4   | review against the outlines above                                                                                                             |
 
 ## Open questions — resolved
 

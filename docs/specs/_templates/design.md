@@ -19,12 +19,12 @@ Stop here and get approval before writing tasks.md.
 <!-- Which folder under src/app each piece lands in. Keep the dependency
 direction right: features → shared and core; shared and core never import features. -->
 
-| Area | Contents |
-|---|---|
-| `src/app/core/` | |
-| `src/app/shared/ui/` | |
-| `src/app/features/<area>/` | |
-| `docker/`, CI, config | |
+| Area                       | Contents |
+| -------------------------- | -------- |
+| `src/app/core/`            |          |
+| `src/app/shared/ui/`       |          |
+| `src/app/features/<area>/` |          |
+| `docker/`, CI, config      |          |
 
 ## Components and interfaces
 
@@ -34,7 +34,7 @@ interceptors, with their signatures. -->
 ### Routes
 
 | Path | Component | Guard | Notes |
-|---|---|---|---|
+| ---- | --------- | ----- | ----- |
 
 ### Components, stores and services
 
@@ -58,7 +58,7 @@ and the shape of any view models. -->
 interceptor. Map each one to what the user sees. -->
 
 | Condition | `AppError.status` | UI result |
-|---|---|---|
+| --------- | ----------------- | --------- |
 
 ## Testing strategy
 
