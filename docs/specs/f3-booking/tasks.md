@@ -94,6 +94,7 @@ Rules (from the template):
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.6, 7.8, 8.3, 8.4, 8.7, 8.8, 12.4_
 
 - [ ] 16. `buildIcs`, download and calendar button
+  - partial: `build-ics.ts` and `ics-download.ts` are done and tested; `downloadIcs` returns `false` instead of calling `ToastService.showError`, and `calendar-button.component.ts` is not built, both waiting on F1 `ToastService`.
   - `features/customer/shared/ics/build-ics.ts` (`buildIcs`, `icsFileName`, escaping, CRLF, folding at 75 octets without splitting a code point, UTC `DTSTART`/`DTEND`, UID), `ics-download.ts` (Blob, object URL revoked after the click, failure shown once with `showError`), and `book/components/calendar-button.component.ts` (lazy `import()` on first click).
   - Specs: exact `DTSTART` and `DTEND`, escaping of commas, semicolons, backslashes and a newline, control-character stripping, folding of a long ASCII address and of "Zürich", CRLF endings, UID, parse-back of the property set, file name cases, download failure.
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
