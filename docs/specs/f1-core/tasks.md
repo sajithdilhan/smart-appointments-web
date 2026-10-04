@@ -36,7 +36,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Unit tests per Req 13.11: rollover and leap day, `diffDays` across a DST week, `todayInZone` near midnight ahead of and behind the process zone, `weekdayOf`, `eachDate` bounds, `localToUtc` on London (2026-03-29, 2026-10-25), New York (2026-03-08, 2026-11-01), Auckland (2026-09-27) and Kolkata, `isOpenNow` at `opensAt` and `closesAt`, closed day, `no-schedule`, invalid zone with one warning.
   - _Requirements: 13.6, 13.8, 13.9, 13.10, 13.11_
 
-- [ ] 4. `AppError`, normalization and HTTP helpers
+- [x] 4. `AppError`, normalization and HTTP helpers
   - Add `core/http/app-error.ts` (`AppErrorKind`, `AppError extends Error`), `normalize-error.ts` (pure, table-driven per the design, 500-character cap), `http-context.ts` (`RETRIED`, `OUTAGE_PROBE`, `SKIP_AUTH`) and `origin.ts` (`isApiRequest`, case-insensitive `isAuthEndpoint`).
   - Unit tests: one row per body shape (`{status, detail}`, `ValidationProblemDetails`, empty body, string body, no-JSON), status 0 network, timeout, `429` with, without and HTTP-date `Retry-After`, 401/5xx kinds, oversized detail, no stack or body ever in `message`.
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9_
