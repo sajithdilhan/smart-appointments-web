@@ -86,7 +86,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests with the mock backend: login sets state and loads names; expiry derivation and `exp` wins on mismatch; the access token never appears in `localStorage` or `sessionStorage` (spies); `me` failure keeps the session, sets `profileStatus: 'error'` and falls back to the email, and `reloadProfile()` retries to `ready` (`profileStatus` idle, loading, ready; never rejects); logout sends one call with the stored token, clears everything, is silent on failure and skips the call without a token.
   - _Requirements: 6.1, 6.2, 6.4, 6.5, 6.6, 6.7, 6.10, 6.13_
 
-- [ ] 13. Refresh scheduler
+- [x] 13. Refresh scheduler
   - Add `core/auth/refresh-schedule.ts` (pure `refreshDelayMs`) and a `RefreshScheduler` service (one timer from `CLOCK`, `schedule`, `cancel`, `visibilitychange` recompute, last-refresh bookkeeping), wired into `applyTokens` and `clearLocal`.
   - Tests: pure delay table (past, near, far, 5 s floor); with fake timers the refresh fires at exp minus 60 s; `visibilitychange` recomputes; cleared on logout.
   - _Requirements: 7.1, 7.2, 7.9_

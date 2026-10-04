@@ -267,3 +267,31 @@ describe('SessionStore', () => {
     await vi.waitFor(() => expect(done).toBe(true));
   });
 });
+
+describe('SessionStore proactive refresh', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'],
+    });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+    TestBed.inject(TokenStorage).clear();
+    localStorage.clear();
+  });
+
+  it('refreshes at exp minus 60 s and cancels on logout', async () => {
+    const { store, backend } = setup();
+    backend.state.accessTokenSeconds = 600;
+    await store.login('ann@example.com', 'pw');
+    expect(store.status()).toBe('authenticated');
+    await vi.advanceTimersByTimeAsync(539_000);
+    expect(backend.state.counters.refresh).toBe(0);
+    await vi.advanceTimersByTimeAsync(2_000);
+    await vi.waitFor(() => expect(backend.state.counters.refresh).toBe(1));
+    await vi.advanceTimersByTimeAsync(100);
+    store.clearLocal();
+    await vi.advanceTimersByTimeAsync(10_000_000);
+    expect(backend.state.counters.refresh).toBe(1);
+  });
+});

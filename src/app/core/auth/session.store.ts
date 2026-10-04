@@ -8,6 +8,7 @@ import { AppError } from '../http/app-error';
 import { fromEpochMs, toIsoUtc } from '../time';
 import { decodeAccessToken } from './jwt';
 import type { Role, SessionStatus, SessionUser } from './session.model';
+import { RefreshScheduler } from './refresh-scheduler';
 import { TokenStorage } from './token-storage';
 
 export interface Profile {
@@ -59,11 +60,13 @@ export const SessionStore = signalStore(
     const injector = inject(Injector);
     const auth = inject(AuthApiService);
     const tokens = inject(TokenStorage);
+    const scheduler = inject(RefreshScheduler);
 
     let resolveSettled!: () => void;
     const settledPromise = new Promise<void>((resolve) => (resolveSettled = resolve));
 
     function clearLocal(): void {
+      scheduler.cancel();
       patchState(store, anonymous);
       resolveSettled();
     }
@@ -118,7 +121,17 @@ export const SessionStore = signalStore(
         ...(sameUser ? {} : { profile: null, profileStatus: 'idle' as const }),
       });
       resolveSettled();
+      scheduler.schedule(claims.exp * 1000, () => void refresh().catch(() => undefined));
       void fetchProfile();
+    }
+
+    /** Plain refresh with the stored token; task 14 replaces this with the coordinator. */
+    async function refresh(): Promise<void> {
+      const token = tokens.read();
+      if (!token) return;
+      const response = await firstValueFrom(auth.refresh(token));
+      scheduler.markRefreshed();
+      applyTokens(response);
     }
 
     /** Ends the session locally (and in storage). Task 15 routes this through `SessionEnder`. */
@@ -132,6 +145,7 @@ export const SessionStore = signalStore(
       /** Resolves once, at the first transition out of `unknown`. */
       settled: (): Promise<void> => settledPromise,
       applyTokens,
+      refresh,
       clearLocal,
       endSession,
       loadProfile: fetchProfile,
