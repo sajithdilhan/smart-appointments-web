@@ -47,13 +47,13 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Integration tests (MSW + `HttpClient`): id header only for the API origin; an existing id kept; token and id absent for another origin; response id on `AppError`; `HttpResponse.error()` gives `network`; a never-resolving handler with fake timers gives `timeout` at 30 s; `credentials` is not `include`; outage state set by 502/503/504/network/timeout and not by 4xx; cleared by a later success; a probe failure never sets it.
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.5, 3.6, 5.1, 5.3, 5.5, 5.7_
 
-- [ ] 6. Test doubles: mock auth backend and helpers
+- [x] 6. Test doubles: mock auth backend and helpers
   - Add `src/testing/make-access-token.ts`, `src/testing/auth-backend.ts` (`createAuthBackend`: families, rotation, reuse revokes the whole family, counters, flags, correlation id echo, `application/problem+json` errors) and `src/testing/handlers/auth.handlers.ts` for register, login, refresh, logout, me.
   - Add `src/testing/fake-channel.ts` (in-memory `CrossTabSync` pair with a shared lock queue) and `src/testing/render-with-session.ts`.
   - Unit tests of the backend model itself: rotation, revoked token revokes the family (the latest token then also fails), unknown and expired give 401, counters, echoed id, content type; `grep -ri msw` build guard noted for task 25.
   - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6_
 
-- [ ] 7. `ToastService` and error announcements
+- [x] 7. `ToastService` and error announcements
   - Add `core/notify/toast.service.ts` (`showError`, `handleError` policy, `showInfo`, `showSuccess`, `showSessionExpired`, copyable reference with a try/catch clipboard) and mount `<hlm-toaster>` (add the helm `sonner` wrapper if F0 did not) in `app.ts`.
   - Check whether ngx-sonner announces errors assertively; IF not, add `alert-announcer.ts` (visually hidden `role="alert"`, cleared on the previous animation frame) and mount it; record the outcome in the design.
   - Component and unit tests: message, reference line, Copy action writes the id, denied or missing clipboard does not throw, the policy table (toast or not per kind and status), errors stay at least 8 s, announcer text, success toast auto-dismiss.
