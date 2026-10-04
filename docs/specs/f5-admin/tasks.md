@@ -26,7 +26,7 @@ Rules (from the template):
   - Table-driven specs from the design's vector list (`" pg "`, `"-AB"`, `"A"`, 11 characters, `+14155550123`, `0123`; duration 4/5/7/480/485; `_` at code ends; `9:00`, `24:00`, equal times; 30 vs 31 days; capacity 0/1/100/101). Contract test: client messages that mirror the backend equal the fixture.
   - _Requirements: 3.4, 5.3, 7.2, 8.5, 8.6, 13.2_
 
-- [ ] 4. Server validation parser and error mappers
+- [x] 4. Server validation parser and error mappers
   - `parse-validation-detail.ts` (`splitValidationDetail`, comma-aware matching of known messages) and `server-messages.ts` (message to field tables per form, `mapServerValidation`).
   - `branch-error.ts`, `service-error.ts`, `schedule-error.ts`, `generate-error.ts` (pure `AppError` to outcome mappers, including the generation 409/404 pattern table).
   - Specs: known messages containing commas mid-string, unknown tail, no prefix, each outcome row; contract test that every table entry exists in the fixture.
