@@ -40,6 +40,7 @@ Rules (from the template):
   - _Requirements: 7.2, 7.3, 7.4, 9.7_
 
 - [ ] 6. Slot search service
+  - partial: the service is built and tested, but `429` and the budget expose `retryAfterSeconds` in the state instead of a `RetryCountdown`, and the `404` toast ("That option is no longer available...") is not called; both wait on F1 `createRetryCountdown`/`RateLimitNotice` and `ToastService`.
   - `book/slot-search.service.ts`: the debounced (250 ms) `switchMap` pipeline, synchronous cache hits, stale-while-revalidate with a `sameSlots` check, the budget with a countdown notice, `429` countdown with no auto retry, `404` handling through `ReferenceDataStore.refresh()`, outage re-issue on `OutageState.recovered`, normalisation (drop foreign or zero-capacity slots, sort by `startAtUtc`), `invalidate`.
   - Specs with fake timers: debounce, a superseded request aborted, a fresh hit sends nothing, a stale hit renders then refreshes and replaces only on change, 26 rapid distinct dates send at most 25, `429` countdown and the manual retry, `404`, outage then recovery.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.7_
