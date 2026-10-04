@@ -1,0 +1,397 @@
+{
+  "$comment": "Copied by hand from the Availability service's validators and error factories. Re-read the C# sources named in each entry to update it; see README.md. The MSW admin backend and the client contract tests both read this file.",
+  "backendRepo": "SmartAppointments/src/Services/Availability",
+  "patterns": {
+    "branchCode": {
+      "regex": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,8}[A-Za-z0-9])$",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs",
+      "rule": "CodePattern, matched against code.Trim()",
+      "vectors": [
+        { "input": " pg ", "valid": true },
+        { "input": "PG", "valid": true },
+        { "input": "a1", "valid": true },
+        { "input": "A-B", "valid": true },
+        { "input": "ABCDEFGHIJ", "valid": true },
+        { "input": "-AB", "valid": false },
+        { "input": "AB-", "valid": false },
+        { "input": "A", "valid": false },
+        { "input": "ABCDEFGHIJK", "valid": false },
+        { "input": "A_B", "valid": false },
+        { "input": "", "valid": false }
+      ]
+    },
+    "serviceCode": {
+      "regex": "^[A-Za-z0-9](?:[A-Za-z0-9_-]{0,28}[A-Za-z0-9])$",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "CodePattern, matched against code.Trim()",
+      "vectors": [
+        { "input": " cut ", "valid": true },
+        { "input": "A_B", "valid": true },
+        { "input": "A-B_C", "valid": true },
+        { "input": "_AB", "valid": false },
+        { "input": "AB_", "valid": false },
+        { "input": "-AB", "valid": false },
+        { "input": "A", "valid": false },
+        { "input": "A234567890123456789012345678901", "valid": false },
+        { "input": "A23456789012345678901234567890", "valid": true }
+      ]
+    },
+    "phone": {
+      "regex": "^\\+?[1-9]\\d{1,14}$",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs",
+      "rule": "PhoneNumber.Matches (the value is not trimmed first)",
+      "vectors": [
+        { "input": "+14155550123", "valid": true },
+        { "input": "14155550123", "valid": true },
+        { "input": "12", "valid": true },
+        { "input": "0123", "valid": false },
+        { "input": "+0123", "valid": false },
+        { "input": "1", "valid": false },
+        { "input": "+1415 555 0123", "valid": false },
+        { "input": "1234567890123456", "valid": false }
+      ]
+    },
+    "time": {
+      "regex": "^([01]\\d|2[0-3]):[0-5]\\d$",
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "TimePattern",
+      "vectors": [
+        { "input": "09:00", "valid": true },
+        { "input": "00:00", "valid": true },
+        { "input": "23:59", "valid": true },
+        { "input": "9:00", "valid": false },
+        { "input": "24:00", "valid": false },
+        { "input": "09:60", "valid": false },
+        { "input": "09:00:00", "valid": false },
+        { "input": "", "valid": false }
+      ]
+    }
+  },
+  "limits": {
+    "name": {
+      "max": 100,
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, ServiceTypeRules.cs"
+    },
+    "description": {
+      "max": 500,
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, ServiceTypeRules.cs"
+    },
+    "address": {
+      "max": 200,
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs"
+    },
+    "duration": {
+      "min": 5,
+      "max": 480,
+      "step": 5,
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs"
+    },
+    "capacity": {
+      "min": 1,
+      "max": 100,
+      "file": "Availability.Application/Validations/GenerateSlotsCommandValidator.cs"
+    },
+    "rangeDays": {
+      "maxSpanned": 31,
+      "file": "Availability.Application/Validations/GenerateSlotsCommandValidator.cs",
+      "rule": "ToDate.DayNumber - FromDate.DayNumber < 31"
+    }
+  },
+  "messages": [
+    {
+      "id": "branch.code.required",
+      "text": "Code is required.",
+      "form": "branch",
+      "field": "code",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs",
+      "rule": "Code NotEmpty"
+    },
+    {
+      "id": "branch.code.pattern",
+      "text": "Code must be 2-10 letters, digits or hyphens, and cannot start or end with a hyphen.",
+      "form": "branch",
+      "field": "code",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs",
+      "rule": "Code Must(CodePattern)"
+    },
+    {
+      "id": "service.code.required",
+      "text": "Code is required.",
+      "form": "service",
+      "field": "code",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "Code NotEmpty"
+    },
+    {
+      "id": "service.code.pattern",
+      "text": "Code must be 2-30 letters, digits, hyphens or underscores, and cannot start or end with a hyphen or underscore.",
+      "form": "service",
+      "field": "code",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "Code Must(CodePattern)"
+    },
+    {
+      "id": "branch.name.required",
+      "text": "Name is required.",
+      "form": "branch",
+      "field": "name",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, UpdateBranchCommandValidator.cs",
+      "rule": "Name NotEmpty"
+    },
+    {
+      "id": "branch.name.max",
+      "text": "Name cannot exceed 100 characters.",
+      "form": "branch",
+      "field": "name",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, UpdateBranchCommandValidator.cs",
+      "rule": "Name MaximumLength(100)"
+    },
+    {
+      "id": "service.name.required",
+      "text": "Name is required.",
+      "form": "service",
+      "field": "name",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "Name NotEmpty"
+    },
+    {
+      "id": "service.name.max",
+      "text": "Name cannot exceed 100 characters.",
+      "form": "service",
+      "field": "name",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "Name MaximumLength(100)"
+    },
+    {
+      "id": "branch.description.max",
+      "text": "Description cannot exceed 500 characters.",
+      "form": "branch",
+      "field": "description",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, UpdateBranchCommandValidator.cs",
+      "rule": "Description MaximumLength(500)"
+    },
+    {
+      "id": "service.description.max",
+      "text": "Description cannot exceed 500 characters.",
+      "form": "service",
+      "field": "description",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "Description MaximumLength(500)"
+    },
+    {
+      "id": "branch.address.required",
+      "text": "Address is required.",
+      "form": "branch",
+      "field": "address",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, UpdateBranchCommandValidator.cs",
+      "rule": "Address NotEmpty"
+    },
+    {
+      "id": "branch.address.max",
+      "text": "Address cannot exceed 200 characters.",
+      "form": "branch",
+      "field": "address",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, UpdateBranchCommandValidator.cs",
+      "rule": "Address MaximumLength(200)"
+    },
+    {
+      "id": "branch.phone.required",
+      "text": "Phone number is required.",
+      "form": "branch",
+      "field": "phoneNumber",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, UpdateBranchCommandValidator.cs",
+      "rule": "PhoneNumber NotEmpty"
+    },
+    {
+      "id": "branch.phone.pattern",
+      "text": "Invalid phone number format.",
+      "form": "branch",
+      "field": "phoneNumber",
+      "file": "Availability.Application/Validations/CreateBranchCommandValidator.cs, UpdateBranchCommandValidator.cs",
+      "rule": "PhoneNumber Matches"
+    },
+    {
+      "id": "service.duration.range",
+      "text": "Duration must be between 5 and 480 minutes.",
+      "form": "service",
+      "field": "durationMinutes",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "Duration InclusiveBetween(5, 480)"
+    },
+    {
+      "id": "service.duration.step",
+      "text": "Duration must be a multiple of 5 minutes.",
+      "form": "service",
+      "field": "durationMinutes",
+      "file": "Availability.Application/Validations/ServiceTypeRules.cs",
+      "rule": "Duration minutes % 5 == 0"
+    },
+    {
+      "id": "schedule.zone",
+      "text": "Time zone must be an IANA time zone identifier, such as 'Asia/Colombo'.",
+      "form": "schedule",
+      "field": "timeZoneId",
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "TimeZoneId BeAnIanaTimeZone"
+    },
+    {
+      "id": "schedule.hoursRequired",
+      "text": "Working hours are required; use an empty list to close every day.",
+      "form": "schedule",
+      "field": null,
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "WorkingHours NotNull"
+    },
+    {
+      "id": "schedule.dayOnce",
+      "text": "A day of the week can be listed only once.",
+      "form": "schedule",
+      "field": null,
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "WorkingHours Distinct DayOfWeek"
+    },
+    {
+      "id": "schedule.dayInvalid",
+      "text": "Day of week is not valid.",
+      "form": "schedule",
+      "field": null,
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "DayOfWeek IsInEnum"
+    },
+    {
+      "id": "schedule.opensFormat",
+      "text": "Opening time must be a 24-hour time in the form HH:mm.",
+      "form": "schedule",
+      "field": null,
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "OpensAt NotEmpty Matches(TimePattern)"
+    },
+    {
+      "id": "schedule.closesFormat",
+      "text": "Closing time must be a 24-hour time in the form HH:mm.",
+      "form": "schedule",
+      "field": null,
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "ClosesAt NotEmpty Matches(TimePattern)"
+    },
+    {
+      "id": "schedule.order",
+      "text": "Opening time must be before closing time.",
+      "form": "schedule",
+      "field": null,
+      "file": "Availability.Application/Validations/SetBranchScheduleCommandValidator.cs",
+      "rule": "OpenBeforeClose"
+    },
+    {
+      "id": "generation.branchRequired",
+      "text": "Branch id is required.",
+      "form": "generation",
+      "field": "branchId",
+      "file": "Availability.Application/Validations/GenerateSlotsCommandValidator.cs",
+      "rule": "BranchId NotEmpty"
+    },
+    {
+      "id": "generation.serviceRequired",
+      "text": "Service type id is required.",
+      "form": "generation",
+      "field": "serviceTypeId",
+      "file": "Availability.Application/Validations/GenerateSlotsCommandValidator.cs",
+      "rule": "ServiceTypeId NotEmpty"
+    },
+    {
+      "id": "generation.order",
+      "text": "From date cannot be after to date.",
+      "form": "generation",
+      "field": "toDate",
+      "file": "Availability.Application/Validations/GenerateSlotsCommandValidator.cs",
+      "rule": "ToDate GreaterThanOrEqualTo(FromDate)"
+    },
+    {
+      "id": "generation.span",
+      "text": "The date range cannot span more than 31 days.",
+      "form": "generation",
+      "field": "toDate",
+      "file": "Availability.Application/Validations/GenerateSlotsCommandValidator.cs",
+      "rule": "DayNumber difference < 31"
+    },
+    {
+      "id": "generation.capacity",
+      "text": "Capacity must be between 1 and 100.",
+      "form": "generation",
+      "field": "capacity",
+      "file": "Availability.Application/Validations/GenerateSlotsCommandValidator.cs",
+      "rule": "Capacity InclusiveBetween(1, 100)"
+    }
+  ],
+  "validationEnvelope": {
+    "prefix": "Invalid request data. Errors: ",
+    "separator": ",",
+    "note": "The backend joins rule messages with a bare comma; some messages contain commas themselves."
+  },
+  "errors": [
+    {
+      "id": "branch.duplicate",
+      "status": 409,
+      "template": "A branch with code '{code}' already exists.",
+      "pattern": "^A branch with code '.*' already exists\\.$",
+      "example": "A branch with code 'PG' already exists.",
+      "file": "Availability.Application/Handlers/CreateBranchCommandHandler.cs"
+    },
+    {
+      "id": "service.duplicate",
+      "status": 409,
+      "template": "A service type with code '{code}' already exists.",
+      "pattern": "^A service type with code '.*' already exists\\.$",
+      "example": "A service type with code 'CUT' already exists.",
+      "file": "Availability.Application/Handlers/ServiceTypeErrors.cs"
+    },
+    {
+      "id": "branch.notFound",
+      "status": 404,
+      "template": "Branch '{id}' was not found.",
+      "pattern": "^Branch '.*' was not found\\.$",
+      "example": "Branch '0190a1b2-0000-7000-8000-000000000001' was not found.",
+      "file": "Availability.Application/Handlers/BranchErrors.cs"
+    },
+    {
+      "id": "service.notFound",
+      "status": 404,
+      "template": "Service type '{id}' was not found.",
+      "pattern": "^Service type '.*' was not found\\.$",
+      "example": "Service type '0190a1b2-0000-7000-8000-000000000002' was not found.",
+      "file": "Availability.Application/Handlers/ServiceTypeErrors.cs"
+    },
+    {
+      "id": "generation.branchInactive",
+      "status": 409,
+      "template": "Branch '{code}' is inactive.",
+      "pattern": "^Branch '.*' is inactive\\.$",
+      "example": "Branch 'PG' is inactive.",
+      "file": "Availability.Application/Handlers/SlotErrors.cs"
+    },
+    {
+      "id": "generation.serviceInactive",
+      "status": 409,
+      "template": "Service type '{code}' is inactive.",
+      "pattern": "^Service type '.*' is inactive\\.$",
+      "example": "Service type 'CUT' is inactive.",
+      "file": "Availability.Application/Handlers/SlotErrors.cs"
+    },
+    {
+      "id": "generation.noWorkingHours",
+      "status": 409,
+      "template": "Branch '{code}' has no working hours.",
+      "pattern": "has no working hours\\.$",
+      "example": "Branch 'PG' has no working hours.",
+      "file": "Availability.Application/Handlers/SlotErrors.cs"
+    },
+    {
+      "id": "generation.concurrent",
+      "status": 409,
+      "template": "Slots for this branch and service type were generated by a concurrent request. Try again.",
+      "pattern": "concurrent request",
+      "example": "Slots for this branch and service type were generated by a concurrent request. Try again.",
+      "file": "Availability.Application/Handlers/SlotErrors.cs"
+    }
+  ]
+}

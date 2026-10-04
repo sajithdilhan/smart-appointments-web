@@ -10,7 +10,7 @@ Rules (from the template):
 
 **Prerequisite.** F5 starts after F4. It needs these pieces from F1 and F2 to exist and be tested; F5 consumes them and builds none of them (if one is missing, finish it there first): `ApiClient`, `AvailabilityApiService` shell, `AppError`, `ToastService`, `OutageState` (with `recovered`), `SessionStore`, `roleGuard`, `ViewportService`, `CLOCK`, `safeGet`/`safeSet`, `RateLimitNotice`, `createRetryCountdown`, the admin shell with `BreadcrumbTrail`, `RouteAnnouncer`, `PaletteLauncher` and its shell button, `core/time` including `zoneOffsetMinutes`, `todayInZone`, `addDays`, `diffDays`, `weekdayOf`, `eachDate` and `localToUtc`, the F1 MSW setup and `makeAccessToken`, and F2's `shared/forms/` pieces (`form-field`, `field-a11y`, `field-view`, `form-alert`, `focus-first-invalid`, `field-rules`, `phone`) and `shared/a11y/focus-heading`.
 
-- [ ] 1. Contract fixtures and API methods
+- [x] 1. Contract fixtures and API methods
   - `src/testing/fixtures/availability-contract.json`: every validation message, code pattern and sample vector copied from the Availability validators, each with its C# source file and rule; `src/testing/fixtures/README.md` describes the fixture.
   - Add the admin methods to `core/api/availability-api.service.ts`: `listBranches`, `getBranch`, `createBranch`, `updateBranch`, `setSchedule`, `setBranchActive`, the same set for services, and `generateSlots`; alias the generated types in `core/api/models.ts`. `updateBranch`/`updateService` return a body or `void`.
   - Spec with MSW per method: HTTP method, absolute URL, query string (`includeInactive`), body, no `Idempotency-Key`.
