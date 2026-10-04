@@ -71,7 +71,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Tests: banner appears for 502/503/504/network/timeout and not for 4xx or 429; Retry calls `/healthz` once, clears on `200` or `Degraded` and navigates, stays on failure; `recovered` increments once per recovery.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
 
-- [ ] 10. JWT decode, `safeReturnUrl`, landing and post-login target
+- [x] 10. JWT decode, `safeReturnUrl`, landing and post-login target
   - Add `core/auth/jwt.ts` (`decodeAccessToken`, UTF-8 safe, role whitelist), `safe-return-url.ts`, `landing.ts` (`landingRouteFor`), `post-login-target.ts` (`roleCanOpen`, `resolvePostLoginTarget`).
   - Unit tests: valid, missing padding, non-ASCII email, malformed, missing `sub`/`exp`, role `Owner`; the full accept and reject list of Req 8.4 plus a percent-encoded `//` and a malformed `%`; `roleCanOpen` per role and area; `resolvePostLoginTarget` for safe, unsafe, wrong-role and absent values.
   - _Requirements: 6.5, 8.4, 10.4, 10.7_
