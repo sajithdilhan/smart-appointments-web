@@ -97,7 +97,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Integration tests: 401, refresh, retry succeeds; five concurrent 401s send exactly one refresh (`counters.refresh === 1`); a retried 401 ends the session with no second refresh; near-expiry request waits for refresh; refresh has no `Authorization` and is not retried on 503 or network; refresh `401` ends the session, network/timeout/5xx and `429` keep it and block early retries; `403` leaves the session; the reuse scenario (a consumed token presented again) ends `anonymous` with the family revoked.
   - _Requirements: 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 8.1, 8.5, 9.1, 14.7_
 
-- [ ] 15. Session end and cross-tab wiring
+- [x] 15. Session end and cross-tab wiring
   - Add `core/auth/session-ender.ts` (idempotent `end(reason)`, `reason=session-expired` and `returnUrl` navigation, none on `/login` or `/register`, one toast, broadcast with `reason`) and connect `CrossTabSync` messages and the `storage` event to the store (adopt `session-updated` only when its `exp` is later; `session-ended` clears memory and navigates per reason; login broadcasts).
   - Tests with two store instances on `fake-channel`: one refresh adopted by the other without a request; simultaneous restore of two tabs sends one refresh; login in A authenticates anonymous B; logout in A clears B; `expired` goes to `/login?reason=session-expired&returnUrl=...`, `logout` to plain `/login`, `invalid` shows no toast; own and invalid messages ignored; five simultaneous failures give one navigation and one toast.
   - _Requirements: 6.10, 8.2, 8.3, 9.2, 9.3, 9.4, 9.5, 9.6, 9.9_

@@ -6,10 +6,12 @@ import { AuthApiService } from '../api/auth-api.service';
 import type { TokenResponse } from '../api/models';
 import { AppError } from '../http/app-error';
 import { fromEpochMs, parseUtc, toIsoUtc } from '../time';
-import { decodeAccessToken } from './jwt';
+import { CrossTabSync } from './cross-tab';
+import { decodeAccessToken, type AccessClaims } from './jwt';
 import type { Role, SessionStatus, SessionUser } from './session.model';
 import { RefreshCoordinator } from './refresh-coordinator';
 import { RefreshScheduler } from './refresh-scheduler';
+import { SessionEnder } from './session-ender';
 import { TokenStorage } from './token-storage';
 
 export interface Profile {
@@ -62,6 +64,7 @@ export const SessionStore = signalStore(
     const auth = inject(AuthApiService);
     const tokens = inject(TokenStorage);
     const scheduler = inject(RefreshScheduler);
+    const sync = inject(CrossTabSync);
 
     /** Resolved lazily: the coordinator injects this store. */
     const coordinator = () => injector.get(RefreshCoordinator);
@@ -99,22 +102,13 @@ export const SessionStore = signalStore(
       }
     }
 
-    /**
-     * Adopts a token pair: writes the refresh token first, then replaces the access token,
-     * user and expiry in one state change. An undecodable token ends the session and throws.
-     */
-    function applyTokens(response: TokenResponse): void {
-      const claims = decodeAccessToken(response.accessToken);
-      if (!claims) {
-        endSession('invalid');
-        throw new AppError(0, 'Sign-in failed. Please try again.', 'http');
-      }
-      tokens.write(response.refreshToken);
+    /** Puts a decoded access token into state (shared by login, refresh and cross-tab adoption). */
+    function establish(accessToken: string, claims: AccessClaims): void {
       const previous = store.user();
       const sameUser = previous?.id === claims.sub;
       patchState(store, {
         status: 'authenticated',
-        accessToken: response.accessToken,
+        accessToken,
         accessTokenExpiresAtUtc: toIsoUtc(fromEpochMs(claims.exp * 1000)),
         user: {
           id: claims.sub,
@@ -132,20 +126,82 @@ export const SessionStore = signalStore(
             .refresh()
             .catch(() => undefined),
       );
-      void fetchProfile();
+      const status = store.profileStatus();
+      if (status === 'idle' || status === 'error') void fetchProfile();
     }
 
-    /** Ends the session locally (and in storage). Task 15 routes this through `SessionEnder`. */
+    /**
+     * Adopts a token pair: writes the refresh token first, then replaces the access token,
+     * user and expiry in one state change, and tells the other tabs. An undecodable token ends
+     * the session and throws.
+     */
+    function applyTokens(response: TokenResponse): void {
+      const claims = decodeAccessToken(response.accessToken);
+      if (!claims) {
+        endSession('invalid');
+        throw new AppError(0, 'Sign-in failed. Please try again.', 'http');
+      }
+      tokens.write(response.refreshToken);
+      establish(response.accessToken, claims);
+      sync.broadcast({
+        type: 'session-updated',
+        accessToken: response.accessToken,
+        accessTokenExpiresAtUtc: store.accessTokenExpiresAtUtc()!,
+      });
+    }
+
+    /**
+     * Adopts an access token another tab obtained (its refresh token is already in the shared
+     * storage). Only a token that outlives the one held is taken.
+     */
+    function adoptAccessToken(accessToken: string): boolean {
+      const claims = decodeAccessToken(accessToken);
+      if (!claims) return false;
+      const held = store.accessToken() === null ? null : decodeAccessToken(store.accessToken()!);
+      if (held && claims.exp <= held.exp) return false;
+      establish(accessToken, claims);
+      return true;
+    }
+
+    /**
+     * Ends the session. Before the session has settled (restore in progress) it only clears
+     * silently; afterwards `SessionEnder` clears, broadcasts, navigates and toasts once.
+     */
     function endSession(reason: 'expired' | 'invalid'): void {
-      void reason;
-      clearLocal();
-      tokens.clear();
+      if (store.status() === 'anonymous') return;
+      if (store.status() === 'unknown') {
+        clearLocal();
+        tokens.clear();
+        return;
+      }
+      injector.get(SessionEnder).end(reason);
+    }
+
+    /** Resolves the initial state exactly once: restores from a stored refresh token. */
+    async function restore(): Promise<void> {
+      if (store.status() !== 'unknown') return;
+      if (!tokens.read()) {
+        clearLocal();
+        return;
+      }
+      try {
+        await coordinator().refresh();
+      } catch {
+        /* the outcome is read from the state below */
+      }
+      if (store.status() === 'unknown') {
+        // Network, timeout, 5xx or 429: the stored token has not been proven bad, keep it.
+        patchState(store, { status: 'anonymous' });
+        resolveSettled();
+      }
     }
 
     return {
       /** Resolves once, at the first transition out of `unknown`. */
       settled: (): Promise<void> => settledPromise,
       applyTokens,
+      adoptAccessToken,
+      restore,
       clearLocal,
       endSession,
       /** Single-flight, lock-guarded refresh. Rejects with an AppError; never retried. */
@@ -194,6 +250,7 @@ export const SessionStore = signalStore(
         const token = tokens.read();
         clearLocal();
         tokens.clear();
+        sync.broadcast({ type: 'session-ended', reason: 'logout' });
         if (token) firstValueFrom(auth.logout(token)).catch(() => undefined);
         await injector
           .get(Router)
