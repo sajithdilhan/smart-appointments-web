@@ -12,7 +12,7 @@ Rules (from the template):
 
 **Where code lands.** The generic form pieces (form field, field a11y directive, field view, first-invalid focus, form alert, generic field rules, validators and `normalizePhone`) are built in `src/app/shared/forms/` so F5's admin forms reuse them. F2-specific code (password rules and checklist, show/hide password field, F2 messages, error mappers, forms, auth layout) stays in `src/app/features/public/`.
 
-- [ ] 1. Route entries, titles and lazy page stubs
+- [x] 1. Route entries, titles and lazy page stubs
   - Add `features/public/titles.ts` with the three titles: `Book your next appointment | Smart Appointments`, `Log in | Smart Appointments`, `Create your account | Smart Appointments`.
   - Add `features/public/public.routes.ts` with the `/`, `/login` and `/register` entries (each its own `loadComponent`, `title` from `titles.ts`, `guestGuard` on the last two) and register them in the F1 public shell children, replacing F1's placeholder entries.
   - Create minimal `LandingPage`, `LoginPage` and `RegisterPage` components, each with a single `<h1 appFocusHeading>` placeholder text, so the routes resolve.

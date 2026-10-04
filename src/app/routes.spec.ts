@@ -47,15 +47,18 @@ const protectedPaths: Record<string, Role> = {
 
 describe('route table', () => {
   it.each([
-    ['/', 'Welcome'],
-    ['/login', 'Sign in'],
-    ['/register', 'Create account'],
+    ['/', 'Book your next appointment in minutes.'],
+    ['/login', 'Welcome back'],
+    ['/register', 'Create your account'],
   ])('renders the public page %s for an anonymous visitor', async (url, heading) => {
     expect(await visit('anonymous', url)).toMatchObject({ url, heading });
   });
 
   it.each(ROLES)('keeps / open for a signed-in %s', async (role) => {
-    expect(await visit(role, '/')).toMatchObject({ url: '/', heading: 'Welcome' });
+    expect(await visit(role, '/')).toMatchObject({
+      url: '/',
+      heading: 'Book your next appointment in minutes.',
+    });
   });
 
   it.each(ROLES)(
