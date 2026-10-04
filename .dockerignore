@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.angular
+coverage
+playwright-report
+test-results
+.env
+docs
+e2e
+.github

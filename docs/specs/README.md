@@ -22,14 +22,14 @@ Templates live in [`_templates/`](_templates/).
 
 ## Index
 
-| Feature | Status | FR-IDs | Spec |
-|---|---|---|---|
-| F0 Scaffold and tooling | Design approved | — (no FR-ID) | [requirements](f0-scaffold/requirements.md) |
-| F1 Core (runtime config use, API types, error normalizer, auth store and refresh, guards, shells) | Not specced | FR-AUTH-002, FR-AUTH-003 | — |
-| F2 Public (landing, login, register) | Not specced | FR-AUTH-001, FR-AUTH-002 | — |
-| F3 Booking wizard, success and .ics | Not specced | FR-AVL-004, FR-BKG-001 | — |
-| F4 My appointments, detail, cancel, profile | Not specced | FR-BKG-002, FR-BKG-003, FR-BKG-005, FR-AUTH-003 | — |
-| F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette) | Not specced | FR-AVL-001, FR-AVL-002, FR-AVL-003 | — |
-| F6 Polish (a11y audit, motion, empty and error states, Playwright suites, Lighthouse budgets) | Not specced | — (no FR-ID) | — |
+| Feature                                                                                           | Status      | FR-IDs                                          | Spec                                        |
+| ------------------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------- | ------------------------------------------- |
+| F0 Scaffold and tooling                                                                           | Implemented | — (no FR-ID)                                    | [requirements](f0-scaffold/requirements.md) |
+| F1 Core (runtime config use, API types, error normalizer, auth store and refresh, guards, shells) | Not specced | FR-AUTH-002, FR-AUTH-003                        | —                                           |
+| F2 Public (landing, login, register)                                                              | Not specced | FR-AUTH-001, FR-AUTH-002                        | —                                           |
+| F3 Booking wizard, success and .ics                                                               | Not specced | FR-AVL-004, FR-BKG-001                          | —                                           |
+| F4 My appointments, detail, cancel, profile                                                       | Not specced | FR-BKG-002, FR-BKG-003, FR-BKG-005, FR-AUTH-003 | —                                           |
+| F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette)      | Not specced | FR-AVL-001, FR-AVL-002, FR-AVL-003              | —                                           |
+| F6 Polish (a11y audit, motion, empty and error states, Playwright suites, Lighthouse budgets)     | Not specced | — (no FR-ID)                                    | —                                           |
 
 Backend-dependent features (queue, staff workspace, notifications, reports) wait for their backends and are not planned here.

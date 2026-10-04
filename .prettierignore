@@ -1,0 +1,9 @@
+dist
+.angular
+coverage
+playwright-report
+test-results
+pnpm-lock.yaml
+node_modules
+src/app/core/api/generated
+src/app/shared/ui/**/src/

@@ -1,0 +1,41 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    "paths": {
+      "@app/shared/ui/button": ["./src/app/shared/ui/button/src/index.ts"],
+      "@app/shared/ui/utils": ["./src/app/shared/ui/utils/src/index.ts"],
+      "@app/shared/ui/card": ["./src/app/shared/ui/card/src/index.ts"],
+      "@app/shared/ui/input": ["./src/app/shared/ui/input/src/index.ts"],
+      "@app/shared/ui/label": ["./src/app/shared/ui/label/src/index.ts"],
+      "@app/shared/ui/switch": ["./src/app/shared/ui/switch/src/index.ts"],
+      "@app/shared/ui/sonner": ["./src/app/shared/ui/sonner/src/index.ts"],
+      "@app/shared/ui/theme-toggle": ["./src/app/shared/ui/theme-toggle/index.ts"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictTemplates": true,
+    "strictInputAccessModifiers": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

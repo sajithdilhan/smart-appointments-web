@@ -1,0 +1,25 @@
+<main class="mx-auto flex min-h-dvh max-w-xl flex-col gap-6 p-6">
+  <div class="flex items-center justify-between gap-4">
+    <h1 class="text-3xl font-semibold tracking-tight">Smart Appointments</h1>
+    <app-theme-toggle />
+  </div>
+  <p class="text-muted-foreground">
+    Book and manage appointments. The application is under construction.
+  </p>
+
+  <section hlmCard>
+    <header hlmCardHeader>
+      <h2 hlmCardTitle>Design system check</h2>
+      <p hlmCardDescription>A sample card, label, input and button.</p>
+    </header>
+    <div hlmCardContent class="flex flex-col gap-2">
+      <label hlmLabel for="sample-input">Sample input</label>
+      <input hlmInput id="sample-input" type="text" placeholder="Not used yet" disabled />
+    </div>
+    <footer hlmCardFooter>
+      <button hlmBtn type="button">Get started</button>
+    </footer>
+  </section>
+
+  <router-outlet />
+</main>
