@@ -128,7 +128,7 @@ Requirement numbers refer to requirements.md of this folder; design sections to 
   - Component tests with a stubbed `matchMedia`: bottom tabs below 768 px and top links above, one labelled `nav`, active link `aria-current="page"`, sign out calls `logout`.
   - _Requirements: 11.4, 11.6, 11.10_
 
-- [ ] 21. Admin shell
+- [x] 21. Admin shell
   - Add `core/ui/palette-launcher.ts` (`available`, `requests`, `request()`) and, in the admin shell top bar, the "Search or jump to…" button (platform key label in a `<kbd>`, icon-only below 640 px) rendered only while `available()` is true; F1 does not set `available` or handle Ctrl/Cmd K.
   - Add `shared/layout/admin-shell/` and `breadcrumb-trail/`: collapsible sidebar persisted under `sa.admin.sidebar` with `safeGet`/`safeSet`, off-canvas helm `sheet` below 1024 px (focus trapped and returned, closed on navigation), toggle with `aria-expanded` and `aria-controls`, breadcrumbs from `data.breadcrumb`, user menu; generate the helm `sheet` and `breadcrumb`; replace the stub.
   - Component tests: collapse and expand persist across a re-render and survive a throwing `localStorage`, drawer opens below 1024 px and returns focus, breadcrumbs for each admin route; the search button is absent while `available()` is false, present when true, and a click increments `requests`.

@@ -25,7 +25,9 @@
       "@app/shared/ui/alert": ["./src/app/shared/ui/alert/src/index.ts"],
       "@app/shared/layout/outage-banner": ["./src/app/shared/layout/outage-banner/index.ts"],
       "@app/shared/ui/dropdown-menu": ["./src/app/shared/ui/dropdown-menu/src/index.ts"],
-      "@app/shared/ui/separator": ["./src/app/shared/ui/separator/src/index.ts"]
+      "@app/shared/ui/separator": ["./src/app/shared/ui/separator/src/index.ts"],
+      "@app/shared/ui/sheet": ["./src/app/shared/ui/sheet/src/index.ts"],
+      "@app/shared/ui/breadcrumb": ["./src/app/shared/ui/breadcrumb/src/index.ts"]
     }
   },
   "angularCompilerOptions": {
