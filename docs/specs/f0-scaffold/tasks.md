@@ -63,7 +63,7 @@ Commits (enforced from task 6).
   - Run `pnpm build && pnpm size` and record the result in the commit message; confirm `grep -r "localhost:5290" dist/` only matches `config.json`.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 6.7_
 
-- [ ] 9. Playwright and the smoke test
+- [x] 9. Playwright and the smoke test
   - Install `@playwright/test`, `sirv-cli`, `wait-on`; add `playwright.config.ts` (Chromium only, `E2E_BASE_URL`, `webServer` running `pnpm start` when unset, retries 2 and trace on first retry in CI) and `e2e/smoke.spec.ts` (title and heading; dark toggle persists across reload; `config.json` forced to `500` shows the error page). Add `playwright-report` and `test-results` to `.gitignore`.
   - Run `pnpm exec playwright install chromium` and `pnpm e2e` locally against `ng serve`, then once against `sirv` on the built output.
   - _Requirements: 4.6, 4.7, 4.8_
