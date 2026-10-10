@@ -107,7 +107,7 @@ Tasks 1 to 13 and 17 done before this plan.
 
 ## Next up
 
-1. Running since 10/10/2026 9:47am, one agent per worktree: F2-T16; F3-T11 to T22; F4-T9 to T13; F5-T14 to T24. Each commits per task, so a stop loses at most the task in hand.
+1. Still running: the F5 agent (F5-T14 to T24, started 10/10/2026 9:47am). F2-T16, F3-T11 to T22 and F4-T9 to T13 are done. Each agent commits per task, so a stop loses at most the task in hand.
 2. F3 code is complete (970 unit tests, 31 e2e); it waits on F3-T1, F3-T23 and the F2 merge.
 3. F4 code is complete (1090 unit tests, 28 e2e). It waits for F3 to merge, then a rebase on `main`, then F4-T14 and its PR.
 4. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
