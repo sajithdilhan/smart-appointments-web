@@ -168,7 +168,7 @@ export async function mockAdminApi(page: Page, options: MockOptions = {}): Promi
   };
 
   const pattern = new RegExp(
-    `^${API.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/api/(branches|services|slots)(/.*)?$`,
+    `^${API.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/api/(branches|services|slots)(/[^?]*)?(\\?.*)?$`,
     'i',
   );
 

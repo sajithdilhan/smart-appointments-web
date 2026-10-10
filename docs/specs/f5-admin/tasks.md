@@ -134,7 +134,8 @@ Rules (from the template):
   - `e2e/support/mock-admin-api.ts` (stateful, Admin login) extending F1's `mock-api.ts`.
   - _Requirements: 13.5_
 
-- [ ] 23. Playwright and accessibility suites
+- [x] 23. Playwright and accessibility suites
+  - _Done: 10/10/2026 10:51am_
   - `e2e/admin.spec.ts`: create a branch, set its schedule with "Copy Monday to weekdays", create a service, generate slots to the result card; duplicate code error; generating for a branch without a schedule and following "Set a schedule"; deactivate through the confirmation; dirty-drawer discard and a deep link to `/admin/branches/:id`; palette via `Ctrl+K`, filter, Enter on "New service"; Customer on `/admin/branches` lands on `/book`; keyboard-only branch drawer.
   - `e2e/admin.a11y.spec.ts`: axe on `/admin`, `/admin/branches` with the drawer open, the schedule page, `/admin/services`, `/admin/slots` and the open palette, light and dark, failing on serious or critical.
   - _Requirements: 12.7, 13.4_
