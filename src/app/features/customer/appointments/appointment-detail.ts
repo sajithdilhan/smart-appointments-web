@@ -147,6 +147,7 @@ function browserZone(): string {
                 <button
                   hlmBtn
                   variant="destructive"
+                  class="bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90"
                   type="button"
                   [disabled]="store.countdown.active()"
                   (click)="store.openCancel()"

@@ -78,7 +78,8 @@ Rules (from the template):
   - Component specs for reduced motion (no pulse, no slide class) and the announcements.
   - _Requirements: 3.6, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8_
 
-- [ ] 12. Playwright suites and size budget
+- [x] 12. Playwright suites and size budget
+  - _Done: 10/10/2026 10:18am_
   - `e2e/appointments.spec.ts` and `e2e/profile.spec.ts` (route interception) covering the flows of Req 11.3, and `e2e/a11y-appointments.spec.ts` with axe on `/appointments`, the open sheet, the cancel dialog and `/profile` in light and dark.
   - Add `size-limit` entries for the two lazy chunks (40 kB gzipped together), confirm `pnpm size` passes and record the measured value in the design.
   - _Requirements: 10.1, 10.5, 11.3, 11.4_

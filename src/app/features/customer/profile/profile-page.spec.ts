@@ -100,6 +100,13 @@ describe('ProfilePage', () => {
     expect(screen.getByRole('radio', { name: 'Light' }).getAttribute('aria-checked')).toBe('true');
   });
 
+  it('clicking the visible label text selects the option', async () => {
+    const user = userEvent.setup();
+    await open();
+    await user.click(screen.getByText('Dark', { selector: 'label' }));
+    expect(TestBed.inject(ThemeService).preference()).toBe('dark');
+  });
+
   it('signs out through the session store', async () => {
     const user = userEvent.setup();
     const session = await open();

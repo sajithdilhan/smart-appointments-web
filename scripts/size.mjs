@@ -1,6 +1,6 @@
 // Gzipped size of the initial files listed in the production index.html.
 // Fails (exit 1) when the total exceeds MAX_GZIP_KB (default 250).
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
@@ -41,3 +41,52 @@ if (gzTotal / 1000 > maxKb) {
   process.exit(1);
 }
 console.log(`OK: within ${maxKb} kB gzipped`);
+
+// F4 lazy chunks (appointments + profile): the chunks holding these components plus every chunk
+// that only F4 chunks import (shared framework chunks used elsewhere are not counted).
+const F4_MARKERS = [
+  'app-appointments-page',
+  'app-appointment-detail',
+  'app-appointment-not-found',
+  'app-profile-page',
+  'app-appointment-card',
+  'app-theme-picker',
+  'app-status-badge',
+];
+const maxF4Kb = Number(process.env.MAX_F4_GZIP_KB ?? 40);
+
+const all = readdirSync(root).filter((f) => f.endsWith('.js'));
+const text = new Map(all.map((f) => [f, readFileSync(join(root, f), 'utf8')]));
+const importsOf = (f) => {
+  const out = new Set();
+  for (const m of text.get(f).matchAll(/(?:from\s*|import\s*\(?\s*)["']\.\/([^"']+\.js)["']/g)) {
+    if (text.has(m[1])) out.add(m[1]);
+  }
+  return out;
+};
+const importers = new Map(all.map((f) => [f, new Set()]));
+for (const f of all) for (const dep of importsOf(f)) importers.get(dep).add(f);
+
+const f4 = new Set(
+  all.filter((f) => !files.has(f) && F4_MARKERS.some((m) => text.get(f).includes(m))),
+);
+for (let grew = true; grew;) {
+  grew = false;
+  for (const f of all) {
+    if (f4.has(f) || files.has(f)) continue;
+    const who = importers.get(f);
+    if (who.size > 0 && [...who].every((w) => f4.has(w))) {
+      f4.add(f);
+      grew = true;
+    }
+  }
+}
+let f4Gz = 0;
+for (const f of f4) f4Gz += gzipSync(readFileSync(join(root, f)), { level: 9 }).length;
+console.log(
+  `F4 lazy chunks: ${f4.size} files, ${(f4Gz / 1000).toFixed(2)} kB gzipped (limit ${maxF4Kb} kB)`,
+);
+if (f4Gz / 1000 > maxF4Kb) {
+  console.error(`F4 lazy gzip size exceeds ${maxF4Kb} kB`);
+  process.exit(1);
+}

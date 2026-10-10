@@ -25,7 +25,12 @@ import { HlmAlertDialogImports } from '@app/shared/ui/alert-dialog';
           <button hlmAlertDialogCancel data-initial-focus (click)="keep.emit()">
             Keep appointment
           </button>
-          <button hlmAlertDialogAction variant="destructive" (click)="confirm.emit()">
+          <button
+            hlmAlertDialogAction
+            variant="destructive"
+            class="bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive dark:hover:bg-destructive/90"
+            (click)="confirm.emit()"
+          >
             Cancel appointment
           </button>
         </hlm-alert-dialog-footer>
