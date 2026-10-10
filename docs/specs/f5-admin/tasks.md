@@ -122,7 +122,8 @@ Rules (from the template):
   - Specs: combobox attributes, filtering and grouping, keyboard, Escape and focus return, "No matching commands", shortcut with `ctrlKey` and `metaKey` and no fire when a foreign modal is open, record entries from loaded stores only, no request issued, listener removed on destroy.
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9_
 
-- [ ] 21. Slot generation page
+- [x] 21. Slot generation page
+  - _Done: 10/10/2026 10:36am_
   - `slots.page`, `generation.form.ts`, `result-card.component`: active-only pickers with the inactive note and links, empty states, no-schedule warning and disabled button, branch-zone date inputs (`min` and `max`), quick ranges, capacity, live debounced preview, submit with pending and double-submit guard, result card with focus, zero/zero explanation, `slotActivity.add`, `mapGenerateError` alerts with fix links, `?branchId`/`?serviceId` preselect, `DirtyForm`.
   - Specs: inactive exclusion, warning and link, date labels and bounds, span cap, preview text including the zero case (Generate still enabled), each 409 and 404 mapping with its link, `429`, result card, session counter, guard.
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 8.10, 8.11, 8.12, 11.2_
