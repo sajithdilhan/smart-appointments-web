@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold) and F1 (core) are built; there is no feature screen yet, only placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F1 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core) and F3 (the booking wizard) are built; the other feature screens do not exist yet, only placeholder pages behind their routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything else is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
 
 What exists today:
 
@@ -17,10 +17,11 @@ What exists today:
   - `auth`: `SessionStore` (`@ngrx/signals`), `TokenStorage`, JWT decode, `RefreshCoordinator` (single flight inside a Web Lock), `RefreshScheduler`, `CrossTabSync` and `SessionSync`, `SessionEnder`, `authGuard`/`guestGuard`/`roleGuard`, `landingRouteFor`, `safeReturnUrl`, `resolvePostLoginTarget`, `landingCtas`, `provideAuth()` (the restore initializer).
   - `notify` (`ToastService`), `routing` (`AppTitleStrategy`), `time` (all UTC parsing, zone formatting, calendar, `localToUtc` and branch-hours maths), `util` (`CLOCK`, `localSafe`/`sessionSafe`, `ViewportService`), `ui` (`PaletteLauncher`).
 - **Layout (F1)** under `src/app/shared/layout/`: public, customer, admin and staff shells, user menu, skip link, route progress and announcer, breadcrumb trail, outage banner, not-found page. App primitives in `shared/ui/`: `theme-toggle`, `rate-limit-notice`.
-- **Routes**: all lazy; public (`/`, `/login`, `/register`), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page, each rendering a `PlaceholderPage` (or the staff placeholder) until F2 to F5.
+- **Routes**: all lazy; public (`/`, `/login`, `/register`), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page. `/book` is the booking wizard (F3); the others render a `PlaceholderPage` (or the staff placeholder) until F2, F4 and F5.
+- **Booking wizard (F3)** at `/book`, under `src/app/features/customer/book/` (the page, `BookingWizardStore`, `SlotSearchService`, the confirm state machine in `confirm.machine.ts`, the idempotency-key store, the pure modules `wizard-params`, `conflict-map`, `confirm-outcome`, `slot-cache`, `request-budget`, `day-parts`) and `features/customer/shared/` (`ReferenceDataStore` for branches and services, `ics/build-ics.ts` and `ics-download.ts`, shared with F4). The selections are URL query parameters: `branch`, `service`, `date`, `slot`, and `done=1` for the success view (never deep-linkable). Session-storage keys: `sa.idem.<slotId>` (one `Idempotency-Key` per slot, reused on retry and reload) and `sa.book.justBooked` (10 minute marker). Also `shared/a11y` (`appRadioGroup` and `appRadioItem`, a roving-tabindex radio group), helm `skeleton` and `badge`, and `ViewportService.prefersReducedMotion`.
 - **Quality and delivery**: ESLint (angular-eslint, flat config, date and layering rules), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW (with a stateful mock of the auth endpoints), Playwright with mocked routes, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
 
-Not present yet (do not assume): any feature screen (login and register forms, booking, appointments, admin pages), the Availability and Booking API methods, i18n, the command palette (only the `PaletteLauncher` seam exists).
+Not present yet (do not assume): any feature screen other than booking (login and register forms, appointments, admin pages), the API methods F4 and F5 need (cancel, profile edit, admin), i18n, the command palette (only the `PaletteLauncher` seam exists).
 
 ## Commands
 
@@ -34,6 +35,7 @@ pnpm lint                          # eslint . --max-warnings 0
 pnpm format                        # prettier --write . ; pnpm format:check to verify
 pnpm typecheck                     # tsc on tsconfig.app.json and tsconfig.spec.json
 pnpm size                          # gzip size of the initial files in dist; fails above 250 kB
+pnpm size:book                     # gzip size of the booking wizard's lazy chunks; fails above 60 kB
 pnpm test:scripts                  # node --test of scripts/ (gen-api, the date lint rules)
 pnpm gen:api                       # regenerate core/api/generated from a running Development gateway (GATEWAY_URL overrides)
 pnpm e2e                           # Playwright (routes mocked); starts pnpm start unless E2E_BASE_URL is set

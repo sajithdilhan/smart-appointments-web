@@ -4,7 +4,7 @@
 
 The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), a .NET microservices portfolio project: a smart appointment and queue management system. The backend owns the business rules; this repository is the single-page app that customers, staff and administrators will use, and it talks to the backend only through its API gateway.
 
-> **Status: F0 scaffold and F1 core are built; no feature screen exists yet.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI) and the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), with placeholder pages behind the routes. The roadmap below is the plan; only F0 and F1 describe what is built.
+> **Status: F0 scaffold, F1 core and the F3 booking wizard are built; the other feature screens do not exist yet.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI) and the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), and the five-step booking wizard at `/book`, with placeholder pages behind the other routes. The roadmap below is the plan; only F0, F1 and F3 describe what is built.
 
 ## What it will do
 
@@ -22,7 +22,7 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 | F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                              |
 | F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending) |
 | F2    | Public pages: landing, login, register                                                             | Not started                              |
-| F3    | Booking wizard, success page, calendar export                                                      | Not started                              |
+| F3    | Booking wizard, success page, calendar export                                                      | Implemented (live-gateway check pending) |
 | F4    | My appointments, detail, cancel, profile                                                           | Not started                              |
 | F5    | Admin console                                                                                      | Not started                              |
 | F6    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                              |
@@ -99,6 +99,7 @@ pnpm exec playwright install chromium
 | `pnpm format`, `pnpm format:check` | Prettier write and check                                                             |
 | `pnpm typecheck`                   | `tsc` over the app and spec projects                                                 |
 | `pnpm size`                        | Gzip size of the initial bundle; fails above 250 kB                                  |
+| `pnpm size:book`                   | Gzip size of the booking wizard's lazy chunks; fails above 60 kB                     |
 | `pnpm test:scripts`                | Node tests of `scripts/` (the generator, the date lint rules)                        |
 | `pnpm e2e`                         | Playwright tests, routes mocked (starts `pnpm start`, or uses `E2E_BASE_URL`)        |
 | `pnpm gen:api`                     | Regenerates `src/app/core/api/generated/*.d.ts` from the gateway's OpenAPI documents |
@@ -111,6 +112,14 @@ pnpm exec playwright install chromium
 - **Guards, shells and routes.** `authGuard`, `guestGuard`, `roleGuard`, role-based landing, public, customer (top bar or bottom tabs), admin (collapsible sidebar or drawer, breadcrumbs) and staff shells, a 404 page, function-based page titles.
 - **Utilities.** `core/time` (UTC parsing, zone formatting, calendar and branch-hours maths; lint rules forbid ad-hoc date handling elsewhere), `sessionSafe` and `localSafe` storage, toasts, a retry countdown for rate limits.
 - **Backend features F1 depends on:** refresh tokens and logout (`POST /api/auth/refresh`, `POST /api/auth/logout`, `accessTokenExpiresAtUtc` in the token response), gateway CORS for this app's origin, and the unified `{ status, detail }` error body (backend specs `auth-refresh-tokens`, `gateway-cors`, `shared-web-infrastructure`).
+
+## What F3 provides
+
+- **Booking wizard at `/book`** (customers only): branch, service, date and time, review, success. The selections live in the URL as the `branch`, `service`, `date` and `slot` query parameters (and `done=1` on the success view, which needs the booking held in memory and is never deep-linkable), so Back, reload and shared links work; an invalid link is repaired with `replaceUrl` and a short note.
+- **Slot search** is debounced (250 ms), cached for 60 s, limited to 25 requests per minute per tab (the gateway allows 30) and shows the `429` countdown with a manual retry. Branch dates and hours use the branch's own time zone, never the browser's.
+- **No double booking.** The `Idempotency-Key` is created when Review opens for a slot and kept in `sessionStorage` as `sa.idem.<slotId>`; a retry, a reload or a lost response re-sends the same key and gets the original result. The confirm flow is an explicit state machine with the verbatim backend `409` strings mapped in one module. `sa.book.justBooked` remembers for 10 minutes that a booking was just made, for the "saved" hint.
+- **Success** shows the reference, an animated check, a light confetti burst (own lazy chunk, off under reduced motion) and an `.ics` calendar download generated in the browser.
+- **Known gaps:** conflict reasons are told apart by their text; the idempotency key is per tab; there is no per-day availability or branch-service mapping; "Open now" is not availability (it ignores holidays). The response types in `core/api/models.ts` are temporary until `pnpm gen:api` can run against a gateway that documents them.
 
 ## Docker
 

@@ -129,7 +129,8 @@ Rules (from the template):
   - Confirm the F0 budgets still pass and no F3 code is in the initial bundle.
   - _Requirements: 13.5_
 
-- [ ] 22. Documentation
+- [x] 22. Documentation
+  - _Done: 10/10/2026 10:51am_
   - Update `README.md` and `CLAUDE.md` project status (booking wizard built; the `features/customer/book` and `features/customer/shared` layout; the `branch`, `service`, `date`, `slot` and `done` query parameters; the `sa.idem.<slotId>` and `sa.book.justBooked` session-storage keys) and the spec index in `docs/specs/README.md` (F3 row status).
   - Add the F3 known gaps that remain open (conflict reasons matched by text, idempotency key per tab, no per-day availability or branch-service mapping, "Open now" is not availability) to the README's known-gaps list if one exists.
   - _Requirements: Introduction, Known gaps_
