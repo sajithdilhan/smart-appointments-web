@@ -101,7 +101,8 @@ Rules (from the template):
   - Confirm the F0 budgets still pass and no F2 code is in the initial bundle.
   - _Requirements: 5.6, 7.5_
 
-- [ ] 16. Documentation
+- [x] 16. Documentation
+  - _Done: 10/10/2026 9:47am_
   - Update `README.md` and `CLAUDE.md` project status (landing, login, register built; the F2 folder layout; the `reason=registered`, `reason=session-expired` and `returnUrl` query parameters) and the spec index in `docs/specs/README.md` (F2 row status).
   - Add the F2 `Known gaps` that remain open (enumeration via duplicate-email message, no gateway limit on register) to the README's known-gaps list if one exists.
   - _Requirements: Introduction, Known gaps_

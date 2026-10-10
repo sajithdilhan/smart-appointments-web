@@ -4,7 +4,7 @@
 
 The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), a .NET microservices portfolio project: a smart appointment and queue management system. The backend owns the business rules; this repository is the single-page app that customers, staff and administrators will use, and it talks to the backend only through its API gateway.
 
-> **Status: F0 scaffold and F1 core are built; no feature screen exists yet.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI) and the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), with placeholder pages behind the routes. The roadmap below is the plan; only F0 and F1 describe what is built.
+> **Status: F0 scaffold, F1 core and F2 public pages are built; the customer and admin screens are not.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities) and the public pages (landing, login, register), with placeholder pages behind the customer, admin and staff routes. The roadmap below is the plan; only F0 to F2 describe what is built.
 
 ## What it will do
 
@@ -21,7 +21,7 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 | ----- | -------------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                              |
 | F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending) |
-| F2    | Public pages: landing, login, register                                                             | Not started                              |
+| F2    | Public pages: landing, login, register                                                             | Implemented (live-gateway check pending) |
 | F3    | Booking wizard, success page, calendar export                                                      | Not started                              |
 | F4    | My appointments, detail, cancel, profile                                                           | Not started                              |
 | F5    | Admin console                                                                                      | Not started                              |
@@ -55,7 +55,14 @@ src/app/
   shared/ui/       Spartan helm components and small app primitives (theme toggle, rate-limit notice)
   shared/layout/   application frames: public, customer, admin and staff shells, user menu, breadcrumbs,
                    outage banner, route progress and announcer, not-found page
-  features/        one folder per area (public, customer, admin, staff), lazy routes with placeholder pages
+  shared/forms/    form primitives: field view and form field, field a11y directive, form alert, generic
+                   validators, phone normaliser, first-invalid focus
+  shared/a11y/     heading focus directive
+  features/        one folder per area (public, customer, admin, staff), lazy routes; customer, admin and
+                   staff still show placeholder pages
+    public/          landing/ (hero, value props, how it works, call-to-action band), login/, register/
+                     (with the password checklist), auth/ (auth layout, illustration, password field),
+                     validation/ (password rules and messages), public.routes.ts, titles.ts
 src/testing/       MSW server, a stateful mock of the auth endpoints, fake timers, fake session
 public/            config.json (dev default), theme-init.js (pre-paint theme script)
 docker/            nginx config, entrypoint that renders config.json and the CSP
@@ -99,6 +106,7 @@ pnpm exec playwright install chromium
 | `pnpm format`, `pnpm format:check` | Prettier write and check                                                             |
 | `pnpm typecheck`                   | `tsc` over the app and spec projects                                                 |
 | `pnpm size`                        | Gzip size of the initial bundle; fails above 250 kB                                  |
+| `pnpm size:public`                 | Gzip size of the public feature chunks (needs a build); fails above 50 kB            |
 | `pnpm test:scripts`                | Node tests of `scripts/` (the generator, the date lint rules)                        |
 | `pnpm e2e`                         | Playwright tests, routes mocked (starts `pnpm start`, or uses `E2E_BASE_URL`)        |
 | `pnpm gen:api`                     | Regenerates `src/app/core/api/generated/*.d.ts` from the gateway's OpenAPI documents |
@@ -111,6 +119,20 @@ pnpm exec playwright install chromium
 - **Guards, shells and routes.** `authGuard`, `guestGuard`, `roleGuard`, role-based landing, public, customer (top bar or bottom tabs), admin (collapsible sidebar or drawer, breadcrumbs) and staff shells, a 404 page, function-based page titles.
 - **Utilities.** `core/time` (UTC parsing, zone formatting, calendar and branch-hours maths; lint rules forbid ad-hoc date handling elsewhere), `sessionSafe` and `localSafe` storage, toasts, a retry countdown for rate limits.
 - **Backend features F1 depends on:** refresh tokens and logout (`POST /api/auth/refresh`, `POST /api/auth/logout`, `accessTokenExpiresAtUtc` in the token response), gateway CORS for this app's origin, and the unified `{ status, detail }` error body (backend specs `auth-refresh-tokens`, `gateway-cors`, `shared-web-infrastructure`).
+
+## What F2 provides
+
+- **Landing (`/`).** Hero with a preview, value propositions, how it works and a call-to-action band. It renders for signed-in users too, with a "Go to my dashboard" action.
+- **Login (`/login`) and register (`/register`).** Both are guest-only (`guestGuard`). Typed reactive forms with inline validation, a show/hide password field, an alert region that takes focus on failure, a retry countdown on `429`, and a password checklist on register. A failed login always shows one fixed message. A duplicate email is shown inline with a "Log in instead" link.
+- **After submit.** Login goes to `resolvePostLoginTarget` (role landing, or a safe `returnUrl`). Register logs the new customer in and lands on `/book`; if that automatic login fails it opens `/login` with the notice below.
+- **Query parameters on `/login`.** `returnUrl` (read through `safeReturnUrl`; unsafe values are ignored), `reason=session-expired` (set by the session ender and the cross-tab sync; shows "Your session has ended. Log in again.") and `reason=registered` with `email` (set by register when the automatic login fails; shows "Your account was created. Log in to continue.", prefills the email and focuses the password).
+- **Shared primitives.** `shared/forms` and `shared/a11y` (listed under Architecture) are reusable by later forms.
+- **Bundle.** The public chunks are held under 50 kB gzipped by `pnpm size:public`, which CI runs after the build.
+
+### Known gaps (F2)
+
+- **Registration reveals whether an email is registered.** The backend answers `400` "Email is already registered." and the page shows it inline, which allows account enumeration; login stays uniform. A neutral flow needs email verification, which does not exist.
+- **Registration is not rate limited at the gateway.** Only login, appointment creation and slot search are, so the `429` branch on the register page is defensive and cannot be exercised end to end yet.
 
 ## Docker
 
