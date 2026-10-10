@@ -128,7 +128,8 @@ Rules (from the template):
   - Specs: inactive exclusion, warning and link, date labels and bounds, span cap, preview text including the zero case (Generate still enabled), each 409 and 404 mapping with its link, `429`, result card, session counter, guard.
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 8.10, 8.11, 8.12, 11.2_
 
-- [ ] 22. Size group, README note and e2e support
+- [x] 22. Size group, README note and e2e support
+  - _Done: 10/10/2026 10:42am_
   - `scripts/size.mjs --group admin` (limit `MAX_GZIP_KB_ADMIN`, default 80, shared chunks counted once and reported), run in CI after `pnpm size`; record the measured figure in the design.
   - `e2e/support/mock-admin-api.ts` (stateful, Admin login) extending F1's `mock-api.ts`.
   - _Requirements: 13.5_
