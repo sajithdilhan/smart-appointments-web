@@ -72,7 +72,10 @@ async function fillValid(over: Partial<Record<string, string>> = {}) {
   for (const [label, value] of Object.entries(v)) {
     const el = field(label);
     await userEvent.clear(el);
-    if (value) await userEvent.type(el, value);
+    if (value) {
+      await userEvent.click(el);
+      await userEvent.paste(value);
+    }
   }
 }
 

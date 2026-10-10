@@ -110,7 +110,8 @@ Rules (from the template):
   - Specs: load and seeding, save body, success resets dirtiness, all-closed confirm, `400` alert, `404`, outage and `429`, guard blocks a dirty exit.
   - _Requirements: 5.1, 5.7, 5.8, 5.9, 5.10, 5.11, 11.2_
 
-- [ ] 19. Services list, drawer and duration stepper
+- [x] 19. Services list, drawer and duration stepper
+  - _Done: 10/10/2026 10:20am_
   - `services.page`, `service-drawer`, `service.form.ts`, `duration-stepper.component` (±5, clamp, bounds, ArrowUp/ArrowDown, hours echo, never rounds) with preset chips (`aria-pressed`), `mapServiceError`, the duration note and the "Generate slots" toast action; services list reuses the list pieces.
   - Specs: columns and duration format, stepper and presets sync, validation messages, `409`, update body, guard, list states and card layout.
   - _Requirements: 6.1, 6.2, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
