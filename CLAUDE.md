@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold) and F1 (core) are built; there is no feature screen yet, only placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F1 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core) and F5 (the admin console) are built; the public, booking and customer screens (F2 to F4) are not, they still show placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
 
 What exists today:
 
@@ -17,10 +17,13 @@ What exists today:
   - `auth`: `SessionStore` (`@ngrx/signals`), `TokenStorage`, JWT decode, `RefreshCoordinator` (single flight inside a Web Lock), `RefreshScheduler`, `CrossTabSync` and `SessionSync`, `SessionEnder`, `authGuard`/`guestGuard`/`roleGuard`, `landingRouteFor`, `safeReturnUrl`, `resolvePostLoginTarget`, `landingCtas`, `provideAuth()` (the restore initializer).
   - `notify` (`ToastService`), `routing` (`AppTitleStrategy`), `time` (all UTC parsing, zone formatting, calendar, `localToUtc` and branch-hours maths), `util` (`CLOCK`, `localSafe`/`sessionSafe`, `ViewportService`), `ui` (`PaletteLauncher`).
 - **Layout (F1)** under `src/app/shared/layout/`: public, customer, admin and staff shells, user menu, skip link, route progress and announcer, breadcrumb trail, outage banner, not-found page. App primitives in `shared/ui/`: `theme-toggle`, `rate-limit-notice`.
-- **Routes**: all lazy; public (`/`, `/login`, `/register`), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page, each rendering a `PlaceholderPage` (or the staff placeholder) until F2 to F5.
+- **Routes**: all lazy; public (`/`, `/login`, `/register`), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page. Public, customer and staff routes render a `PlaceholderPage` (or the staff placeholder) until F2 to F4; `/admin/**` is the F5 console.
+- **Admin (F5)** under `src/app/features/admin/`, mounted as children of the admin shell: `admin.routes.ts` and `AdminFrame` (stores, command palette, Ctrl/Cmd+K), `dashboard/`, `branches/` and `services/` (list page plus a drawer that is a child route over the still-mounted list), `schedule/` (time-zone combobox, weekly grid), `slots/` (generation form, local estimate, result card), `palette/` (pure command registry), `data/` (`BranchesStore`, `ServicesStore`, `SlotActivityStore`: the whole lists, reset when the frame is destroyed), `validation/` (pure rules, one messages file, the `400` splitter and field tables) and `shared/` (list view, drawer frame, status confirm, dirty-form guard, listbox engine). It reuses `shared/forms` (`form-field`, `field-a11y`, `field-view`, `form-alert`, `focus-first-invalid`) and `shared/ui/confirm-dialog`. Every way out of a dirty form is a router navigation, so one `unsavedChangesGuard` decides.
+- **Contract fixture convention**: backend validation messages, regexes and error texts are copied once into `src/testing/fixtures/availability-contract.json` (with the C# file and rule); client messages that mirror the backend, the server-message tables and the MSW admin backend (`src/testing/availability-admin-backend.ts`) are tested against it. A backend wording change is one fixture edit and a failing test. `slot-planner-vectors.json` is generated manually (see `src/testing/fixtures/README.md`).
+- **No admin API exists** for appointments, staff or reports, or for deleting a branch or service (deactivation is the only removal); do not build screens for them.
 - **Quality and delivery**: ESLint (angular-eslint, flat config, date and layering rules), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW (with a stateful mock of the auth endpoints), Playwright with mocked routes, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
 
-Not present yet (do not assume): any feature screen (login and register forms, booking, appointments, admin pages), the Availability and Booking API methods, i18n, the command palette (only the `PaletteLauncher` seam exists).
+Not present yet (do not assume): the public, booking and customer screens (login and register forms, booking, appointments), the Booking API methods, i18n.
 
 ## Commands
 
@@ -34,6 +37,7 @@ pnpm lint                          # eslint . --max-warnings 0
 pnpm format                        # prettier --write . ; pnpm format:check to verify
 pnpm typecheck                     # tsc on tsconfig.app.json and tsconfig.spec.json
 pnpm size                          # gzip size of the initial files in dist; fails above 250 kB
+pnpm size --group admin            # gzip size of the admin lazy group; fails above MAX_GZIP_KB_ADMIN (120)
 pnpm test:scripts                  # node --test of scripts/ (gen-api, the date lint rules)
 pnpm gen:api                       # regenerate core/api/generated from a running Development gateway (GATEWAY_URL overrides)
 pnpm e2e                           # Playwright (routes mocked); starts pnpm start unless E2E_BASE_URL is set

@@ -140,7 +140,8 @@ Rules (from the template):
   - `e2e/admin.a11y.spec.ts`: axe on `/admin`, `/admin/branches` with the drawer open, the schedule page, `/admin/services`, `/admin/slots` and the open palette, light and dark, failing on serious or critical.
   - _Requirements: 12.7, 13.4_
 
-- [ ] 24. Documentation
+- [x] 24. Documentation
+  - _Done: 10/10/2026 10:54am_
   - Update the README (feature list, admin routes, `pnpm size --group admin`, fixture regeneration note) and `CLAUDE.md` (project status: F5 built; layout under `features/admin`; the `shared/forms` reuse; the contract-fixture convention; no admin API for appointments or reports). Update `docs/specs/README.md` if it indexes specs. Tick this file in the same commit.
   - _Requirements: 13.5, 13.6_
 
