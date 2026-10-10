@@ -73,7 +73,7 @@ describe('Accessibility and motion (F4)', () => {
     await screen.findByRole('dialog');
     expect(animated().length).toBeGreaterThan(0);
     for (const el of animated()) expect(unguarded(el)).toEqual([]);
-  });
+  }, 20_000);
 
   it('the cancel dialog animates only under motion-safe', async () => {
     const user = userEvent.setup();

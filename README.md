@@ -23,7 +23,7 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 | F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending) |
 | F2    | Public pages: landing, login, register                                                             | Not started                              |
 | F3    | Booking wizard, success page, calendar export                                                      | Not started                              |
-| F4    | My appointments, detail, cancel, profile                                                           | Not started                              |
+| F4    | My appointments, detail, cancel, profile                                                           | Implemented (live-gateway check pending) |
 | F5    | Admin console                                                                                      | Not started                              |
 | F6    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                              |
 
@@ -98,7 +98,7 @@ pnpm exec playwright install chromium
 | `pnpm lint`                        | ESLint, zero warnings allowed                                                        |
 | `pnpm format`, `pnpm format:check` | Prettier write and check                                                             |
 | `pnpm typecheck`                   | `tsc` over the app and spec projects                                                 |
-| `pnpm size`                        | Gzip size of the initial bundle; fails above 250 kB                                  |
+| `pnpm size`                        | Gzip size of the initial bundle (250 kB) and of the F4 lazy chunks (40 kB)           |
 | `pnpm test:scripts`                | Node tests of `scripts/` (the generator, the date lint rules)                        |
 | `pnpm e2e`                         | Playwright tests, routes mocked (starts `pnpm start`, or uses `E2E_BASE_URL`)        |
 | `pnpm gen:api`                     | Regenerates `src/app/core/api/generated/*.d.ts` from the gateway's OpenAPI documents |
@@ -111,6 +111,17 @@ pnpm exec playwright install chromium
 - **Guards, shells and routes.** `authGuard`, `guestGuard`, `roleGuard`, role-based landing, public, customer (top bar or bottom tabs), admin (collapsible sidebar or drawer, breadcrumbs) and staff shells, a 404 page, function-based page titles.
 - **Utilities.** `core/time` (UTC parsing, zone formatting, calendar and branch-hours maths; lint rules forbid ad-hoc date handling elsewhere), `sessionSafe` and `localSafe` storage, toasts, a retry countdown for rate limits.
 - **Backend features F1 depends on:** refresh tokens and logout (`POST /api/auth/refresh`, `POST /api/auth/logout`, `accessTokenExpiresAtUtc` in the token response), gateway CORS for this app's origin, and the unified `{ status, detail }` error body (backend specs `auth-refresh-tokens`, `gateway-cors`, `shared-web-infrastructure`).
+
+## What F4 provides
+
+- **Routes.** `/appointments` (list) with the detail as its child `/appointments/:id` (a sheet at 1024 px and wider when opened from a card, otherwise a page; a reloaded deep link is always a page; a non-GUID id shows "Appointment not found" without a request) and `/profile`.
+- **URL state.** `?tab=upcoming|past` and `cancelled=1` (only honoured on Upcoming); an unknown tab falls back to Upcoming. The tabs write the URL with `replaceUrl`.
+- **Cancel state machine.** `cancelReducer` (pure) with `AppointmentDetailStore` running the effects. After every outcome the store re-reads the appointment (`GET /api/appointments/{id}`): a `204` shows the server copy; a `503`, network error or timeout is never trusted, the re-GET decides between "cancelled, the slot may take a moment" and "nothing was changed, try again"; a known `409` text means "already started"; any other `409` is a generic refresh message (the raw server text is never shown).
+- **Reference lookup.** Branch and service names come from F3's `ReferenceDataStore`; a missing name shows "Unavailable branch/service" and the time falls back to "your time". F4 does not add a second lookup.
+- **Temporary type.** `MyAppointmentsPage` (and the appointment body types) in `core/api/models.ts` are removed once `pnpm gen:api` is rerun against a backend that documents the `/api/appointments/my` response.
+- **Profile.** Read-only name, email and phone from the session store, a theme radio group in sync with the header toggle, and Sign out.
+- **Manual check** (needs the Compose stack with the `booking-my-appointments` backend; task 14 of the F4 tasks): book two appointments, see both under Upcoming, cancel one and see it leave Upcoming and appear with "Show cancelled", deactivate its branch as an Admin and see "Unavailable branch", stop Availability and cancel to see the `503` guidance, check the profile theme survives a reload, sign out.
+- **Size.** The F4 lazy chunks measure 36.6 kB gzipped (budget 40 kB, `pnpm size`).
 
 ## Docker
 

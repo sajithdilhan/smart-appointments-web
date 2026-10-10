@@ -84,7 +84,8 @@ Rules (from the template):
   - Add `size-limit` entries for the two lazy chunks (40 kB gzipped together), confirm `pnpm size` passes and record the measured value in the design.
   - _Requirements: 10.1, 10.5, 11.3, 11.4_
 
-- [ ] 13. Documentation
+- [x] 13. Documentation
+  - _Done: 10/10/2026 10:22am_
   - Document in the web repo's `README`/`CLAUDE.md`: the F4 routes, URL state (`tab`, `cancelled`), the cancel state machine and the re-GET rule, the reference-lookup dependency on F3, the temporary `MyAppointmentsPage` type to remove after `pnpm gen:api`, and the manual check procedure.
   - Record the measured chunk size and mark F4 done in the plan.
   - _Requirements: 11.4, 11.5_

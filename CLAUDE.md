@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold) and F1 (core) are built; there is no feature screen yet, only placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F1 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core) and the F4 screens (My appointments, detail and cancel, Profile) are built; the other feature screens are still placeholders.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F1 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
 
 What exists today:
 
@@ -104,6 +104,16 @@ Angular rules:
 - Angular starts all app initializers at once and does not wait for the previous one: an initializer that needs `APP_CONFIG` must await `APP_CONFIG_READY` first (see `provideAuth`).
 - Route titles are strings or functions; the format "<Page> | Smart Appointments" comes from `AppTitleStrategy`. A function title that throws fails the navigation, so it must not throw.
 - Rate limits: use `createRetryCountdown()` with `<app-rate-limit-notice>`; do not write another countdown.
+
+### Appointments and profile conventions (F4)
+
+- `features/customer/appointments/`: `/appointments` has `/appointments/:id` as a child route (`guidIdMatcher` first, `AppointmentNotFound` second). `DetailHost` (provided on the page) decides sheet versus page and returns focus on close; one `AppointmentDetail` instance is projected into either container.
+- URL state is `?tab=upcoming|past&cancelled=1`; the `AppointmentsStore` reacts to it and never keeps a second copy. Parse it only through `parseTab` / `toListQuery`.
+- Cancel goes through the pure `cancelReducer` and `AppointmentDetailStore`. The re-GET rule: a `204`, `503`, network error or timeout is always followed by `GET /api/appointments/{id}` before the UI claims anything. A `409` shows a fixed client message (`cancelConflictMessage`); never render the raw `detail`.
+- Names and zones come from F3's `ReferenceDataStore`; missing ones render as "Unavailable branch/service" and "your time". `buildIcs` takes optional names for that case.
+- The temporary `MyAppointmentsPage` / `AppointmentResponse` types in `core/api/models.ts` go away when `pnpm gen:api` documents the `/my` response.
+- The generated helm `sheet` and `alert-dialog` carry `motion-safe:` on their animation classes; regenerating them restores the bare classes, so re-apply. The destructive action buttons are solid (`bg-destructive text-destructive-foreground`) because the tinted helm variant fails contrast.
+- `pnpm size` also checks the F4 lazy chunks (40 kB gzipped). `e2e/appointments-mock.ts` mocks the appointment endpoints for Playwright; `e2e/a11y-appointments.spec.ts` runs axe (the open-sheet test exempts `aria-hidden-focus`, a CDK modal artefact).
 
 ### Backend contract
 

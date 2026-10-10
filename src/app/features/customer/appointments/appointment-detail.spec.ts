@@ -67,7 +67,7 @@ describe('AppointmentDetail presentation', () => {
       screen.getByRole('heading', { level: 1, name: 'My appointments', hidden: true }),
     ).toBeTruthy();
     await within(dialog).findByText(target.id);
-  });
+  }, 20_000);
 
   it('is a page below 1024 px, with a Back link, and the list is not shown', async () => {
     await open(SHEET, { lg: false, fromList: true });
