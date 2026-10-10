@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 10/10/2026 10:53am
+Last updated: 10/10/2026 10:56am
 
 ## How to resume
 
@@ -91,26 +91,33 @@ Tasks 1 to 8 done before this plan.
 
 Tasks 1 to 13 and 17 done before this plan.
 
-| ID     | Task                                    | Status                                                     | Owner | Notes                                                  |
-| ------ | --------------------------------------- | ---------------------------------------------------------- | ----- | ------------------------------------------------------ |
-| F5-T14 | Drawer frame and focus return           | in progress (uncommitted; agent started 10/10/2026 9:47am) | agent | helm `dialog` added, `tsconfig.json` paths reformatted |
-| F5-T15 | Branch drawer (create and edit)         | todo                                                       | agent |                                                        |
-| F5-T16 | Activate and deactivate                 | todo                                                       | agent |                                                        |
-| F5-T18 | Schedule page                           | todo                                                       | agent |                                                        |
-| F5-T19 | Services list, drawer, duration stepper | todo                                                       | agent |                                                        |
-| F5-T20 | Command palette                         | todo                                                       | agent |                                                        |
-| F5-T21 | Slot generation page                    | todo                                                       | agent |                                                        |
-| F5-T22 | Size group, README note, e2e support    | todo                                                       | agent |                                                        |
-| F5-T23 | Playwright and accessibility suites     | todo                                                       | agent | port 4305                                              |
-| F5-T24 | Documentation                           | todo                                                       | agent |                                                        |
-| F5-T25 | Manual verification against the gateway | todo                                                       | user  |                                                        |
+| ID     | Task                                    | Status                  | Owner | Notes                                                                    |
+| ------ | --------------------------------------- | ----------------------- | ----- | ------------------------------------------------------------------------ |
+| F5-T14 | Drawer frame and focus return           | done 10/10/2026 9:49am  | agent | `f2c69d1`; CDK `cdkTrapFocus`, helm `dialog` added                       |
+| F5-T15 | Branch drawer (create and edit)         | done 10/10/2026 9:59am  | agent | `fbfef39`                                                                |
+| F5-T16 | Activate and deactivate                 | done 10/10/2026 10:04am | agent | `f2362d0`                                                                |
+| F5-T18 | Schedule page                           | done 10/10/2026 10:11am | agent | `18d044c`                                                                |
+| F5-T19 | Services list, drawer, duration stepper | done 10/10/2026 10:20am | agent | `15e51e8`                                                                |
+| F5-T20 | Command palette                         | done 10/10/2026 10:25am | agent | `c100486`                                                                |
+| F5-T21 | Slot generation page                    | done 10/10/2026 10:36am | agent | `602552a`                                                                |
+| F5-T22 | Size group, README note, e2e support    | done 10/10/2026 10:42am | agent | `de1afc8`; admin group 111.55 kB, limit raised to 120 (see Decisions)    |
+| F5-T23 | Playwright and accessibility suites     | done 10/10/2026 10:52am | agent | `2778d14`; 29/29 e2e on port 4305                                        |
+| F5-T24 | Documentation                           | done 10/10/2026 10:54am | agent | `ee5b79b`                                                                |
+| F5-T25 | Manual verification against the gateway | todo                    | user  |                                                                          |
+| F5-PR  | Raise the F5 pull request               | todo                    | user  | after F2 merges, F5 is rebased on `main` and the budget decision is made |
 
 ## Next up
 
-1. Still running: the F5 agent (F5-T14 to T24, started 10/10/2026 9:47am). F2-T16, F3-T11 to T22 and F4-T9 to T13 are done. Each agent commits per task, so a stop loses at most the task in hand.
-2. F3 code is complete (970 unit tests, 31 e2e); it waits on F3-T1, F3-T23 and the F2 merge.
-3. F4 code is complete (1090 unit tests, 28 e2e). It waits for F3 to merge, then a rebase on `main`, then F4-T14 and its PR.
-4. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
+All agent-owned tasks for F2 to F5 are done (no agent is running). What remains is yours:
+
+1. Decide the open items under **Decisions for you**.
+2. Start the backend gateway, then run F3-T1 (`pnpm gen:api`) and the manual checks: F2-T17 first.
+3. Raise the F2 PR and merge it; then rebase F3 and F5 on `main` (resolving the size-check and timeout items in the watch list), F3 PR; then rebase F4, F4 PR; then F5 PR.
+4. After that: write the F6 Polish spec.
+
+## Decisions for you
+
+- **F5 admin chunk budget.** The approved design said 80 kB gzip; measured 111.55 kB over 42 files, so the agent raised the default limit to 120 kB (F5 design deviation 8). Accept 120, or trim the bundle (the forms and CDK overlay chunks should become shared with F2 to F4 after the merges, which lowers the admin-only figure).
 
 ## Watch list
 
@@ -126,7 +133,13 @@ Tasks 1 to 13 and 17 done before this plan.
 - `f3-booking` raised the global Vitest `testTimeout` to 15 s and Testing Library `asyncUtilTimeout` to 5 s in `src/testing/setup.ts` (first lazy-route render was slow under full parallel load); F4 used per-spec 20 s timeouts for the same symptom. Pick one approach at merge.
 - `f3-booking` changed F1 shared code: `UserMenu` shows the display name only from 640 px; `ViewportService.prefersReducedMotion` added.
 
+- Fourth size mechanism: F5 added `scripts/size-group.mjs` and `pnpm size --group admin`, which also follows dynamic imports (F2's `--group` follows static imports only). Unify on one mechanism when merging.
+- Flaky unit test candidate: `src/app/shared/ui/sonner/toast-service.spec.ts` ("renders the message and reference, and Copy writes the id") failed twice in full runs on `f5-admin` with `window.matchMedia is not a function` during fixture cleanup (F1's last fix shimmed `matchMedia` in the shared setup; a spec that restores stubbed globals may remove it).
+- F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
+
 ## Log
+
+- 10/10/2026 10:56am: F5-T14 to T24 done (`f2c69d1` to `ee5b79b`); gate passes with 89 files and 1331 tests; e2e 29/29. Admin budget needs your decision. No agents running.
 
 - 10/10/2026 10:53am: F3-T11 to T22 done (`5a4d579` to `b7daf44`); gate passes with 82 files and 970 tests; e2e 31/31. F3 waits on F3-T1, F3-T23 and the F2 merge.
 
