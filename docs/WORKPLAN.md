@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 10/10/2026 10:23am
+Last updated: 10/10/2026 10:53am
 
 ## How to resume
 
@@ -55,22 +55,23 @@ Tasks 1 to 14 done before this plan.
 
 Tasks 2 to 10 done before this plan.
 
-| ID     | Task                                    | Status                                                   | Owner | Notes                                                      |
-| ------ | --------------------------------------- | -------------------------------------------------------- | ----- | ---------------------------------------------------------- |
-| F3-T1  | Generated types, API methods, MSW model | blocked (needs `pnpm gen:api` against a running gateway) | user  | methods and MSW model exist; only the regeneration is left |
-| F3-T11 | Service step                            | in progress (staged; agent started 10/10/2026 9:47am)    | agent | verify and commit first                                    |
-| F3-T12 | Date strip                              | todo                                                     | agent |                                                            |
-| F3-T13 | Slot chips and slot states              | todo                                                     | agent |                                                            |
-| F3-T14 | Confirm flow (state machine)            | todo                                                     | agent |                                                            |
-| F3-T15 | Review step                             | todo                                                     | agent |                                                            |
-| F3-T16 | `buildIcs`, download, calendar button   | todo                                                     | agent |                                                            |
-| F3-T17 | Success step and confetti               | todo                                                     | agent |                                                            |
-| F3-T18 | Invariant test                          | todo                                                     | agent |                                                            |
-| F3-T19 | Playwright flows with mocked API        | todo                                                     | agent | port 4303                                                  |
-| F3-T20 | Accessibility and reflow checks         | todo                                                     | agent | port 4303                                                  |
-| F3-T21 | Chunk budget check                      | todo                                                     | agent |                                                            |
-| F3-T22 | Documentation                           | todo                                                     | agent |                                                            |
-| F3-T23 | Manual verification against the gateway | todo                                                     | user  |                                                            |
+| ID     | Task                                    | Status                                                   | Owner | Notes                                                         |
+| ------ | --------------------------------------- | -------------------------------------------------------- | ----- | ------------------------------------------------------------- |
+| F3-T1  | Generated types, API methods, MSW model | blocked (needs `pnpm gen:api` against a running gateway) | user  | methods and MSW model exist; only the regeneration is left    |
+| F3-T11 | Service step                            | done 10/10/2026 9:49am                                   | agent | `5a4d579`                                                     |
+| F3-T12 | Date strip                              | done 10/10/2026 9:55am                                   | agent | `fc68a52`                                                     |
+| F3-T13 | Slot chips and slot states              | done 10/10/2026 10:01am                                  | agent | `641b919`; fixed a stale selection after forced refresh       |
+| F3-T14 | Confirm flow (state machine)            | done 10/10/2026 10:06am                                  | agent | `9c8c66c`                                                     |
+| F3-T15 | Review step                             | done 10/10/2026 10:10am                                  | agent | `e15c076`                                                     |
+| F3-T16 | `buildIcs`, download, calendar button   | done 10/10/2026 10:13am                                  | agent | `6f7e840`                                                     |
+| F3-T17 | Success step and confetti               | done 10/10/2026 10:17am                                  | agent | `57ff68e`                                                     |
+| F3-T18 | Invariant test                          | done 10/10/2026 10:24am                                  | agent | `14aac54`                                                     |
+| F3-T19 | Playwright flows with mocked API        | done 10/10/2026 10:34am                                  | agent | `3e72942`; 31/31 e2e on port 4303                             |
+| F3-T20 | Accessibility and reflow checks         | done 10/10/2026 10:43am                                  | agent | `d04128d`; fixed 84 px header overflow at 320 px (`UserMenu`) |
+| F3-T21 | Chunk budget check                      | done 10/10/2026 10:48am                                  | agent | `c891891`; `pnpm size:book`: 30.38 kB of 60                   |
+| F3-T22 | Documentation                           | done 10/10/2026 10:51am                                  | agent | `b7daf44`                                                     |
+| F3-T23 | Manual verification against the gateway | todo                                                     | user  |                                                               |
+| F3-PR  | Raise the F3 pull request               | todo                                                     | user  | after F2 merges (rebase on `main`), F3-T1 and F3-T23          |
 
 ## F4 Appointments (`f4-appointments`)
 
@@ -107,8 +108,9 @@ Tasks 1 to 13 and 17 done before this plan.
 ## Next up
 
 1. Running since 10/10/2026 9:47am, one agent per worktree: F2-T16; F3-T11 to T22; F4-T9 to T13; F5-T14 to T24. Each commits per task, so a stop loses at most the task in hand.
-2. F4 code is complete (1090 unit tests, 28 e2e). It waits for F3 to merge, then a rebase on `main`, then F4-T14 and its PR.
-3. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
+2. F3 code is complete (970 unit tests, 31 e2e); it waits on F3-T1, F3-T23 and the F2 merge.
+3. F4 code is complete (1090 unit tests, 28 e2e). It waits for F3 to merge, then a rebase on `main`, then F4-T14 and its PR.
+4. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
 
 ## Watch list
 
@@ -119,7 +121,14 @@ Tasks 1 to 13 and 17 done before this plan.
 - F4 rebase on `main` after F3: reconcile the branches and services MSW handlers from F4-T2 with F3's; the temporary `MyAppointmentsPage` type in `core/api/models.ts` stays until `pnpm gen:api` (F3-T1).
 - Regenerating the helm `sheet` or `alert-dialog` drops F4's `motion-safe:` edits (F4 design deviation 11); re-apply them.
 
+- Merge conflict ahead in `scripts/size.mjs`, `package.json` and `ci.yml`: F2 (`size:public`), F3 (`size:book`) and F4 (its own F4 check inside `pnpm size`) each added a chunk-group check, and F2 and F3 both turned on `statsJson`. When rebasing F3 and F4 on `main`, fold them into F2's `--group <name>` mechanism (`GROUP_DEFAULTS`).
+- Flaky unit test candidate: `core/http/http.pipeline.spec.ts` ("outage state is not set by 403") failed once in a parallel full run on `f3-booking` and passed otherwise; may be the same one-off failure seen on `f2-public`.
+- `f3-booking` raised the global Vitest `testTimeout` to 15 s and Testing Library `asyncUtilTimeout` to 5 s in `src/testing/setup.ts` (first lazy-route render was slow under full parallel load); F4 used per-spec 20 s timeouts for the same symptom. Pick one approach at merge.
+- `f3-booking` changed F1 shared code: `UserMenu` shows the display name only from 640 px; `ViewportService.prefersReducedMotion` added.
+
 ## Log
+
+- 10/10/2026 10:53am: F3-T11 to T22 done (`5a4d579` to `b7daf44`); gate passes with 82 files and 970 tests; e2e 31/31. F3 waits on F3-T1, F3-T23 and the F2 merge.
 
 - 10/10/2026 10:23am: F4-T9 to T13 done (`bacb376`, `230202a`, `ea76676`, `f171c57`, `5691b66`); gate passes with 85 files and 1090 tests; e2e 28/28. F4 waits on the F3 merge, F4-T14 and its PR.
 
