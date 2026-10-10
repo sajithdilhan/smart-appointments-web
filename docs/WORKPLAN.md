@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 10/10/2026 9:50am
+Last updated: 10/10/2026 9:47am
 
 ## How to resume
 
@@ -43,12 +43,12 @@ The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; 
 
 Tasks 1 to 14 done before this plan.
 
-| ID     | Task                                    | Status                 | Owner | Notes                                                        |
-| ------ | --------------------------------------- | ---------------------- | ----- | ------------------------------------------------------------ |
-| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am | main  | `2f5c841`; public group 26.47 kB gzip of 50                  |
-| F2-T16 | Documentation                           | todo                   | agent | README, CLAUDE.md, spec index                                |
-| F2-T17 | Manual verification against the gateway | todo                   | user  | needs the backend running; result goes in the PR description |
-| F2-PR  | Raise the F2 pull request               | todo                   | user  | after T16; T17 result in the description                     |
+| ID     | Task                                    | Status                                        | Owner | Notes                                                        |
+| ------ | --------------------------------------- | --------------------------------------------- | ----- | ------------------------------------------------------------ |
+| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am                        | main  | `2f5c841`; public group 26.47 kB gzip of 50                  |
+| F2-T16 | Documentation                           | in progress (agent started 10/10/2026 9:47am) | agent | README, CLAUDE.md, spec index                                |
+| F2-T17 | Manual verification against the gateway | todo                                          | user  | needs the backend running; result goes in the PR description |
+| F2-PR  | Raise the F2 pull request               | todo                                          | user  | after T16; T17 result in the description                     |
 
 ## F3 Booking (`f3-booking`)
 
@@ -57,7 +57,7 @@ Tasks 2 to 10 done before this plan.
 | ID     | Task                                    | Status                                                   | Owner | Notes                                                      |
 | ------ | --------------------------------------- | -------------------------------------------------------- | ----- | ---------------------------------------------------------- |
 | F3-T1  | Generated types, API methods, MSW model | blocked (needs `pnpm gen:api` against a running gateway) | user  | methods and MSW model exist; only the regeneration is left |
-| F3-T11 | Service step                            | in progress (staged, not committed)                      | agent | verify and commit first                                    |
+| F3-T11 | Service step                            | in progress (staged; agent started 10/10/2026 9:47am)    | agent | verify and commit first                                    |
 | F3-T12 | Date strip                              | todo                                                     | agent |                                                            |
 | F3-T13 | Slot chips and slot states              | todo                                                     | agent |                                                            |
 | F3-T14 | Confirm flow (state machine)            | todo                                                     | agent |                                                            |
@@ -75,38 +75,39 @@ Tasks 2 to 10 done before this plan.
 
 Tasks 1 to 8 done before this plan.
 
-| ID     | Task                                              | Status                          | Owner | Notes                   |
-| ------ | ------------------------------------------------- | ------------------------------- | ----- | ----------------------- |
-| F4-T9  | Detail UI: sheet or page, cancel dialog, calendar | in progress (uncommitted files) | agent | finish and commit first |
-| F4-T10 | Profile page                                      | todo                            | agent |                         |
-| F4-T11 | Accessibility and motion pass                     | todo                            | agent |                         |
-| F4-T12 | Playwright suites and size budget                 | todo                            | agent | port 4304               |
-| F4-T13 | Documentation                                     | todo                            | agent |                         |
-| F4-T14 | Manual verification against the gateway           | todo                            | user  |                         |
+| ID     | Task                                              | Status                                                     | Owner | Notes                   |
+| ------ | ------------------------------------------------- | ---------------------------------------------------------- | ----- | ----------------------- |
+| F4-T9  | Detail UI: sheet or page, cancel dialog, calendar | in progress (uncommitted; agent started 10/10/2026 9:47am) | agent | finish and commit first |
+| F4-T10 | Profile page                                      | todo                                                       | agent |                         |
+| F4-T11 | Accessibility and motion pass                     | todo                                                       | agent |                         |
+| F4-T12 | Playwright suites and size budget                 | todo                                                       | agent | port 4304               |
+| F4-T13 | Documentation                                     | todo                                                       | agent |                         |
+| F4-T14 | Manual verification against the gateway           | todo                                                       | user  |                         |
 
 ## F5 Admin (`f5-admin`)
 
 Tasks 1 to 13 and 17 done before this plan.
 
-| ID     | Task                                    | Status                          | Owner | Notes                                                  |
-| ------ | --------------------------------------- | ------------------------------- | ----- | ------------------------------------------------------ |
-| F5-T14 | Drawer frame and focus return           | in progress (uncommitted files) | agent | helm `dialog` added, `tsconfig.json` paths reformatted |
-| F5-T15 | Branch drawer (create and edit)         | todo                            | agent |                                                        |
-| F5-T16 | Activate and deactivate                 | todo                            | agent |                                                        |
-| F5-T18 | Schedule page                           | todo                            | agent |                                                        |
-| F5-T19 | Services list, drawer, duration stepper | todo                            | agent |                                                        |
-| F5-T20 | Command palette                         | todo                            | agent |                                                        |
-| F5-T21 | Slot generation page                    | todo                            | agent |                                                        |
-| F5-T22 | Size group, README note, e2e support    | todo                            | agent |                                                        |
-| F5-T23 | Playwright and accessibility suites     | todo                            | agent | port 4305                                              |
-| F5-T24 | Documentation                           | todo                            | agent |                                                        |
-| F5-T25 | Manual verification against the gateway | todo                            | user  |                                                        |
+| ID     | Task                                    | Status                                                     | Owner | Notes                                                  |
+| ------ | --------------------------------------- | ---------------------------------------------------------- | ----- | ------------------------------------------------------ |
+| F5-T14 | Drawer frame and focus return           | in progress (uncommitted; agent started 10/10/2026 9:47am) | agent | helm `dialog` added, `tsconfig.json` paths reformatted |
+| F5-T15 | Branch drawer (create and edit)         | todo                                                       | agent |                                                        |
+| F5-T16 | Activate and deactivate                 | todo                                                       | agent |                                                        |
+| F5-T18 | Schedule page                           | todo                                                       | agent |                                                        |
+| F5-T19 | Services list, drawer, duration stepper | todo                                                       | agent |                                                        |
+| F5-T20 | Command palette                         | todo                                                       | agent |                                                        |
+| F5-T21 | Slot generation page                    | todo                                                       | agent |                                                        |
+| F5-T22 | Size group, README note, e2e support    | todo                                                       | agent |                                                        |
+| F5-T23 | Playwright and accessibility suites     | todo                                                       | agent | port 4305                                              |
+| F5-T24 | Documentation                           | todo                                                       | agent |                                                        |
+| F5-T25 | Manual verification against the gateway | todo                                                       | user  |                                                        |
 
 ## Next up
 
-1. Agents, in parallel: F2-T16; F3-T11 then T12 onwards; F4-T9 then T10 onwards; F5-T14 then T15 onwards.
+1. Running since 10/10/2026 9:47am, one agent per worktree: F2-T16; F3-T11 to T22; F4-T9 to T13; F5-T14 to T24. Each commits per task, so a stop loses at most the task in hand.
 2. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
 
 ## Log
 
-- 10/10/2026 9:50am: plan created; F2-T15 done (`2f5c841`); agents about to start on F2-T16, F3-T11, F4-T9 and F5-T14.
+- 10/10/2026 9:47am: agents started on F2-T16, F3-T11 to T22, F4-T9 to T13 and F5-T14 to T24.
+- 10/10/2026 9:45am: plan created (`dabf31e`); F2-T15 done (`2f5c841`).
