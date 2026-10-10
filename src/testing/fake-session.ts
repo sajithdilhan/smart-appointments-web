@@ -10,6 +10,7 @@ export interface FakeSession {
   profile: WritableSignal<Profile | null>;
   profileStatus: WritableSignal<ProfileStatus>;
   displayName: WritableSignal<string>;
+  user: WritableSignal<{ email: string } | null>;
   isAuthenticated: () => boolean;
   settled: () => Promise<void>;
   logout: ReturnType<typeof vi.fn>;
@@ -27,6 +28,7 @@ export function createFakeSession(status: SessionStatus, role: Role | null = nul
     profile: signal<Profile | null>(null),
     profileStatus: signal<ProfileStatus>('idle'),
     displayName: signal(role ? 'Ann Example' : ''),
+    user: signal(role ? { email: 'ann@example.com' } : null),
     isAuthenticated: computed(() => statusSignal() === 'authenticated'),
     settled: () => Promise.resolve(),
     logout: vi.fn(() => Promise.resolve()),

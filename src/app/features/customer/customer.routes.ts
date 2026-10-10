@@ -35,8 +35,7 @@ export const CUSTOMER_ROUTES: Routes = [
   {
     path: 'profile',
     title: 'Profile',
-    loadComponent: placeholder,
-    data: { heading: 'Profile', phase: 'F4' },
+    loadComponent: () => import('./profile/profile-page').then((m) => m.ProfilePage),
   },
 ];
 

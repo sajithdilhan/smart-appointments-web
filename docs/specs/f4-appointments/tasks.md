@@ -66,7 +66,8 @@ Rules (from the template):
   - Component specs: sheet at 1100 px and page at 600 px, deep link, `404`, non-GUID with no request, resize with an open dialog, Cancel visibility, dialog focus and Escape, optimistic text and announcement, success toast, 409 known and unknown text, 503 branches, Add to calendar visibility and missing-name input.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 7.1, 7.2, 7.3, 10.1, 10.3, 10.4_
 
-- [ ] 10. Profile page
+- [x] 10. Profile page
+  - _Done: 10/10/2026 9:56am_
   - `ProfilePage` (title `Profile`, `<dl>` with "Not provided", skeleton, email from the token claim, inline error with "Try again" calling `reloadProfile()`, reload on `OutageState.recovered` only while in error), `ThemePicker` radio group on the F0 `ThemeService`, "Sign out" calling `session.logout()`; no edit or password text. Replace the F1 placeholder route.
   - Component specs: list, skeleton, retry, "Not provided", theme in sync with the toggle, sign out calls `logout`.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 10.1_
