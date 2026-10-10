@@ -96,8 +96,8 @@ Rules (from the template):
   - Specs: summary text with and without a zone difference, exact request body and header, disabled controls while in flight, each message and button per state, key reuse on Back and on reload, new key after a slot change.
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.6, 7.8, 8.3, 8.4, 8.7, 8.8, 12.4_
 
-- [ ] 16. `buildIcs`, download and calendar button
-  - partial: `build-ics.ts` and `ics-download.ts` are done and tested; `downloadIcs` returns `false` instead of calling `ToastService.showError`, and `calendar-button.component.ts` is not built, both waiting on F1 `ToastService`.
+- [x] 16. `buildIcs`, download and calendar button
+  - _Done: 10/10/2026 10:13am_
   - `features/customer/shared/ics/build-ics.ts` (`buildIcs`, `icsFileName`, escaping, CRLF, folding at 75 octets without splitting a code point, UTC `DTSTART`/`DTEND`, UID), `ics-download.ts` (Blob, object URL revoked after the click, failure shown once with `showError`), and `book/components/calendar-button.component.ts` (lazy `import()` on first click).
   - Specs: exact `DTSTART` and `DTEND`, escaping of commas, semicolons, backslashes and a newline, control-character stripping, folding of a long ASCII address and of "Zürich", CRLF endings, UID, parse-back of the property set, file name cases, download failure.
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
