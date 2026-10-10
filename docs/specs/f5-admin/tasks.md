@@ -116,7 +116,8 @@ Rules (from the template):
   - Specs: columns and duration format, stepper and presets sync, validation messages, `409`, update body, guard, list states and card layout.
   - _Requirements: 6.1, 6.2, 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-- [ ] 20. Command palette
+- [x] 20. Command palette
+  - _Done: 10/10/2026 10:25am_
   - Generate nothing new beyond `dialog`. `palette/command-palette.component` (dialog, combobox over `createListbox`, grouped options, hidden result-count status, run-then-close with focus rules, theme and sign-out actions, no network), registered by `AdminFrame` (key listener torn down on destroy, ignored while a foreign modal is open, opens from `PaletteLauncher` requests, also in text fields).
   - Specs: combobox attributes, filtering and grouping, keyboard, Escape and focus return, "No matching commands", shortcut with `ctrlKey` and `metaKey` and no fire when a foreign modal is open, record entries from loaded stores only, no request issued, listener removed on destroy.
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9_
