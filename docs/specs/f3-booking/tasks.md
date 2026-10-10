@@ -108,7 +108,8 @@ Rules (from the template):
   - Specs: heading focus and one announcement, summary and reference, Copy with the clipboard blocked, no confetti under reduced motion and none after 2 s, Back lands on step 3 without `slot`, the key is gone, the cache entry is invalidated, a reload with `done=1` and no booking drops it, "Book another" resets, the saved hint shows once.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9_
 
-- [ ] 18. Invariant test
+- [x] 18. Invariant test
+  - _Done: 10/10/2026 10:24am_
   - `booking-invariant.spec.ts`: a seeded pseudo-random sequence of confirm activations, retries, dropped responses, `503`s, Review reloads and double activations against `createBookingBackend()`; assert at most one appointment exists for the slot and exactly one success view.
   - _Requirements: 13.3_
 
