@@ -123,7 +123,8 @@ Rules (from the template):
   - `e2e/book.a11y.spec.ts`: axe on each of the five steps in light and dark (fails on `serious` or `critical`), a 320 px width assertion of no horizontal page scroll per step, and a reduced-motion run asserting no confetti element.
   - _Requirements: 9.3, 12.1, 12.4, 12.5, 12.7, 12.8_
 
-- [ ] 21. Chunk budget check
+- [x] 21. Chunk budget check
+  - _Done: 10/10/2026 10:48am_
   - Extend `scripts/size.mjs` with `--group book` (sums gzip of outputs whose `entryPoint` is under `src/app/features/customer/book/` plus non-initial static imports, shared chunk counted once; fails over `MAX_GZIP_KB_BOOK`, default 60; reports the confetti and `.ics` chunks separately); add `pnpm size:book` and a CI `build`-job step. Record the measured total in `design.md`.
   - Confirm the F0 budgets still pass and no F3 code is in the initial bundle.
   - _Requirements: 13.5_
