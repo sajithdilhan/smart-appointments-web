@@ -91,7 +91,7 @@ describe('admin route table', () => {
 
   it('a non-GUID :id shows not-found without sending a request', async () => {
     await open('/admin/branches/not-a-guid');
-    expect(screen.getByRole('heading', { name: 'Branch not found' })).toBeInTheDocument();
+    expect(screen.getByText('That branch could not be found.')).toBeInTheDocument();
     expect(state.requests).toEqual([]);
   });
 

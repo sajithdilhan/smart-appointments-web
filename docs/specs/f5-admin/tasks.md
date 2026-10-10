@@ -87,7 +87,8 @@ Rules (from the template):
   - Specs: dialog semantics and focus trap, Escape and backdrop only emit, focus returns to the opener or the heading on a deep link, reduced-motion class.
   - _Requirements: 3.1, 12.3, 12.6_
 
-- [ ] 15. Branch drawer (create and edit)
+- [x] 15. Branch drawer (create and edit)
+  - _Done: 10/10/2026 9:59am_
   - `branch.form.ts`, `branch-drawer.component` (code immutable on edit, normalised-code preview, counters, submit flow with pending and double-submit guard, `mapBranchError`, `DirtyForm`, `registerBeforeUnload`, not-found and 404 handling, 429 notice), toasts with the "Set schedule" action.
   - Specs: validations and messages, immutable code, preview, create and update bodies (trimmed, description `null`, cleaned phone), `409` field error with focus, `400` mapping and alert, network/outage/429 handling, double-submit, Escape through the guard, store updated, focus return.
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12_
