@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { guidIdMatcher } from './appointments/guid-id-matcher';
 
 const placeholder = () => import('../placeholder/placeholder-page').then((m) => m.PlaceholderPage);
 
@@ -14,12 +15,22 @@ export const CUSTOMER_ROUTES: Routes = [
     path: 'appointments',
     title: 'My appointments',
     loadComponent: () => import('./appointments/appointments-page').then((m) => m.AppointmentsPage),
-  },
-  {
-    path: 'appointments/:id',
-    title: 'Appointment details',
-    loadComponent: placeholder,
-    data: { heading: 'Appointment details', phase: 'F4' },
+    // The detail is a child, so the list stays mounted behind a sheet (Req 5.1).
+    children: [
+      {
+        path: ':id',
+        title: 'Appointment',
+        canMatch: [guidIdMatcher],
+        loadComponent: () =>
+          import('./appointments/appointment-detail').then((m) => m.AppointmentDetail),
+      },
+      {
+        path: ':id',
+        title: 'Appointment not found',
+        loadComponent: () =>
+          import('./appointments/appointment-not-found').then((m) => m.AppointmentNotFound),
+      },
+    ],
   },
   {
     path: 'profile',

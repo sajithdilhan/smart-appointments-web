@@ -10,7 +10,7 @@ import {
   untracked,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { SessionStore } from '../../../core/auth/session.store';
 import { landingRouteFor } from '../../../core/auth/landing';
@@ -22,6 +22,7 @@ import { AppointmentTimeline } from './appointment-timeline';
 import { groupByDate, toViewModel } from './appointment-view';
 import { AppointmentsSkeleton } from './appointments-skeleton';
 import { AppointmentsStore } from './appointments.store';
+import { DetailHost } from './detail-host';
 import { EmptyState } from './empty-state';
 import { InlineError } from './inline-error';
 import { LoadMore } from './load-more';
@@ -35,6 +36,7 @@ import { parseTab, type AppointmentTab } from './tab-params';
   selector: 'app-appointments-page',
   imports: [
     RouterLink,
+    RouterOutlet,
     HlmButtonImports,
     AppointmentTabs,
     AppointmentTimeline,
@@ -43,72 +45,79 @@ import { parseTab, type AppointmentTab } from './tab-params';
     InlineError,
     LoadMore,
   ],
-  providers: [AppointmentsStore],
+  providers: [AppointmentsStore, DetailHost],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <h1
-          id="appointments-heading"
-          tabindex="-1"
-          class="text-3xl font-semibold tracking-tight outline-none"
+    @if (host.presentation() !== 'page') {
+      <div class="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h1
+            id="appointments-heading"
+            tabindex="-1"
+            class="text-3xl font-semibold tracking-tight outline-none"
+          >
+            My appointments
+          </h1>
+          <a hlmBtn routerLink="/book">Book an appointment</a>
+        </div>
+
+        <app-appointment-tabs
+          [tab]="filter().tab"
+          [showCancelled]="filter().showCancelled"
+          (tabChange)="selectTab($event)"
+          (showCancelledChange)="selectShowCancelled($event)"
+        />
+
+        <p role="status" class="text-sm text-muted-foreground">{{ countText() }}</p>
+
+        @if (lookupFailed()) {
+          <app-inline-error message="Some names could not be loaded." (retry)="retryLookup()" />
+        }
+
+        <div
+          role="tabpanel"
+          id="appointments-panel"
+          [attr.aria-labelledby]="'appointments-tab-' + filter().tab"
+          [attr.aria-busy]="showSkeleton() ? 'true' : null"
+          class="flex flex-col gap-4"
         >
-          My appointments
-        </h1>
-        <a hlmBtn routerLink="/book">Book an appointment</a>
-      </div>
-
-      <app-appointment-tabs
-        [tab]="filter().tab"
-        [showCancelled]="filter().showCancelled"
-        (tabChange)="selectTab($event)"
-        (showCancelledChange)="selectShowCancelled($event)"
-      />
-
-      <p role="status" class="text-sm text-muted-foreground">{{ countText() }}</p>
-
-      @if (lookupFailed()) {
-        <app-inline-error message="Some names could not be loaded." (retry)="retryLookup()" />
-      }
-
-      <div
-        role="tabpanel"
-        id="appointments-panel"
-        [attr.aria-labelledby]="'appointments-tab-' + filter().tab"
-        [attr.aria-busy]="showSkeleton() ? 'true' : null"
-        class="flex flex-col gap-4"
-      >
-        @if (showSkeleton()) {
-          <app-appointments-skeleton />
-        } @else if (store.status() === 'error') {
-          <app-inline-error [message]="store.error()?.message ?? ''" (retry)="store.loadFirst()" />
-          @if (store.error()?.status === 403) {
-            <a [routerLink]="landing()" class="text-sm font-medium text-primary underline">
-              Go to your home page
-            </a>
-          }
-        } @else if (store.isEmpty()) {
-          <app-empty-state [tab]="filter().tab" />
-        } @else {
-          <app-appointment-timeline [groups]="groups()" [pendingIds]="pendingIds()" />
-          @if (store.status() === 'more-error') {
+          @if (showSkeleton()) {
+            <app-appointments-skeleton />
+          } @else if (store.status() === 'error') {
             <app-inline-error
               [message]="store.error()?.message ?? ''"
-              (retry)="store.retryMore()"
+              (retry)="store.loadFirst()"
             />
-          } @else if (store.hasMore()) {
-            <div class="flex justify-center">
-              <app-load-more [loading]="store.status() === 'loading-more'" (more)="loadMore()" />
-            </div>
+            @if (store.error()?.status === 403) {
+              <a [routerLink]="landing()" class="text-sm font-medium text-primary underline">
+                Go to your home page
+              </a>
+            }
+          } @else if (store.isEmpty()) {
+            <app-empty-state [tab]="filter().tab" />
+          } @else {
+            <app-appointment-timeline [groups]="groups()" [pendingIds]="pendingIds()" />
+            @if (store.status() === 'more-error') {
+              <app-inline-error
+                [message]="store.error()?.message ?? ''"
+                (retry)="store.retryMore()"
+              />
+            } @else if (store.hasMore()) {
+              <div class="flex justify-center">
+                <app-load-more [loading]="store.status() === 'loading-more'" (more)="loadMore()" />
+              </div>
+            }
           }
-        }
-        <p class="sr-only" role="status">{{ store.announcement() }}</p>
+          <p class="sr-only" role="status">{{ store.announcement() }}</p>
+        </div>
       </div>
-    </div>
+    }
+    <router-outlet />
   `,
 })
 export class AppointmentsPage {
   protected readonly store = inject(AppointmentsStore);
+  protected readonly host = inject(DetailHost);
   private readonly reference = inject(ReferenceDataStore);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

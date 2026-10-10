@@ -11,6 +11,7 @@ import { StatusBadge } from './status-badge';
   template: `
     <a
       [routerLink]="['/appointments', view().id]"
+      queryParamsHandling="preserve"
       [state]="{ fromList: true }"
       [attr.aria-label]="view().a11yName"
       class="flex min-h-11 flex-col gap-1 rounded-lg border border-border bg-card p-4 text-card-foreground outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring sm:flex-row sm:items-center sm:justify-between"

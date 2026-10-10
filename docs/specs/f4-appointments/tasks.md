@@ -58,7 +58,8 @@ Rules (from the template):
   - Table-driven reducer specs for every transition, a repeated `confirm` ignored, 503 then re-GET `Cancelled`, 503 then `Booked`, re-GET failing; store specs with MSW; a spec pinning the known 409 string.
   - _Requirements: 5.2, 5.3, 5.6, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10_
 
-- [ ] 9. Detail UI: sheet or page, cancel dialog, calendar
+- [x] 9. Detail UI: sheet or page, cancel dialog, calendar
+  - _Done: 10/10/2026 9:53am_
   - Child route `/appointments/:id` (`guidIdMatcher`, `AppointmentNotFound`), the `presentation` computed (sheet at >= 1024 px when entered from the list, otherwise page), one `AppointmentDetail` projected into either container so a resize keeps data and an open dialog, the "Back to my appointments" link, focus into the sheet and back to the originating card (nearest remaining card, else the `<h1>`, when the card left the list).
   - Detail fields of Req 5.4 (booking reference with copy via the F1 helper, "Booked on"/"Cancelled on"), no internal ids, skeleton, error with retry and reload on `OutageState.recovered`.
   - `CancelDialog` (alertdialog, initial focus on "Keep appointment", Escape/backdrop keep), optimistic badge, inline `role="alert"` messages, `RateLimitNotice` on 429, and "Add to calendar" using F3's `buildIcs`/`downloadIcs` with missing names passed as absent.

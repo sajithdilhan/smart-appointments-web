@@ -7,13 +7,14 @@ export interface IcsInput {
   appointmentId: string;
   startUtc: Date;
   endUtc: Date;
-  serviceName: string;
-  branchName: string;
-  branchAddress: string;
-  branchPhone: string;
+  /** The names, address and phone are absent for a branch or service no longer listed (F4). */
+  serviceName?: string;
+  branchName?: string;
+  branchAddress?: string;
+  branchPhone?: string;
   /** Branch-local start, "09:30". */
-  localStart: string;
-  zoneId: string;
+  localStart?: string;
+  zoneId?: string;
 }
 
 const pad = (n: number, len = 2) => String(n).padStart(len, '0');
@@ -68,11 +69,16 @@ export function foldLine(line: string): string {
 }
 
 export function buildIcs(input: IcsInput, now: Date): string {
-  const summary = `${input.serviceName} at ${input.branchName}`;
-  const description =
-    `Booking reference: ${input.appointmentId}\n` +
-    `Branch phone: ${input.branchPhone}\n` +
-    `Local start: ${input.localStart} ${input.zoneId}`;
+  const summary =
+    input.serviceName && input.branchName
+      ? `${input.serviceName} at ${input.branchName}`
+      : (input.serviceName ?? 'Appointment');
+  const descriptionLines = [`Booking reference: ${input.appointmentId}`];
+  if (input.branchPhone) descriptionLines.push(`Branch phone: ${input.branchPhone}`);
+  if (input.localStart && input.zoneId) {
+    descriptionLines.push(`Local start: ${input.localStart} ${input.zoneId}`);
+  }
+  const description = descriptionLines.join('\n');
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -85,7 +91,7 @@ export function buildIcs(input: IcsInput, now: Date): string {
     `DTSTART:${formatIcsUtc(input.startUtc)}`,
     `DTEND:${formatIcsUtc(input.endUtc)}`,
     `SUMMARY:${escapeText(summary)}`,
-    `LOCATION:${escapeText(input.branchAddress)}`,
+    ...(input.branchAddress ? [`LOCATION:${escapeText(input.branchAddress)}`] : []),
     `DESCRIPTION:${escapeText(description)}`,
     'STATUS:CONFIRMED',
     'END:VEVENT',

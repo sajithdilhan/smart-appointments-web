@@ -94,7 +94,7 @@ describe('route table', () => {
   it.each([
     ['/book', 'Book an appointment'],
     ['/appointments', 'My appointments'],
-    ['/appointments/3', 'Appointment details'],
+    ['/appointments/3', 'Appointment not found'],
     ['/profile', 'Profile'],
   ])('shows %s to a Customer with its heading and title', async (url, heading) => {
     expect(await visit('Customer', url)).toEqual({
