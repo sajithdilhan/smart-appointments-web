@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideTriangleAlert } from '@ng-icons/lucide';
@@ -14,6 +14,7 @@ import { ListToolbar, type SortOption } from '../shared/list-toolbar.component';
 import { createListView, syncQueryParams, textSorter } from '../shared/list-view';
 import { SortHeader } from '../shared/sort-header.component';
 import { StatusBadge } from '../shared/status-badge.component';
+import { StatusConfirm } from '../shared/status-confirm.component';
 
 /** "Asia/Colombo, 5 days open", or null when the branch has no schedule yet. */
 export function scheduleSummary(b: Branch): string | null {
@@ -43,6 +44,7 @@ const LINK =
     RouterOutlet,
     SortHeader,
     StatusBadge,
+    StatusConfirm,
   ],
   providers: [provideIcons({ lucideTriangleAlert })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -131,6 +133,14 @@ const LINK =
                           [attr.aria-label]="'Schedule for ' + b.name"
                           >Schedule</a
                         >
+                        <button
+                          type="button"
+                          [class]="linkClass"
+                          [attr.aria-label]="(b.isActive ? 'Deactivate ' : 'Activate ') + b.name"
+                          (click)="toggle(b, $event)"
+                        >
+                          {{ b.isActive ? 'Deactivate' : 'Activate' }}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -178,6 +188,14 @@ const LINK =
                     [attr.aria-label]="'Schedule for ' + b.name"
                     >Schedule</a
                   >
+                  <button
+                    type="button"
+                    [class]="linkClass"
+                    [attr.aria-label]="(b.isActive ? 'Deactivate ' : 'Activate ') + b.name"
+                    (click)="toggle(b, $event)"
+                  >
+                    {{ b.isActive ? 'Deactivate' : 'Activate' }}
+                  </button>
                 </div>
               </li>
             }
@@ -185,6 +203,7 @@ const LINK =
         }
       </app-list-states>
     </div>
+    <app-status-confirm />
     <router-outlet />
   `,
 })
@@ -212,6 +231,18 @@ export class BranchesPage {
     { key: 'code', dir: 'asc', label: 'Code (A to Z)' },
     { key: 'code', dir: 'desc', label: 'Code (Z to A)' },
   ];
+
+  private readonly status = viewChild.required(StatusConfirm);
+
+  protected toggle(b: Branch, event: Event): void {
+    void this.status().ask({
+      entity: 'branch',
+      record: b,
+      store: this.store,
+      hasSchedule: scheduleSummary(b) !== null,
+      returnFocus: event.currentTarget as HTMLElement,
+    });
+  }
 
   constructor() {
     syncQueryParams(this.view);

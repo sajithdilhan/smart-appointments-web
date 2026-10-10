@@ -93,7 +93,8 @@ Rules (from the template):
   - Specs: validations and messages, immutable code, preview, create and update bodies (trimmed, description `null`, cleaned phone), `409` field error with focus, `400` mapping and alert, network/outage/429 handling, double-submit, Escape through the guard, store updated, focus return.
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12_
 
-- [ ] 16. Activate and deactivate (branches and services)
+- [x] 16. Activate and deactivate (branches and services)
+  - _Done: 10/10/2026 10:04am_
   - `shared/status-confirm.component` (guaranteed-effects wording for branch and service, lighter activate wording, no-schedule warning), wiring in the branches list and the edit drawer header, neutral toast, `404` and failure paths, focus return to the row button.
   - Specs: wording asserts the "existing appointments and slots are not cancelled" statement, Cancel is the initial focus, request sent once, pending state, store badge updates, `404` closes and reloads, failure keeps the dialog with the message.
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 6.3_

@@ -319,6 +319,18 @@ describe('BranchDrawer: edit', () => {
     await waitFor(() => expect(store.byId(b.id)?.name).toBe('Renamed'));
   });
 
+  it('deactivates from the drawer header and the badge follows', async () => {
+    const b = seedBranch({ name: 'Colombo' });
+    const { store } = await open(`/${b.id}`);
+    await waitFor(() => expect(field('Name')).toHaveValue('Colombo'));
+    expect(screen.getByText('Active')).toBeVisible();
+    await userEvent.click(screen.getByRole('button', { name: 'Deactivate Colombo' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Deactivate branch' }));
+    await waitFor(() => expect(store.byId(b.id)?.isActive).toBe(false));
+    expect(await screen.findByText('Inactive')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Activate Colombo' })).toBeVisible();
+  });
+
   it('a non-GUID id shows the not-found state with no request', async () => {
     await open('/not-a-guid');
     expect(await screen.findByText('That branch could not be found.')).toBeVisible();

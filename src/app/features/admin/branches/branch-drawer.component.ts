@@ -38,6 +38,8 @@ import { registerBeforeUnload } from '../shared/dirty/before-unload';
 import type { DirtyForm } from '../shared/dirty/dirty-form';
 import { restoreFocusOnDestroy } from '../shared/drawer-focus';
 import { DrawerFrame } from '../shared/drawer-frame.component';
+import { StatusBadge } from '../shared/status-badge.component';
+import { StatusConfirm } from '../shared/status-confirm.component';
 import { DESCRIPTION_MAX, normaliseCode } from '../validation/branch-rules';
 import { MESSAGES } from '../validation/messages';
 import { mapBranchError } from './branch-error';
@@ -71,6 +73,8 @@ type FieldName = 'code' | 'name' | 'description' | 'address' | 'phoneNumber';
     RateLimitNotice,
     ReactiveFormsModule,
     RouterLink,
+    StatusBadge,
+    StatusConfirm,
   ],
   providers: [provideIcons({ lucideLoaderCircle })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -102,6 +106,20 @@ type FieldName = 'code' | 'name' | 'description' | 'address' | 'phoneNumber';
           [formGroup]="form"
           (ngSubmit)="submit()"
         >
+          @if (record(); as r) {
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <app-status-badge [active]="r.isActive" />
+              <button
+                hlmBtn
+                type="button"
+                variant="outline"
+                [attr.aria-label]="(r.isActive ? 'Deactivate ' : 'Activate ') + r.name"
+                (click)="toggleStatus($event)"
+              >
+                {{ r.isActive ? 'Deactivate' : 'Activate' }}
+              </button>
+            </div>
+          }
           <app-form-alert #alert [message]="alertMessage()" [reference]="alertReference()" />
 
           @if (mode === 'create') {
@@ -213,6 +231,7 @@ type FieldName = 'code' | 'name' | 'description' | 'address' | 'phoneNumber';
         </form>
       }
     </app-drawer-frame>
+    <app-status-confirm />
   `,
 })
 export class BranchDrawer implements DirtyForm {
@@ -275,6 +294,10 @@ export class BranchDrawer implements DirtyForm {
     () => DESCRIPTION_MAX - this.values().description.length,
   );
 
+  private readonly statusConfirm = viewChild.required(StatusConfirm);
+  /** The stored record (edit mode), so the badge follows activation. */
+  protected readonly record = computed(() => (this.id ? this.store.byId(this.id) : undefined));
+
   private readonly frame = viewChild(DrawerFrame);
   private readonly formEl = viewChild<ElementRef<HTMLElement>>('formEl');
   private readonly alert = viewChild<FormAlertComponent>('alert');
@@ -283,6 +306,22 @@ export class BranchDrawer implements DirtyForm {
     restoreFocusOnDestroy();
     registerBeforeUnload(this.dirty);
     if (this.mode === 'edit') void this.loadBranch();
+  }
+
+  protected async toggleStatus(event: Event): Promise<void> {
+    const record = this.record();
+    if (!record) return;
+    const result = await this.statusConfirm().ask({
+      entity: 'branch',
+      record,
+      store: this.store,
+      hasSchedule: !!record.timeZoneId && record.workingHours.length > 0,
+      returnFocus: event.currentTarget as HTMLElement,
+    });
+    if (result === 'not-found') {
+      this.initial.set(branchSnapshot(this.form));
+      this.close();
+    }
   }
 
   isDirty(): boolean {
