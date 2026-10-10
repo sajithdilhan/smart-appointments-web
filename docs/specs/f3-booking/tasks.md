@@ -78,7 +78,8 @@ Rules (from the template):
   - Specs: first day equals the branch-zone today (Sydney user, New York branch), arrow, Home and End keys, default date, zone line shown and hidden, rollover replaces a past selection and drops its cache entry.
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
 
-- [ ] 13. Slot chips and slot states
+- [x] 13. Slot chips and slot states
+  - _Done: 10/10/2026 10:01am_
   - `components/slot-groups.component.ts`, `slot-chip.component.ts` and `slots-status.component.ts`: grouped chips with the radio group, accessible names, capacity hint, selection held in the store, "Continue to review" writing `slot`, skeleton, empty state with "Check <next day>" and "Choose another branch", error with "Try again", `RateLimitNotice` with a manual retry, "N times available" status once per search, selection cleared with a toast when a refresh removes the slot, 44 px targets on narrow screens.
   - Specs: grouping and headings, empty group omitted, names and hints, keyboard across groups, selection cleared on date change, Continue disabled without a selection, the empty state and the absence of the next-day button on the last day, the `429` notice, the removed-slot toast, one status announcement per search.
   - _Requirements: 4.4, 5.1, 5.4, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 12.3_

@@ -287,6 +287,7 @@ export const BookingWizardStore = signalStore(
       // a background refresh that removes the chosen slot clears it with a toast (Req 6.7).
       let prevKey: string | null = null;
       let prevSlots: readonly SlotResponse[] | null = null;
+      let prevKeyForSlots: string | null = null;
       effect(() => {
         const key = store.slotKey();
         const slots = store.slots();
@@ -305,7 +306,9 @@ export const BookingWizardStore = signalStore(
             store._toast.showInfo(SLOT_REMOVED_MESSAGE);
           }
           prevKey = keyText;
-          prevSlots = slots;
+          // A reload shows a skeleton (null) between two lists: compare with the last list seen.
+          if (keyText !== prevKeyForSlots || slots) prevSlots = slots;
+          prevKeyForSlots = keyText;
         });
       });
 
