@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { BranchStepComponent } from './components/branch-step.component';
 import { DateTimeStepComponent } from './components/date-time-step.component';
 import { ReviewStepComponent } from './components/review-step.component';
 import { ServiceStepComponent } from './components/service-step.component';
+import { SuccessStepComponent } from './components/success-step.component';
 import { StepIndicatorComponent } from './components/step-indicator.component';
-import { StepHeadingDirective } from './step-heading.directive';
 import { BookingWizardStore } from './wizard.store';
 
 /**
@@ -19,8 +20,9 @@ import { BookingWizardStore } from './wizard.store';
     DateTimeStepComponent,
     ReviewStepComponent,
     ServiceStepComponent,
+    RouterLink,
     StepIndicatorComponent,
-    StepHeadingDirective,
+    SuccessStepComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -37,6 +39,12 @@ import { BookingWizardStore } from './wizard.store';
         class="text-sm text-muted-foreground empty:hidden"
         [textContent]="store.notice()"
       ></p>
+      @if (store.savedHint() && (store.step() === 'branch' || store.step() === 'datetime')) {
+        <p role="status" class="rounded-lg border bg-card px-4 py-3 text-sm">
+          Your appointment is saved. Find it in
+          <a routerLink="/appointments" class="underline underline-offset-2">My appointments</a>.
+        </p>
+      }
       @switch (store.step()) {
         @case ('branch') {
           <app-branch-step />
@@ -51,9 +59,7 @@ import { BookingWizardStore } from './wizard.store';
           <app-review-step />
         }
         @case ('success') {
-          <section class="book-step">
-            <h2 appStepHeading class="text-xl font-semibold">You're booked</h2>
-          </section>
+          <app-success-step />
         }
       }
     </div>

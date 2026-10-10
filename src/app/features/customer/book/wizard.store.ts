@@ -18,9 +18,11 @@ import type {
 } from '../../../core/api/models';
 import { SessionStore } from '../../../core/auth/session.store';
 import { ToastService } from '../../../core/notify/toast.service';
+import { CLOCK } from '../../../core/util/clock';
 import { dayStrip, diffDays, todayInZone } from '../../../core/time';
 import { hasSchedule, toSchedule } from '../shared/branch-schedule';
 import { ReferenceDataStore } from '../shared/reference-data/reference-data.store';
+import { consumeJustBooked } from './just-booked.marker';
 import { createMinuteClock } from './minute-clock';
 import { slotCacheKey, type SlotKey } from './slot-cache';
 import { SlotSearchService } from './slot-search.service';
@@ -53,6 +55,8 @@ interface WizardState {
   searchText: string;
   /** A Confirm request is in flight; survives leaving Review, so a return stays disabled. */
   confirming: boolean;
+  /** A booking was made in this tab in the last 10 minutes (the marker was consumed). */
+  savedHint: boolean;
   /** True after the first render, so the first step heading does not steal focus. */
   initialised: boolean;
 }
@@ -63,6 +67,7 @@ const initialState: WizardState = {
   notice: null,
   searchText: '',
   confirming: false,
+  savedHint: false,
   initialised: false,
 };
 
@@ -103,6 +108,7 @@ export const BookingWizardStore = signalStore(
       _search: inject(SlotSearchService),
       _session: inject(SessionStore),
       _toast: inject(ToastService),
+      _clock: inject(CLOCK),
       /** A known key that is in the URL but did not parse (a bad id): it must be removed. */
       _dirty: computed(() => {
         const q = query();
@@ -331,6 +337,17 @@ export const BookingWizardStore = signalStore(
         if (key && signedIn && (step === 'datetime' || step === 'review')) {
           untracked(() => store._search.load(key));
         }
+      });
+
+      // "Your appointment is saved" after a reload or "Book another" on step 1 or 3 (Req 9.7).
+      effect(() => {
+        const step = store.step();
+        if (step !== 'branch' && step !== 'datetime') return;
+        untracked(() => {
+          if (!store.savedHint() && consumeJustBooked(store._clock.now())) {
+            patchState(store, { savedHint: true });
+          }
+        });
       });
 
       // The success view lives only as long as `done=1` is in the URL (Back leaves it).

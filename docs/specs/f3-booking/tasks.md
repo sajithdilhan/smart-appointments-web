@@ -102,8 +102,8 @@ Rules (from the template):
   - Specs: exact `DTSTART` and `DTEND`, escaping of commas, semicolons, backslashes and a newline, control-character stripping, folding of a long ASCII address and of "Zürich", CRLF endings, UID, parse-back of the property set, file name cases, download failure.
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-- [ ] 17. Success step and confetti
-  - partial: `success-check.component.ts` and `confetti.component.ts` (with tests) are done; `success-step.component.ts`, the `@defer` wiring, copy-reference and the store/URL/cache effects wait on the wizard store, F1 `ToastService`/`SessionStore` and the routes.
+- [x] 17. Success step and confetti
+  - _Done: 10/10/2026 10:17am_
   - `components/success-step.component.ts`, `success-check.component.ts` (SVG draw within 600 ms), `confetti.component.ts` (canvas, at most 60 particles, 2 s, `aria-hidden`, no pointer events, stopped on destroy) loaded with `@defer` only when reduced motion is off, copy-reference with the clipboard fallback, the three actions; on `201` replace the step 4 entry with `done=1`, remove the key, invalidate the cache entry, write the marker; step 1 or 3 shows the saved hint when the marker is present.
   - Specs: heading focus and one announcement, summary and reference, Copy with the clipboard blocked, no confetti under reduced motion and none after 2 s, Back lands on step 3 without `slot`, the key is gone, the cache entry is invalidated, a reload with `done=1` and no booking drops it, "Book another" resets, the saved hint shows once.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9_
