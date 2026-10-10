@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 10/10/2026 9:53am
+Last updated: 10/10/2026 10:23am
 
 ## How to resume
 
@@ -76,14 +76,15 @@ Tasks 2 to 10 done before this plan.
 
 Tasks 1 to 8 done before this plan.
 
-| ID     | Task                                              | Status                                                     | Owner | Notes                   |
-| ------ | ------------------------------------------------- | ---------------------------------------------------------- | ----- | ----------------------- |
-| F4-T9  | Detail UI: sheet or page, cancel dialog, calendar | in progress (uncommitted; agent started 10/10/2026 9:47am) | agent | finish and commit first |
-| F4-T10 | Profile page                                      | todo                                                       | agent |                         |
-| F4-T11 | Accessibility and motion pass                     | todo                                                       | agent |                         |
-| F4-T12 | Playwright suites and size budget                 | todo                                                       | agent | port 4304               |
-| F4-T13 | Documentation                                     | todo                                                       | agent |                         |
-| F4-T14 | Manual verification against the gateway           | todo                                                       | user  |                         |
+| ID     | Task                                              | Status                  | Owner | Notes                                                                               |
+| ------ | ------------------------------------------------- | ----------------------- | ----- | ----------------------------------------------------------------------------------- |
+| F4-T9  | Detail UI: sheet or page, cancel dialog, calendar | done 10/10/2026 9:53am  | agent | `bacb376`                                                                           |
+| F4-T10 | Profile page                                      | done 10/10/2026 9:56am  | agent | `230202a`; `ProfilePage` and `ThemePicker`                                          |
+| F4-T11 | Accessibility and motion pass                     | done 10/10/2026 10:01am | agent | `ea76676`; helm sheet and alert-dialog motion behind `motion-safe:`                 |
+| F4-T12 | Playwright suites and size budget                 | done 10/10/2026 10:18am | agent | `f171c57`; 28/28 e2e; F4 lazy 36.63 kB of 40; axe fixed destructive-button contrast |
+| F4-T13 | Documentation                                     | done 10/10/2026 10:22am | agent | `5691b66`                                                                           |
+| F4-T14 | Manual verification against the gateway           | todo                    | user  |                                                                                     |
+| F4-PR  | Raise the F4 pull request                         | todo                    | user  | after F3 merges and F4 is rebased on `main`                                         |
 
 ## F5 Admin (`f5-admin`)
 
@@ -106,13 +107,21 @@ Tasks 1 to 13 and 17 done before this plan.
 ## Next up
 
 1. Running since 10/10/2026 9:47am, one agent per worktree: F2-T16; F3-T11 to T22; F4-T9 to T13; F5-T14 to T24. Each commits per task, so a stop loses at most the task in hand.
-2. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
+2. F4 code is complete (1090 unit tests, 28 e2e). It waits for F3 to merge, then a rebase on `main`, then F4-T14 and its PR.
+3. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
 
 ## Watch list
 
 - Possible flaky unit test on `f2-public`: one run of 825 tests had 1 failure (not captured) that did not reproduce on reruns (reported 10/10/2026 9:51am). If it recurs, capture the name with `pnpm test 2>&1 | grep -B2 -A20 FAIL`.
 
+- `f4-appointments`: two sheet-opening specs (`a11y.spec.ts`, `appointment-detail.spec.ts`) timed out intermittently under full-suite load and were given a 20 s timeout. Look at the cause if more specs need this.
+- `f4-appointments`: `pnpm format:check` warns about `tsconfig.json` (not fixed; same `paths` formatting issue as F5-T14).
+- F4 rebase on `main` after F3: reconcile the branches and services MSW handlers from F4-T2 with F3's; the temporary `MyAppointmentsPage` type in `core/api/models.ts` stays until `pnpm gen:api` (F3-T1).
+- Regenerating the helm `sheet` or `alert-dialog` drops F4's `motion-safe:` edits (F4 design deviation 11); re-apply them.
+
 ## Log
+
+- 10/10/2026 10:23am: F4-T9 to T13 done (`bacb376`, `230202a`, `ea76676`, `f171c57`, `5691b66`); gate passes with 85 files and 1090 tests; e2e 28/28. F4 waits on the F3 merge, F4-T14 and its PR.
 
 - 10/10/2026 9:53am: F2-T16 done (`822fe0f`). F2 now waits only on F2-T17 (manual check, you), then the PR.
 - 10/10/2026 9:47am: agents started on F2-T16, F3-T11 to T22, F4-T9 to T13 and F5-T14 to T24.
