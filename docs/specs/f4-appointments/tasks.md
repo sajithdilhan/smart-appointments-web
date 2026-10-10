@@ -72,7 +72,8 @@ Rules (from the template):
   - Component specs: list, skeleton, retry, "Not provided", theme in sync with the toggle, sign out calls `logout`.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 10.1_
 
-- [ ] 11. Accessibility and motion pass
+- [x] 11. Accessibility and motion pass
+  - _Done: 10/10/2026 10:01am_
   - Verify live-region wording and single announcements, focus indicators not hidden by sticky headings, 44 px card targets, `motion-safe` on sheet, dialog and skeleton, reduced-motion behaviour, and the 320 px / 200% zoom layouts; fix gaps found.
   - Component specs for reduced motion (no pulse, no slide class) and the announcements.
   - _Requirements: 3.6, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8_
