@@ -61,7 +61,9 @@ describe('admin route table', () => {
   it('branches/:id/schedule is the schedule page, not the drawer child :id', async () => {
     const branch = seedBranch({ name: 'Colombo Central' });
     const { router, title } = await open(`/admin/branches/${branch.id}/schedule`);
-    expect(screen.getByRole('heading', { level: 1, name: 'Schedule' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Schedule for Colombo Central' }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Edit branch' })).not.toBeInTheDocument();
     expect(title).toBe('Schedule | Smart Appointments');
     expect(crumbsOf(router.routerState.snapshot.root)).toEqual([

@@ -104,7 +104,8 @@ Rules (from the template):
   - Specs: row validation and messages, request shape and Monday-first order, copy and close-all, combobox attributes and keyboard, selection sets the value, free text not accepted, offsets shown, form model round trip.
   - _Requirements: 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.11_
 
-- [ ] 18. Schedule page
+- [x] 18. Schedule page
+  - _Done: 10/10/2026 10:11am_
   - `schedule.page`: load via `ensure`, breadcrumbs, not-found state, inactive note, save flow (pending, response upserted, form re-seeded and pristine), all-closed confirmation, `mapScheduleError`, the "affects only slots generated from now on" note, `DirtyForm` and `registerBeforeUnload`.
   - Specs: load and seeding, save body, success resets dirtiness, all-closed confirm, `400` alert, `404`, outage and `429`, guard blocks a dirty exit.
   - _Requirements: 5.1, 5.7, 5.8, 5.9, 5.10, 5.11, 11.2_
