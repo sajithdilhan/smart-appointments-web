@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { BranchStepComponent } from './components/branch-step.component';
 import { DateTimeStepComponent } from './components/date-time-step.component';
+import { ReviewStepComponent } from './components/review-step.component';
 import { ServiceStepComponent } from './components/service-step.component';
 import { StepIndicatorComponent } from './components/step-indicator.component';
 import { StepHeadingDirective } from './step-heading.directive';
@@ -16,6 +17,7 @@ import { BookingWizardStore } from './wizard.store';
   imports: [
     BranchStepComponent,
     DateTimeStepComponent,
+    ReviewStepComponent,
     ServiceStepComponent,
     StepIndicatorComponent,
     StepHeadingDirective,
@@ -24,7 +26,11 @@ import { BookingWizardStore } from './wizard.store';
   template: `
     <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-6">
       <h1 class="text-3xl font-semibold tracking-tight">Book an appointment</h1>
-      <app-step-indicator [step]="store.step()" (goTo)="store.goTo($event)" />
+      <app-step-indicator
+        [step]="store.step()"
+        [disabled]="store.confirming()"
+        (goTo)="store.goTo($event)"
+      />
       <p
         id="book-notice"
         role="status"
@@ -42,9 +48,7 @@ import { BookingWizardStore } from './wizard.store';
           <app-date-time-step />
         }
         @case ('review') {
-          <section class="book-step">
-            <h2 appStepHeading class="text-xl font-semibold">Review and confirm</h2>
-          </section>
+          <app-review-step />
         }
         @case ('success') {
           <section class="book-step">

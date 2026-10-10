@@ -12,3 +12,15 @@ export function formatClock(time: string, locale?: string): string {
     minute: '2-digit',
   }).format(Date.UTC(2000, 0, 1, h, m));
 }
+
+/** A calendar date "2026-10-04" as "Sunday 4 October 2026" (the browser locale's wording). */
+export function formatLongDate(date: string, locale?: string): string {
+  const [y, m, d] = date.split('-').map(Number);
+  return new Intl.DateTimeFormat(locale, {
+    timeZone: 'UTC',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(Date.UTC(y, m - 1, d, 12));
+}

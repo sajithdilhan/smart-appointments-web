@@ -90,7 +90,8 @@ Rules (from the template):
   - Specs: every transition row with MSW and fake timers (key kept or rotated, destination step, toast calls, slot search forced on `slot-gone`), double click, Enter plus click and `dblclick` send one request, destroying the component mid-flight does not abort, the lost-response replay (same key twice, one success), `401` leaves the flow idle for F1, no call unless authenticated as a Customer.
   - _Requirements: 7.5, 7.6, 7.7, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 8.10, 8.11, 11.4_
 
-- [ ] 15. Review step
+- [x] 15. Review step
+  - _Done: 10/10/2026 10:10am_
   - `components/review-step.component.ts` and `review-card.component.ts`: branch and service summary, branch-local date and time range, the zone label and "your time" line only when the zone differs, `tel:` link, the cancel note, the inline messages per `ConfirmState`, Confirm and "Choose another time" and "Try again" and "Check again" buttons, `RateLimitNotice`, `aria-busy`, key acquired on entry, the no-secure-random message.
   - Specs: summary text with and without a zone difference, exact request body and header, disabled controls while in flight, each message and button per state, key reuse on Back and on reload, new key after a slot change.
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.6, 7.8, 8.3, 8.4, 8.7, 8.8, 12.4_
