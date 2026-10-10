@@ -72,7 +72,8 @@ Rules (from the template):
   - Specs: sorting, pill text, "Change" returns to step 1 and drops later parameters, selection navigates with `service`.
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 12. Date strip
+- [x] 12. Date strip
+  - _Done: 10/10/2026 9:55am_
   - `components/date-strip.component.ts`: the 14-day radio group in the branch zone, "Today" and month labels, selected day scrolled into view (smooth only without reduced motion), default `date` set with `replaceUrl`, the "Times are shown in ..." line when `zoneDiffersFromBrowser`, minute-tick rollover recomputing the strip.
   - Specs: first day equals the branch-zone today (Sydney user, New York branch), arrow, Home and End keys, default date, zone line shown and hidden, rollover replaces a past selection and drops its cache entry.
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_

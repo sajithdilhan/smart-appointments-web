@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { BranchStepComponent } from './components/branch-step.component';
+import { DateTimeStepComponent } from './components/date-time-step.component';
 import { ServiceStepComponent } from './components/service-step.component';
 import { StepIndicatorComponent } from './components/step-indicator.component';
 import { StepHeadingDirective } from './step-heading.directive';
@@ -14,6 +15,7 @@ import { BookingWizardStore } from './wizard.store';
   selector: 'app-book-page',
   imports: [
     BranchStepComponent,
+    DateTimeStepComponent,
     ServiceStepComponent,
     StepIndicatorComponent,
     StepHeadingDirective,
@@ -37,9 +39,7 @@ import { BookingWizardStore } from './wizard.store';
           <app-service-step />
         }
         @case ('datetime') {
-          <section class="book-step">
-            <h2 appStepHeading class="text-xl font-semibold">Choose a date and time</h2>
-          </section>
+          <app-date-time-step />
         }
         @case ('review') {
           <section class="book-step">
