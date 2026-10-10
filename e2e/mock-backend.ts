@@ -29,7 +29,7 @@ export interface MockOptions {
   refreshStatus?: number;
 }
 
-const CORS = {
+export const CORS = {
   'access-control-allow-origin': '*',
   'access-control-allow-headers': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE',

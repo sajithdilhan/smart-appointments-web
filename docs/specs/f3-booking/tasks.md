@@ -113,7 +113,8 @@ Rules (from the template):
   - `booking-invariant.spec.ts`: a seeded pseudo-random sequence of confirm activations, retries, dropped responses, `503`s, Review reloads and double activations against `createBookingBackend()`; assert at most one appointment exists for the slot and exactly one success view.
   - _Requirements: 13.3_
 
-- [ ] 19. Playwright flows with mocked API
+- [x] 19. Playwright flows with mocked API
+  - _Done: 10/10/2026 10:34am_
   - `e2e/book.spec.ts` (`page.route`, F1's mock helpers): a keyboard-only booking through all five steps with the downloaded `.ics` containing `DTSTART` and `LOCATION`; a deep link to Review; a stale `slot` recovering to step 3; a `409` overlap with the link to My appointments; a `503` followed by a same-key retry that books once (headers recorded); a `429` countdown on slot search and on Confirm.
   - _Requirements: 1.3, 1.4, 8.3, 8.7, 8.8, 10.1, 13.4_
 
