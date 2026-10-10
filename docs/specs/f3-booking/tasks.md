@@ -66,7 +66,8 @@ Rules (from the template):
   - Specs: loading skeleton, search with fake timers and the no-match state, hours and badge for branches in Auckland, London and New York under another process zone (open at `opensAt`, closed at `closesAt`, closed today), the disabled card not selectable by click, Enter or Space and still focusable, empty list, outage then recovery, selection navigates with `branch`.
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 12.4_
 
-- [ ] 11. Service step
+- [x] 11. Service step
+  - _Done: 10/10/2026 9:48am_
   - `components/service-step.component.ts` and `service-card.component.ts`: the compact branch summary with "Change", duration pill, description clamp, checked state on return, loading, empty and error states.
   - Specs: sorting, pill text, "Change" returns to step 1 and drops later parameters, selection navigates with `service`.
   - _Requirements: 3.1, 3.2, 3.3, 3.4_

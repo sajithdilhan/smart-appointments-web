@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { BranchStepComponent } from './components/branch-step.component';
+import { ServiceStepComponent } from './components/service-step.component';
 import { StepIndicatorComponent } from './components/step-indicator.component';
 import { StepHeadingDirective } from './step-heading.directive';
 import { BookingWizardStore } from './wizard.store';
@@ -11,7 +12,12 @@ import { BookingWizardStore } from './wizard.store';
  */
 @Component({
   selector: 'app-book-page',
-  imports: [BranchStepComponent, StepIndicatorComponent, StepHeadingDirective],
+  imports: [
+    BranchStepComponent,
+    ServiceStepComponent,
+    StepIndicatorComponent,
+    StepHeadingDirective,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-6">
@@ -28,9 +34,7 @@ import { BookingWizardStore } from './wizard.store';
           <app-branch-step />
         }
         @case ('service') {
-          <section class="book-step">
-            <h2 appStepHeading class="text-xl font-semibold">Choose a service</h2>
-          </section>
+          <app-service-step />
         }
         @case ('datetime') {
           <section class="book-step">
