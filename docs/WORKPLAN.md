@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 10/10/2026 9:47am
+Last updated: 10/10/2026 9:53am
 
 ## How to resume
 
@@ -23,6 +23,7 @@ Last updated: 10/10/2026 9:47am
 ## Delegation
 
 - One subagent per phase worktree at a time (`model: "sonnet"`, as CLAUDE.md requires), working only inside `C:/Users/sajit/source/repos/saw-wt/<branch>`. Phases in different worktrees can run in parallel.
+- Take the `_Done:_` time with `date "+%d/%m/%Y %-I:%M%P"` immediately before `git commit`, after the gate has passed.
 - The agent works through its assigned tasks in order, one commit per task (Conventional Commits, the commit attribution line, the tick and `_Done:_` line in the same commit), and stops at the first task it cannot finish, leaving a note under that task in `tasks.md`.
 - Agents never push, open PRs, edit another worktree, edit this file or do `user` tasks. The main session updates this file from each agent's report.
 - Port lanes so parallel Playwright runs do not collide (serve the built output with `pnpm exec sirv dist/smart-appointments-web/browser --single --port <port>` and run `E2E_BASE_URL=http://localhost:<port> pnpm e2e`): F2 4302, F3 4303, F4 4304, F5 4305. Never `pnpm start` on 4200 from an agent.
@@ -43,12 +44,12 @@ The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; 
 
 Tasks 1 to 14 done before this plan.
 
-| ID     | Task                                    | Status                                        | Owner | Notes                                                        |
-| ------ | --------------------------------------- | --------------------------------------------- | ----- | ------------------------------------------------------------ |
-| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am                        | main  | `2f5c841`; public group 26.47 kB gzip of 50                  |
-| F2-T16 | Documentation                           | in progress (agent started 10/10/2026 9:47am) | agent | README, CLAUDE.md, spec index                                |
-| F2-T17 | Manual verification against the gateway | todo                                          | user  | needs the backend running; result goes in the PR description |
-| F2-PR  | Raise the F2 pull request               | todo                                          | user  | after T16; T17 result in the description                     |
+| ID     | Task                                    | Status                 | Owner | Notes                                                            |
+| ------ | --------------------------------------- | ---------------------- | ----- | ---------------------------------------------------------------- |
+| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am | main  | `2f5c841`; public group 26.47 kB gzip of 50                      |
+| F2-T16 | Documentation                           | done 10/10/2026 9:51am | agent | `822fe0f`; README gains "What F2 provides" and "Known gaps (F2)" |
+| F2-T17 | Manual verification against the gateway | todo                   | user  | needs the backend running; result goes in the PR description     |
+| F2-PR  | Raise the F2 pull request               | todo                   | user  | after T16; T17 result in the description                         |
 
 ## F3 Booking (`f3-booking`)
 
@@ -107,7 +108,12 @@ Tasks 1 to 13 and 17 done before this plan.
 1. Running since 10/10/2026 9:47am, one agent per worktree: F2-T16; F3-T11 to T22; F4-T9 to T13; F5-T14 to T24. Each commits per task, so a stop loses at most the task in hand.
 2. You: start the backend gateway to unblock F3-T1 (`pnpm gen:api`) and the manual checks (F2-T17 first, so the F2 PR can be raised).
 
+## Watch list
+
+- Possible flaky unit test on `f2-public`: one run of 825 tests had 1 failure (not captured) that did not reproduce on reruns (reported 10/10/2026 9:51am). If it recurs, capture the name with `pnpm test 2>&1 | grep -B2 -A20 FAIL`.
+
 ## Log
 
+- 10/10/2026 9:53am: F2-T16 done (`822fe0f`). F2 now waits only on F2-T17 (manual check, you), then the PR.
 - 10/10/2026 9:47am: agents started on F2-T16, F3-T11 to T22, F4-T9 to T13 and F5-T14 to T24.
 - 10/10/2026 9:45am: plan created (`dabf31e`); F2-T15 done (`2f5c841`).
