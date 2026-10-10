@@ -479,6 +479,8 @@ The three pages are separate lazy chunks; `@angular/forms` and the `auth/` compo
 
 `scripts/size.mjs --group public` builds on the Angular `--stats-json` metafile: it sums the gzip size of each output whose `entryPoint` is under `src/app/features/public/` plus the non-initial files those outputs statically import (the shared chunk counted once), prints the table, and exits 1 over `MAX_GZIP_KB_PUBLIC` (default 50). CI runs it in the `build` job after `pnpm size`. The initial bundle is unaffected: no F2 code is imported by `app.routes.ts` except through `import()`.
 
+**Measured (task 15):** the public group is **26.47 kB gzip** (86.41 kB raw) over seven chunks: the shared forms chunk 16.34 kB, `RegisterPage` 3.77 kB, `LandingPage` 2.94 kB, `LoginPage` 2.49 kB, and four small shared and route chunks under 0.35 kB each. The initial bundle measures 153.71 kB gzip under the F0 limit of 250 kB, and none of the public outputs are initial files. The stats metafile comes from `statsJson: true` in the production configuration; it is written beside `browser/` (`dist/smart-appointments-web/browser-stats.json`), so it is neither served nor copied into the image.
+
 ## Traceability
 
 | Requirement     | Satisfied by (this document)                                                                         |
@@ -534,3 +536,4 @@ All ten were approved with these resolutions.
 - **`PasswordChecklistComponent.results` carries `{ id, label, met }`** (structurally `PasswordRuleResult`) rather than bare booleans, so the labels come from `PASSWORD_RULES` in one place. It still never receives the password. `PasswordFieldComponent` wraps its own `app-form-field` (label, hint, error) and exposes `focus()` and `pending`/`hint` inputs.
 - **`Outcome`, `mapCommonError` and `toAppError` live in `features/public/auth/outcome.ts`**, shared by `mapLoginError` and `mapRegisterError`, so the common rows (429, outage, network, timeout, 5xx, other) cannot drift. The outcome focus for a non-400, non-network "other" status is `alert`.
 - **Auth layout and illustration** use inline templates (no `.html` files) and the grain layer is a component style, not an inline `style` attribute.
+- **`statsJson` is on in the production configuration** rather than passed as `--stats-json` in CI, so `pnpm build` alone produces what `pnpm size:public` reads. `scripts/size.mjs` exports `initialFiles` and `groupFiles` for `scripts/size.spec.mjs`; `STATS_JSON` overrides the metafile path.

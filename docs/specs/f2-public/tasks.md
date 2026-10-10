@@ -95,7 +95,8 @@ Rules (from the template):
   - A 320 px viewport assertion for no horizontal scroll (`scrollWidth <= clientWidth`) on each page.
   - _Requirements: 1.4, 1.5, 6.5, 6.7, 6.9, 7.4_
 
-- [ ] 15. Chunk budget check
+- [x] 15. Chunk budget check
+  - _Done: 10/10/2026 9:41am_
   - Extend `scripts/size.mjs` with `--group public` (sums the gzip size of outputs whose `entryPoint` is under `src/app/features/public/` plus their non-initial static imports, shared chunk counted once; fails over `MAX_GZIP_KB_PUBLIC`, default 50). Add `pnpm size:public` and a CI `build`-job step. Record the measured total in `design.md`.
   - Confirm the F0 budgets still pass and no F2 code is in the initial bundle.
   - _Requirements: 5.6, 7.5_
