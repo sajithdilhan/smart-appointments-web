@@ -51,6 +51,8 @@ interface WizardState {
   booking: Booked | null;
   notice: string | null;
   searchText: string;
+  /** A Confirm request is in flight; survives leaving Review, so a return stays disabled. */
+  confirming: boolean;
   /** True after the first render, so the first step heading does not steal focus. */
   initialised: boolean;
 }
@@ -60,6 +62,7 @@ const initialState: WizardState = {
   booking: null,
   notice: null,
   searchText: '',
+  confirming: false,
   initialised: false,
 };
 
@@ -227,6 +230,7 @@ export const BookingWizardStore = signalStore(
       go,
       /** A navigation the wizard makes itself (repair, default date): the notice stays. */
       replaceWith: (next: WizardParams) => navigate(next, true),
+      setConfirming: (confirming: boolean) => patchState(store, { confirming }),
       setSearchText: (text: string) => patchState(store, { searchText: text }),
       selectSlot: (id: string | null) => patchState(store, { selectedSlotId: id }),
       chooseBranch: (id: string) => go({ branch: id }),
@@ -265,9 +269,16 @@ export const BookingWizardStore = signalStore(
       },
       /** Success (Req 9.6): keep the booking in memory and replace the step 4 entry with `done=1`. */
       showBooked(booked: Booked): void {
-        const { branch: b, service: sv, date } = current();
         patchState(store, { booking: booked, selectedSlotId: null });
-        go({ branch: b, service: sv, date, done: true }, true);
+        go(
+          {
+            branch: booked.branch.id,
+            service: booked.service.id,
+            date: booked.slot.date,
+            done: true,
+          },
+          true,
+        );
       },
       bookAnother(): void {
         patchState(store, { booking: null, selectedSlotId: null, searchText: '' });

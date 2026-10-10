@@ -84,7 +84,8 @@ Rules (from the template):
   - Specs: grouping and headings, empty group omitted, names and hints, keyboard across groups, selection cleared on date change, Continue disabled without a selection, the empty state and the absence of the next-day button on the last day, the `429` notice, the removed-slot toast, one status announcement per search.
   - _Requirements: 4.4, 5.1, 5.4, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 12.3_
 
-- [ ] 14. Confirm flow (state machine)
+- [x] 14. Confirm flow (state machine)
+  - _Done: 10/10/2026 10:06am_
   - `book/confirm.machine.ts` (`createConfirmFlow`: the synchronous `inFlight` guard, `submit`, `retry`, `reset`, the transition table of the design, one auto retry after 2 s for "in progress", countdown for `429`, key kept, cleared or rotated per outcome, the request not aborted on component destroy).
   - Specs: every transition row with MSW and fake timers (key kept or rotated, destination step, toast calls, slot search forced on `slot-gone`), double click, Enter plus click and `dblclick` send one request, destroying the component mid-flight does not abort, the lost-response replay (same key twice, one success), `401` leaves the flow idle for F1, no call unless authenticated as a Customer.
   - _Requirements: 7.5, 7.6, 7.7, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 8.10, 8.11, 11.4_
