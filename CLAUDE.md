@@ -126,6 +126,7 @@ Angular rules:
 ## Git and workflow
 
 - Spec-driven loop: `requirements.md` -> `design.md` -> `tasks.md`, each approved before the next; tasks are coding steps and are ticked in the same commit as the code. See `docs/specs/README.md` for the index and templates in `docs/specs/_templates/`.
+- **Work plan**: `docs/WORKPLAN.md` (on `main`) is the tracker across phases: every task's status, owner and completion time (`done 10/10/2026 9:41am`), the worktree per phase (`../saw-wt/<branch>`), merge order and the resume steps. Read it first when resuming and reconcile it with each worktree's `git status`, `git log` and `tasks.md`; update it (and its Log) whenever a task changes status. Done means the task's tests pass and the gate passes; a ticked task in `tasks.md` gets a `_Done: <DD/MM/YYYY h:mmam>_` line in the same commit.
 - Commits follow Conventional Commits (`feat(core): ...`, `fix:`, `chore:`, `test:`, `build:`, `ci:`, `docs:`); commitlint rejects anything else. Use branch `main` for F0; later phases use one branch and one pull request per phase. A feature is done only when its unit tests pass and the pull request is raised.
 - Update `README.md` and this file in the same commit as any change that makes them untrue.
 
@@ -137,3 +138,5 @@ project's chosen subagent model because delegated tasks (codebase searches, spec
 refactors) don't need the larger model and run faster and cheaper on it. The intended model is
 **Sonnet 5.5**; the `sonnet` alias resolves to the latest Sonnet release, so it picks up Sonnet 5.5
 without pinning a version-specific model ID.
+
+Phase work is delegated one subagent per phase worktree, following the **Delegation** rules in `docs/WORKPLAN.md` (stay inside the worktree, one commit per task, stop at the first task that cannot be finished, never push or edit the work plan, use the phase's e2e port lane). The main session updates the work plan from each agent's report.
