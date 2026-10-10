@@ -81,7 +81,8 @@ Rules (from the template):
   - Specs: columns and badges, "Not set" schedule, filter and sort, empty and no-match, Retry, card layout via a stubbed `ViewportService`, state preserved after a store update, recovery reload.
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 12.4, 12.5_
 
-- [ ] 14. Drawer frame and focus return
+- [x] 14. Drawer frame and focus return
+  - _Done: 10/10/2026 9:51am_
   - Generate helm `sheet` and `dialog` if not present. `shared/drawer-frame.component.ts` (always-open sheet; Escape, backdrop and Close emit `closeRequested`), `shared/drawer-focus.ts` (opener capture and restore, heading fallback).
   - Specs: dialog semantics and focus trap, Escape and backdrop only emit, focus returns to the opener or the heading on a deep link, reduced-motion class.
   - _Requirements: 3.1, 12.3, 12.6_
