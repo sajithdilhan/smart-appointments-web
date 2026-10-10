@@ -118,7 +118,8 @@ Rules (from the template):
   - `e2e/book.spec.ts` (`page.route`, F1's mock helpers): a keyboard-only booking through all five steps with the downloaded `.ics` containing `DTSTART` and `LOCATION`; a deep link to Review; a stale `slot` recovering to step 3; a `409` overlap with the link to My appointments; a `503` followed by a same-key retry that books once (headers recorded); a `429` countdown on slot search and on Confirm.
   - _Requirements: 1.3, 1.4, 8.3, 8.7, 8.8, 10.1, 13.4_
 
-- [ ] 20. Accessibility and reflow checks
+- [x] 20. Accessibility and reflow checks
+  - _Done: 10/10/2026 10:43am_
   - `e2e/book.a11y.spec.ts`: axe on each of the five steps in light and dark (fails on `serious` or `critical`), a 320 px width assertion of no horizontal page scroll per step, and a reduced-motion run asserting no confetti element.
   - _Requirements: 9.3, 12.1, 12.4, 12.5, 12.7, 12.8_
 
