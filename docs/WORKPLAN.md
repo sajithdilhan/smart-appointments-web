@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 10/10/2026 10:56am
+Last updated: 17/10/2026 4:58pm
 
 ## How to resume
 
@@ -55,23 +55,23 @@ Tasks 1 to 14 done before this plan.
 
 Tasks 2 to 10 done before this plan.
 
-| ID     | Task                                    | Status                                                   | Owner | Notes                                                         |
-| ------ | --------------------------------------- | -------------------------------------------------------- | ----- | ------------------------------------------------------------- |
-| F3-T1  | Generated types, API methods, MSW model | blocked (needs `pnpm gen:api` against a running gateway) | user  | methods and MSW model exist; only the regeneration is left    |
-| F3-T11 | Service step                            | done 10/10/2026 9:49am                                   | agent | `5a4d579`                                                     |
-| F3-T12 | Date strip                              | done 10/10/2026 9:55am                                   | agent | `fc68a52`                                                     |
-| F3-T13 | Slot chips and slot states              | done 10/10/2026 10:01am                                  | agent | `641b919`; fixed a stale selection after forced refresh       |
-| F3-T14 | Confirm flow (state machine)            | done 10/10/2026 10:06am                                  | agent | `9c8c66c`                                                     |
-| F3-T15 | Review step                             | done 10/10/2026 10:10am                                  | agent | `e15c076`                                                     |
-| F3-T16 | `buildIcs`, download, calendar button   | done 10/10/2026 10:13am                                  | agent | `6f7e840`                                                     |
-| F3-T17 | Success step and confetti               | done 10/10/2026 10:17am                                  | agent | `57ff68e`                                                     |
-| F3-T18 | Invariant test                          | done 10/10/2026 10:24am                                  | agent | `14aac54`                                                     |
-| F3-T19 | Playwright flows with mocked API        | done 10/10/2026 10:34am                                  | agent | `3e72942`; 31/31 e2e on port 4303                             |
-| F3-T20 | Accessibility and reflow checks         | done 10/10/2026 10:43am                                  | agent | `d04128d`; fixed 84 px header overflow at 320 px (`UserMenu`) |
-| F3-T21 | Chunk budget check                      | done 10/10/2026 10:48am                                  | agent | `c891891`; `pnpm size:book`: 30.38 kB of 60                   |
-| F3-T22 | Documentation                           | done 10/10/2026 10:51am                                  | agent | `b7daf44`                                                     |
-| F3-T23 | Manual verification against the gateway | todo                                                     | user  |                                                               |
-| F3-PR  | Raise the F3 pull request               | todo                                                     | user  | after F2 merges (rebase on `main`), F3-T1 and F3-T23          |
+| ID     | Task                                    | Status                  | Owner | Notes                                                         |
+| ------ | --------------------------------------- | ----------------------- | ----- | ------------------------------------------------------------- |
+| F3-T1  | Generated types, API methods, MSW model | done 17/10/2026 4:56pm  | main  | `8adeeb8`; regeneration byte-identical (see Watch list)       |
+| F3-T11 | Service step                            | done 10/10/2026 9:49am  | agent | `5a4d579`                                                     |
+| F3-T12 | Date strip                              | done 10/10/2026 9:55am  | agent | `fc68a52`                                                     |
+| F3-T13 | Slot chips and slot states              | done 10/10/2026 10:01am | agent | `641b919`; fixed a stale selection after forced refresh       |
+| F3-T14 | Confirm flow (state machine)            | done 10/10/2026 10:06am | agent | `9c8c66c`                                                     |
+| F3-T15 | Review step                             | done 10/10/2026 10:10am | agent | `e15c076`                                                     |
+| F3-T16 | `buildIcs`, download, calendar button   | done 10/10/2026 10:13am | agent | `6f7e840`                                                     |
+| F3-T17 | Success step and confetti               | done 10/10/2026 10:17am | agent | `57ff68e`                                                     |
+| F3-T18 | Invariant test                          | done 10/10/2026 10:24am | agent | `14aac54`                                                     |
+| F3-T19 | Playwright flows with mocked API        | done 10/10/2026 10:34am | agent | `3e72942`; 31/31 e2e on port 4303                             |
+| F3-T20 | Accessibility and reflow checks         | done 10/10/2026 10:43am | agent | `d04128d`; fixed 84 px header overflow at 320 px (`UserMenu`) |
+| F3-T21 | Chunk budget check                      | done 10/10/2026 10:48am | agent | `c891891`; `pnpm size:book`: 30.38 kB of 60                   |
+| F3-T22 | Documentation                           | done 10/10/2026 10:51am | agent | `b7daf44`                                                     |
+| F3-T23 | Manual verification against the gateway | todo                    | user  |                                                               |
+| F3-PR  | Raise the F3 pull request               | todo                    | user  | after F2 merges (rebase on `main`) and F3-T23                 |
 
 ## F4 Appointments (`f4-appointments`)
 
@@ -111,7 +111,7 @@ Tasks 1 to 13 and 17 done before this plan.
 All agent-owned tasks for F2 to F5 are done (no agent is running). What remains is yours:
 
 1. Decide the open items under **Decisions for you**.
-2. Start the backend gateway, then run F3-T1 (`pnpm gen:api`) and the manual checks: F2-T17 first.
+2. With the backend gateway running, do the manual checks: F2-T17 first, then F3-T23, F4-T14 and F5-T25.
 3. Raise the F2 PR and merge it; then rebase F3 and F5 on `main` (resolving the size-check and timeout items in the watch list), F3 PR; then rebase F4, F4 PR; then F5 PR.
 4. After that: write the F6 Polish spec.
 
@@ -120,6 +120,9 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 - **F5 admin chunk budget.** The approved design said 80 kB gzip; measured 111.55 kB over 42 files, so the agent raised the default limit to 120 kB (F5 design deviation 8). Accept 120, or trim the bundle (the forms and CDK overlay chunks should become shared with F2 to F4 after the merges, which lowers the admin-only figure).
 
 ## Watch list
+
+- Backend OpenAPI gap: `pnpm gen:api` on 17/10/2026 matched the committed types exactly, because the Availability and Booking operations (and Auth `register`/`me`) declare no response bodies. The temporary types in `core/api/models.ts` (including F4's `MyAppointmentsPage`) stay until the backend adds response metadata (`Produces<T>` or typed results); then regenerate and delete them.
+- Commit hooks broke on 17/10/2026: a `pnpm install` in `C:\Users\sajit` (an old `package.json` depending on the npm `node` package) left a broken `node.cmd` shim that lint-staged's tinyexec found on its `node_modules/.bin` walk ("The system cannot find the path specified"). Moved to `C:\Users\sajit\node-leftovers-backup-20261017`; delete that folder once nothing misses it.
 
 - Possible flaky unit test on `f2-public`: one run of 825 tests had 1 failure (not captured) that did not reproduce on reruns (reported 10/10/2026 9:51am). If it recurs, capture the name with `pnpm test 2>&1 | grep -B2 -A20 FAIL`.
 
@@ -138,6 +141,8 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 17/10/2026 4:58pm: F3-T1 done (`8adeeb8`): gateway up, `pnpm gen:api` produced identical files; gate passes (82 files, 970 tests). Fixed the broken commit hooks (stray home-folder `node` shim). Next: F2-T17.
 
 - 10/10/2026 10:56am: F5-T14 to T24 done (`f2c69d1` to `ee5b79b`); gate passes with 89 files and 1331 tests; e2e 29/29. Admin budget needs your decision. No agents running.
 
