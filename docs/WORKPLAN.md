@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 17/10/2026 4:58pm
+Last updated: 17/10/2026 5:12pm
 
 ## How to resume
 
@@ -44,12 +44,12 @@ The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; 
 
 Tasks 1 to 14 done before this plan.
 
-| ID     | Task                                    | Status                 | Owner | Notes                                                            |
-| ------ | --------------------------------------- | ---------------------- | ----- | ---------------------------------------------------------------- |
-| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am | main  | `2f5c841`; public group 26.47 kB gzip of 50                      |
-| F2-T16 | Documentation                           | done 10/10/2026 9:51am | agent | `822fe0f`; README gains "What F2 provides" and "Known gaps (F2)" |
-| F2-T17 | Manual verification against the gateway | todo                   | user  | needs the backend running; result goes in the PR description     |
-| F2-PR  | Raise the F2 pull request               | todo                   | user  | after T16; T17 result in the description                         |
+| ID     | Task                                    | Status                 | Owner | Notes                                                                                                                      |
+| ------ | --------------------------------------- | ---------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
+| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am | main  | `2f5c841`; public group 26.47 kB gzip of 50                                                                                |
+| F2-T16 | Documentation                           | done 10/10/2026 9:51am | agent | `822fe0f`; README gains "What F2 provides" and "Known gaps (F2)"                                                           |
+| F2-T17 | Manual verification against the gateway | in progress            | user  | automated live pass 11/11 + API contract OK; left: Admin login (no seed), screen reader, register keyboard and visual pass |
+| F2-PR  | Raise the F2 pull request               | todo                   | user  | after T16; T17 result in the description                                                                                   |
 
 ## F3 Booking (`f3-booking`)
 
@@ -141,6 +141,8 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 17/10/2026 5:12pm: F2-T17 in progress: live API contract checks and an 11-step Playwright pass against the gateway all passed (web container on :8081). Left for you: seed an Admin and check `/admin`, a screen-reader pass, and the register keyboard and visual check. Results drafted for the PR description.
 
 - 17/10/2026 4:58pm: F3-T1 done (`8adeeb8`): gateway up, `pnpm gen:api` produced identical files; gate passes (82 files, 970 tests). Fixed the broken commit hooks (stray home-folder `node` shim). Next: F2-T17.
 
