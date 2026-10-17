@@ -10,13 +10,14 @@ Rules (from the template):
 
 **Prerequisite.** F3 starts after F1 and F2 are implemented and tested. It consumes, and builds none of: `ApiClient`, the `AvailabilityApiService` and `BookingApiService` shells, `AppError` and the error interceptor, `ToastService` (`showError`, `showSuccess`, `showInfo`), `createRetryCountdown` and the shared `RateLimitNotice`, `OutageState` with `recovered`, `SessionStore`, `authGuard` and `roleGuard`, the customer shell with the `book` placeholder route, `ViewportService`, `CLOCK` (`now()` in epoch ms), `core/util/safe-storage.ts` (the `sessionStorage` variant), the `core/time/` utilities including the branch-zone helpers (`zonedParts`, `todayInZone`, `addDays`, `todaysHours`, `isOpenNow`, `hhmm`; confirm F1's final names before task 4), the F1 title strategy that accepts function titles, the MSW server setup and F1's `render-with-session.ts`, `manual-clock.ts`, and F2's `appFocusHeading` pattern. IF one is missing, finish it in F1 or F2 first.
 
-- [ ] 1. Generated types, API methods and MSW backend model
-  - partial: `pnpm gen:api` was not run (it needs the running backend gateway, which this branch may not start); the generated Availability and Booking documents declare no response bodies, so the response types are temporary extensions in `models.ts` until the backend documents them and the types are regenerated.
+- [x] 1. Generated types, API methods and MSW backend model
+  - note: `pnpm gen:api` ran against the gateway on 17/10/2026 and produced byte-identical files: the backend's Availability and Booking (and Auth `register`/`me`) operations still declare no response bodies, so the temporary extensions in `models.ts` all stay until the backend documents them.
   - Run `pnpm gen:api` and commit the regenerated `availability.d.ts` and `booking.d.ts`; remove any temporary extension in `models.ts` that the regeneration made redundant.
   - Add `AvailabilityApiService.branches()`, `services()`, `availableSlots({ branchId, serviceId, date })` and `BookingApiService.createAppointment(slotId, idempotencyKey)` (header `Idempotency-Key`, body exactly `{ slotId }`), typed from the generated schema.
   - Add `src/testing/booking-backend.ts` (stateful model: branches in Auckland, London and New York plus one with no schedule, services, slots generated from a fixed clock with capacity, appointments, idempotency store with replay and `422`, overlap and slot-state `409`s with the verbatim backend strings, `404 Slot not found.`, `503`, flags for search `429`, create `429`, drop-response-after-booking and in-progress) and `availability.handlers.ts` / `booking.handlers.ts` (echo `X-Correlation-ID`, `{status, detail}` as `application/problem+json`).
   - Specs: each API method's URL, query and body with MSW; the model's own rules (replay returns the first status and body, `422` for another body, overlap, full slot, missing key `400`).
   - _Requirements: 5.1, 7.5, 13.1_
+  - _Done: 17/10/2026 4:56pm_
 
 - [x] 2. Pure modules: params, steps, day parts, duration, strip
   - `book/steps.ts` (`STEPS`, `stepFromParams`, `stepTitle`), `book/wizard-params.ts` (`parseParams`, `repairParams`, `buildParams`), `book/day-parts.ts` (`partOfDay`, `groupSlots`, `capacityHint`), `book/duration.ts` (`formatDuration`), `book/date-strip.ts` (`dayStrip`).
