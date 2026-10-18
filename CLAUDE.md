@@ -8,7 +8,7 @@ This is the Angular web client of the SmartAppointments backend (`https://github
 
 What exists today:
 
-- **Workspace**: Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
+- **Workspace**: an Nx 23 standalone workspace (`nx.json` plus a root `project.json` whose `build`, `serve` and `test` targets run the `@angular/build` executors; no `angular.json`; Nx caches `build` and `test` locally under `.nx/cache`; Nx Cloud is off through `neverConnectToCloud`), Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
 - **Styling**: Tailwind v4 (CSS-first, `src/styles.css`, no `tailwind.config.js`), the teal/zinc token sheet with a light and a `.dark` theme, self-hosted Inter, Spartan/ui helm components (`button`, `card`, `input`, `label`, `switch`, `sonner`, `alert`, `dropdown-menu`, `separator`, `sheet`, `breadcrumb`) under `src/app/shared/ui/` (aliases `@app/shared/ui/<name>`).
 - **Core (F1)**, all non-visual, under `src/app/core/`:
   - `config` (runtime `/config.json` loader, `APP_CONFIG`, `APP_CONFIG_READY`, error page), `theme` (`ThemeService`).
@@ -27,7 +27,7 @@ Not present yet (do not assume): the customer and admin feature screens (booking
 
 ```powershell
 pnpm install --frozen-lockfile     # Husky installs through the prepare script
-pnpm start                         # ng serve on http://localhost:4200
+pnpm start                         # nx serve on http://localhost:4200
 pnpm build                         # production build with budgets -> dist/smart-appointments-web/browser
 pnpm test                          # Vitest once; `pnpm test --coverage` writes coverage/
 pnpm test:watch
@@ -42,7 +42,7 @@ pnpm e2e                           # Playwright (routes mocked); starts pnpm sta
 
 # One spec file, or tests by name (use pnpm exec: `pnpm test --filter` is eaten by pnpm itself)
 pnpm test --include "src/app/core/config/*.spec.ts"
-pnpm exec ng test --watch=false --filter "ThemeService"
+pnpm exec nx test --watch=false --filter "ThemeService"
 
 # One Playwright test by title
 pnpm e2e -g "dark theme persists"
@@ -78,7 +78,7 @@ There are no secrets in this repository and none may be added: a SPA's bundle an
 Layout under `src/app`:
 
 - `core/`: non-visual code only (config, theme, api, http, auth, notify, routing, time, util, ui). Imports neither `shared` nor `features`. `core/time` owns all calendar, zone and branch-time maths (parsing UTC, formatting in a zone, `todayInZone`, `addDays`, `localToUtc`, `isOpenNow`, ...): never reimplement it elsewhere. `sessionSafe` / `localSafe` (`core/util/safe-storage`) are the only way to touch web storage; no direct `localStorage` or `sessionStorage` calls (they throw in blocked browsers).
-- `shared/ui/`: Spartan helm components (generated, do not hand-edit beyond what a feature needs; regenerate with `pnpm exec ng g @spartan-ng/cli:ui <name> --interactive=false`, one name per call) and small app primitives such as `theme-toggle` and `rate-limit-notice`. May import `core`. `shared/layout/` holds the application frames (the four shells, user menu, skip link, route progress and announcer, breadcrumbs, outage banner, not-found); shells accept projected content with the router outlet as the default (`<ng-content><router-outlet /></ng-content>`) so the 404 page renders inside the right shell.
+- `shared/ui/`: Spartan helm components (generated, do not hand-edit beyond what a feature needs; regenerate with `pnpm exec nx g @spartan-ng/cli:ui <name> --interactive=false`, one name per call) and small app primitives such as `theme-toggle` and `rate-limit-notice`. May import `core`. `shared/layout/` holds the application frames (the four shells, user menu, skip link, route progress and announcer, breadcrumbs, outage banner, not-found); shells accept projected content with the router outlet as the default (`<ng-content><router-outlet /></ng-content>`) so the 404 page renders inside the right shell.
 - `features/`: one folder per area (`public/`, `customer/`, `admin/`, `staff/`), each lazy-loaded from `app.routes.ts` through a `*.routes.ts` file. May import `shared` and `core`.
 - ESLint enforces the direction with `no-restricted-imports` zones; the generated helm folders have their own override (their selectors use `hlm`/`brn` prefixes).
 
@@ -128,6 +128,7 @@ Angular rules:
 ## Git and workflow
 
 - Spec-driven loop: `requirements.md` -> `design.md` -> `tasks.md`, each approved before the next; tasks are coding steps and are ticked in the same commit as the code. See `docs/specs/README.md` for the index and templates in `docs/specs/_templates/`.
+- **Work plan**: `docs/WORKPLAN.md` (on `main`) is the tracker across phases: every task's status, owner and completion time (`done 10/10/2026 9:41am`), the worktree per phase (`../saw-wt/<branch>`), merge order and the resume steps. Read it first when resuming and reconcile it with each worktree's `git status`, `git log` and `tasks.md`; update it (and its Log) whenever a task changes status. Done means the task's tests pass and the gate passes; a ticked task in `tasks.md` gets a `_Done: <DD/MM/YYYY h:mmam>_` line in the same commit.
 - Commits follow Conventional Commits (`feat(core): ...`, `fix:`, `chore:`, `test:`, `build:`, `ci:`, `docs:`); commitlint rejects anything else. Use branch `main` for F0; later phases use one branch and one pull request per phase. A feature is done only when its unit tests pass and the pull request is raised.
 - Update `README.md` and this file in the same commit as any change that makes them untrue.
 
@@ -139,3 +140,5 @@ project's chosen subagent model because delegated tasks (codebase searches, spec
 refactors) don't need the larger model and run faster and cheaper on it. The intended model is
 **Sonnet 5.5**; the `sonnet` alias resolves to the latest Sonnet release, so it picks up Sonnet 5.5
 without pinning a version-specific model ID.
+
+Phase work is delegated one subagent per phase worktree, following the **Delegation** rules in `docs/WORKPLAN.md` (stay inside the worktree, one commit per task, stop at the first task that cannot be finished, never push or edit the work plan, use the phase's e2e port lane). The main session updates the work plan from each agent's report.

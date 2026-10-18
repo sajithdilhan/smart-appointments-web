@@ -42,6 +42,7 @@ Versions are the ones installed at scaffold time (see `package.json` and `pnpm-l
 | Unit tests | Vitest through the Angular builder, Angular Testing Library, MSW                                           |
 | End-to-end | Playwright (Chromium)                                                                                      |
 | Quality    | ESLint (angular-eslint), Prettier, Husky, lint-staged, commitlint                                          |
+| Workspace  | Nx 23 standalone workspace (root `project.json`, Angular builders as executors), pnpm                      |
 | Packaging  | pnpm, multi-stage Docker build, nginx (unprivileged) with a strict CSP                                     |
 | CI         | GitHub Actions                                                                                             |
 
@@ -150,7 +151,7 @@ The app fetches `/config.json` (uncached) before it renders:
 { "apiBaseUrl": "http://localhost:5290" }
 ```
 
-- `ng serve` and the build serve `public/config.json` with the local default.
+- `nx serve` (`pnpm start`) and the build serve `public/config.json` with the local default.
 - In the container the entrypoint (`docker/40-config.sh`) renders `/config.json` from the `API_BASE_URL` environment variable and derives the CSP `connect-src` origin from it, so one image serves every environment.
 - `apiBaseUrl` is normalised to its origin. If the file is missing, unreachable, invalid or not an absolute `http(s)` URL, the app shows a standalone "Configuration error" page with a "Try again" button instead of starting.
 - An empty or malformed `API_BASE_URL` still starts the container (so the error page is visible, not a crash loop) and limits `connect-src` to `'self'`.

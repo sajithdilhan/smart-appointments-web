@@ -15,6 +15,7 @@ export default defineConfig(
   globalIgnores([
     'dist',
     '.angular',
+    '.nx',
     'coverage',
     'playwright-report',
     'test-results',
