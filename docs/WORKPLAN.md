@@ -117,7 +117,7 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 
 ## Decisions for you
 
-- **F5 admin chunk budget.** Resolved: the user accepted 120 kB gzip on 18/10/2026 (designed 80 kB, measured 111.55 kB; F5 design deviation 8). Revisit in F6.
+- **F5 admin chunk budget.** Resolved: the user accepted 120 kB gzip on 18/10/2026 (designed 80 kB, measured 111.55 kB; F5 design deviation 8). Remeasured 90.03 kB on 18/10/2026 after fixing the walker's over-count (it walked through `main` and into other features' lazy chunks). Revisit in F6.
 
 ## Watch list
 

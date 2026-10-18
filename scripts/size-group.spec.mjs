@@ -38,6 +38,30 @@ test('the admin group is everything reachable from the admin entry, minus the in
   assert.deepEqual(shared, ['chunk-forms.js']);
 });
 
+test('a stopped chunk is not entered, but chunks admin reaches itself still count', () => {
+  const withForeign = new Map(files);
+  withForeign.set('chunk-admin.js', `${files.get('chunk-admin.js')}import("./chunk-public.js");`);
+  withForeign.set(
+    'chunk-public.js',
+    'import{f}from"./chunk-forms.js";import("./chunk-pub-only.js");',
+  );
+  withForeign.set('chunk-pub-only.js', 'export const x=1;');
+  const initial = initialClosure(withForeign, ['main.js']);
+
+  const open = adminGroup(withForeign, initial);
+  assert.ok(open.group.includes('chunk-public.js'));
+  assert.ok(open.group.includes('chunk-pub-only.js'));
+
+  const { group, shared } = adminGroup(
+    withForeign,
+    initial,
+    undefined,
+    new Set(['chunk-public.js']),
+  );
+  assert.deepEqual(group, ['chunk-admin.js', 'chunk-forms.js', 'chunk-page.js']);
+  assert.deepEqual(shared, ['chunk-forms.js']);
+});
+
 test('no admin entry gives an empty group', () => {
   const { entry, group } = adminGroup(new Map([['main.js', '']]), new Set(['main.js']));
   assert.equal(entry, null);

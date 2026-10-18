@@ -94,7 +94,19 @@ export function reportAdmin(root, initialSet, maxKb) {
     sources,
     [...initialSet].filter((f) => f.endsWith('.js')),
   );
-  const { entry, group, shared } = adminGroup(sources, initial);
+  // Never walk into another feature's lazy entry chunks (e.g. public), reached by dynamic import.
+  const statsPath = process.env.STATS_JSON ?? `${root}-stats.json`;
+  const stats = JSON.parse(readFileSync(statsPath, 'utf8'));
+  const outDir = root.replace(/\\/g, '/');
+  const stop = new Set();
+  for (const [key, output] of Object.entries(stats.outputs)) {
+    const entryPoint = output.entryPoint?.replace(/\\/g, '/');
+    const foreign = /^src\/app\/features\/([^/]+)\//.exec(entryPoint ?? '')?.[1];
+    if (foreign && foreign !== 'admin') {
+      stop.add(key.replace(/\\/g, '/').replace(`${outDir}/`, ''));
+    }
+  }
+  const { entry, group, shared } = adminGroup(sources, initial, undefined, stop);
   if (!entry) {
     console.error('No admin chunk found in the build output.');
     process.exit(1);

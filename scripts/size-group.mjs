@@ -15,27 +15,32 @@ export function referencedFiles(source) {
  * @param {Map<string, string>} files file name to source, for every `.js` file in the output
  * @param {Set<string>} initial the files the index page loads, and what they import statically
  * @param {string} marker text that appears only in the admin entry chunk
+ * @param {Set<string>} stop files the walk from the entry never enters (other features' lazy entries)
  * @returns {{ entry: string | null; group: string[]; shared: string[] }}
  */
-export function adminGroup(files, initial, marker = 'branches/:id/schedule') {
+export function adminGroup(files, initial, marker = 'branches/:id/schedule', stop = new Set()) {
   const entry = [...files].find(
     ([name, source]) => !initial.has(name) && source.includes(marker),
   )?.[0];
   if (!entry) return { entry: null, group: [], shared: [] };
 
-  const reach = (start) => {
+  // `stop` holds other features' lazy entry chunks: the admin walk never enters them, but they
+  // still count as "other lazy code" when looking for shared chunks.
+  const reach = (start, stopAt = new Set()) => {
     const seen = new Set();
     const queue = [start];
     while (queue.length) {
       const name = queue.pop();
-      if (seen.has(name) || !files.has(name)) continue;
+      if (seen.has(name) || !files.has(name) || stopAt.has(name)) continue;
       seen.add(name);
       for (const ref of referencedFiles(files.get(name))) queue.push(ref);
     }
     return seen;
   };
 
-  const group = new Set([...reach(entry)].filter((name) => !initial.has(name)));
+  const group = new Set(
+    [...reach(entry, new Set([...stop, ...initial]))].filter((name) => !initial.has(name)),
+  );
   // Other lazy files (not initial, not in the group) that reach into the group.
   const others = [...files.keys()].filter((name) => !initial.has(name) && !group.has(name));
   const shared = new Set();
