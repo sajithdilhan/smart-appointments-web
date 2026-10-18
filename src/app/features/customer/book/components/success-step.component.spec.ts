@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { screen } from '@testing-library/angular';
+import { screen, within } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 import { BRANCH_IDS, SERVICE_IDS } from '../../../../../testing/booking-backend';
 import { firstSlot, renderBook, type RenderedBook } from '../../../../../testing/render-book';
@@ -19,7 +19,7 @@ async function bookFirstSlot() {
   const confirm = await screen.findByRole('button', { name: 'Confirm booking' });
   await vi.waitFor(() => expect(confirm).toBeEnabled());
   await user.click(confirm);
-  await screen.findByRole('heading', { level: 2, name: "You're booked" });
+  await screen.findByRole('heading', { level: 2, name: 'Booking confirmed!' });
   return user;
 }
 
@@ -42,7 +42,7 @@ describe('SuccessStepComponent', () => {
   it('focuses the heading, shows the summary and the full reference, announces once, no toast', async () => {
     const view = await renderBook({ url: step3 });
     await bookFirstSlot();
-    await vi.waitFor(() => expect(heading("You're booked")).toHaveFocus());
+    await vi.waitFor(() => expect(heading('Booking confirmed!')).toHaveFocus());
     expect(screen.getByText(reference(view))).toBeTruthy();
     expect(screen.getByText('10 Baker Street, London')).toBeTruthy();
     expect(screen.getByText('Check-up')).toBeTruthy();
@@ -57,11 +57,50 @@ describe('SuccessStepComponent', () => {
     expect(view.toast.showSuccess).not.toHaveBeenCalled();
     expect(view.toast.showInfo).not.toHaveBeenCalled();
     expect(document.title).toBe('Appointment booked | Smart Appointments');
-    expect(screen.getByRole('link', { name: 'View my appointments' })).toHaveAttribute(
-      'href',
-      '/appointments',
-    );
     expect(screen.getByRole('button', { name: /Add to calendar/ })).toBeTruthy();
+  });
+
+  it('shows the heading, the sentence, the mint reference card and the summary without Edit', async () => {
+    const view = await renderBook({ url: step3 });
+    await bookFirstSlot();
+    expect(heading('Booking confirmed!')).toBeTruthy();
+    expect(screen.getByText('Your appointment has been successfully booked.')).toBeTruthy();
+    const label = screen.getByText('Booking reference');
+    const card = label.parentElement!;
+    expect(card).toHaveClass('bg-success-soft');
+    expect(within(card).getByText(reference(view))).toHaveClass('font-mono');
+    expect(within(card).getByRole('button', { name: 'Copy reference' })).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 3, name: 'Booking summary' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /^Edit / })).toBeNull();
+    expect(screen.getByRole('button', { name: /Add to calendar/ })).not.toHaveAttribute(
+      'data-variant',
+      'outline',
+    );
+  });
+
+  it('links to the appointment detail, to the home page, and offers Book another', async () => {
+    const view = await renderBook({ url: step3 });
+    await bookFirstSlot();
+    expect(screen.getByRole('link', { name: 'View details' })).toHaveAttribute(
+      'href',
+      `/appointments/${reference(view)}`,
+    );
+    expect(screen.getByRole('link', { name: 'Back to home' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('button', { name: 'Book another' })).toBeTruthy();
+  });
+
+  it('shows the contact from the profile once it is ready, else the session email', async () => {
+    const view = await renderBook({ url: step3 });
+    view.session.profile.set({
+      firstName: 'Ann',
+      lastName: 'Example',
+      email: 'ann@example.com',
+      phoneNumber: '+44 20 7946 0000',
+    });
+    view.session.profileStatus.set('ready');
+    await bookFirstSlot();
+    expect(screen.getByText('ann@example.com')).toBeTruthy();
+    expect(screen.getByText('+44 20 7946 0000')).toBeTruthy();
   });
 
   describe('Copy reference', () => {
@@ -117,7 +156,7 @@ describe('SuccessStepComponent', () => {
       TestBed.inject(Location).back();
       await vi.waitFor(() => expect(heading('Choose a date and time')).toBeTruthy());
       expect(view.router.url).toBe(step3);
-      expect(screen.queryByRole('heading', { name: "You're booked" })).toBeNull();
+      expect(screen.queryByRole('heading', { name: 'Booking confirmed!' })).toBeNull();
       // The cache entry was invalidated, so the day is searched again and shows less capacity.
       await vi.waitFor(() => expect(view.backend.state.counters.search).toBeGreaterThan(searches));
       await vi.waitFor(() =>
@@ -130,7 +169,7 @@ describe('SuccessStepComponent', () => {
     const view = await renderBook({ url: `${step3}&done=1` });
     await vi.waitFor(() => expect(heading('Choose a date and time')).toBeTruthy());
     expect(view.router.url).not.toContain('done=');
-    expect(screen.queryByRole('heading', { name: "You're booked" })).toBeNull();
+    expect(screen.queryByRole('heading', { name: 'Booking confirmed!' })).toBeNull();
   });
 
   describe('Book another and the saved hint', () => {

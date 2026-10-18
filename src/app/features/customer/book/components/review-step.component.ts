@@ -14,12 +14,13 @@ import { HlmButtonImports } from '@app/shared/ui/button';
 import { InlineAlert } from '@app/shared/ui/inline-alert';
 import { RateLimitNotice } from '@app/shared/ui/rate-limit-notice';
 import { HlmSkeletonImports } from '@app/shared/ui/skeleton';
+import { SessionStore } from '../../../../core/auth/session.store';
 import { createConfirmFlow, NO_SECURE_RANDOM_MESSAGE } from '../confirm.machine';
 import { IdempotencyKeyStore, NoSecureRandomError } from '../idempotency-key.store';
 import { StepHeadingDirective } from '../step-heading.directive';
 import { BookingWizardStore } from '../wizard.store';
 import { ActionBarComponent } from './action-bar.component';
-import { ReviewCardComponent } from './review-card.component';
+import { ReviewCardComponent, loadProfileIfIdle, reviewContact } from './review-card.component';
 
 export const OVERLAP_MESSAGE = 'You already have an appointment at that time.';
 export const IN_PROGRESS_MESSAGE = 'Your booking is still being processed.';
@@ -59,6 +60,9 @@ export const RETRYABLE_MESSAGE =
             [service]="service"
             [slot]="slot"
             [branchZone]="store.branchZone() ?? 'UTC'"
+            [editable]="!busy()"
+            [contact]="contact()"
+            (edit)="store.goTo($event)"
           />
         } @else {
           <div hlmSkeleton class="h-48" aria-hidden="true"></div>
@@ -156,6 +160,7 @@ export const RETRYABLE_MESSAGE =
 export class ReviewStepComponent {
   protected readonly store = inject(BookingWizardStore);
   private readonly keys = inject(IdempotencyKeyStore);
+  private readonly session = inject(SessionStore);
   protected readonly flow = createConfirmFlow();
 
   protected readonly overlapMessage = OVERLAP_MESSAGE;
@@ -172,7 +177,11 @@ export class ReviewStepComponent {
     return s.s === 'failed' ? s.message : '';
   });
 
+  protected readonly contact = computed(() => reviewContact(this.session));
+
   constructor() {
+    loadProfileIfIdle(this.session);
+
     // The key is created on entering step 4 and for no other step; keys of other slots go.
     effect(() => {
       const slot = this.store.slot();

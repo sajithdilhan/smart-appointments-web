@@ -87,7 +87,8 @@ Rules (from the template):
   - Specs: `month-calendar.component.spec` (only the 14 days enabled; each key; Page Up/Down clamped; arrows skip disabled days and stop at the edge; focus does not select; Enter, Space and click call `chooseDate`; month switches when focus crosses a boundary; every day's accessible name), `slot-groups` and `slots-status` specs green ("Check <next day>" still works).
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
 
-- [ ] 11. Review and success
+- [x] 11. Review and success
+  - _Done: 18/10/2026 5:27pm_
   - `review-card` as "Booking summary" with icon rows, `editable` input and `edit` output, and a `contact` input; `review-step` maps Edit to `store.goTo(step)` and supplies the contact from `SessionStore.profile()` (calling `fetchProfile()` when idle; email only until ready or on failure).
   - `success-step`: mint check circle, "Booking confirmed!", sentence, mint "Booking reference" card with the copy button, summary card without Edit, "Add to calendar" filled, "View details" to `/appointments/<id>`, "Book another" and "Back to home" text links.
   - Replace "You're booked" with "Booking confirmed!" in specs and e2e.

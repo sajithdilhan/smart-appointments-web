@@ -36,7 +36,7 @@ test('books an appointment with the keyboard only and downloads the .ics', async
   await page.getByRole('button', { name: 'Confirm booking' }).focus();
   await page.keyboard.press('Enter');
 
-  await expect(heading(page, "You're booked")).toBeFocused();
+  await expect(heading(page, 'Booking confirmed!')).toBeFocused();
   await expect(page).toHaveURL(/done=1/);
   await expect(page).not.toHaveURL(/slot=/);
 
@@ -116,7 +116,7 @@ test('a 503 followed by a retry with the same key books once', async ({ page }) 
     'It may or may not have gone through',
   );
   await page.getByRole('button', { name: 'Try again' }).click();
-  await expect(heading(page, "You're booked")).toBeVisible();
+  await expect(heading(page, 'Booking confirmed!')).toBeVisible();
   expect(recorder.creates).toHaveLength(2);
   expect(recorder.creates[1].key).toBe(recorder.creates[0].key);
   expect(recorder.creates[0].key).toMatch(/^[0-9a-f-]{36}$/);

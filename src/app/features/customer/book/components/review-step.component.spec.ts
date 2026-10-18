@@ -77,9 +77,68 @@ describe('ReviewStepComponent', () => {
       expect(screen.queryByText(/your time/)).toBeNull();
     });
 
+    it('is a "Booking summary" card with icon rows, each described by its term', async () => {
+      await setup();
+      expect(screen.getByRole('heading', { level: 3, name: 'Booking summary' })).toBeTruthy();
+      for (const term of ['Branch', 'Service', 'Date & time']) {
+        expect(screen.getByText(term, { selector: 'dt' })).toBeTruthy();
+      }
+    });
+
     it('does not claim the slot is still available', async () => {
       await setup();
       expect(screen.queryByText(/still available|guaranteed|reserved/i)).toBeNull();
+    });
+  });
+
+  describe('Edit', () => {
+    it.each([
+      ['Edit branch', '/book'],
+      ['Edit service', `/book?branch=${BRANCH_IDS.london}`],
+      [
+        'Edit date and time',
+        `/book?branch=${BRANCH_IDS.london}&service=${SERVICE_IDS.checkup}&date=${DATE}`,
+      ],
+    ])('%s goes to that step and keeps the earlier choices', async (name, url) => {
+      const { view } = await setup();
+      await userEvent.setup().click(screen.getByRole('button', { name }));
+      await vi.waitFor(() => expect(view.router.url).toBe(url));
+    });
+
+    it('has no Edit button on the Contact row', async () => {
+      await setup();
+      expect(screen.getAllByRole('button', { name: /^Edit / })).toHaveLength(3);
+    });
+  });
+
+  describe('Contact', () => {
+    it('shows the session email alone, and starts the profile fetch, while there is no profile', async () => {
+      const { view } = await setup();
+      expect(view.session.loadProfile).toHaveBeenCalledTimes(1);
+      expect(screen.getByText('Contact', { selector: 'dt' })).toBeTruthy();
+      expect(screen.getByText('ann@example.com')).toBeTruthy();
+      expect(screen.queryByText('+44 20 7946 0000')).toBeNull();
+    });
+
+    it('adds the phone number once the profile is ready', async () => {
+      const { view } = await setup();
+      view.session.profile.set({
+        firstName: 'Ann',
+        lastName: 'Example',
+        email: 'ann.profile@example.com',
+        phoneNumber: '+44 20 7946 0000',
+      });
+      view.session.profileStatus.set('ready');
+      expect(await screen.findByText('ann.profile@example.com')).toBeTruthy();
+      expect(screen.getByText('+44 20 7946 0000')).toBeTruthy();
+    });
+
+    it('keeps the email only, with no error UI, when the profile failed to load', async () => {
+      const { view } = await setup();
+      view.session.profileStatus.set('error');
+      expect(screen.getByText('ann@example.com')).toBeTruthy();
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(screen.queryByText(/couldn.t load your profile/i)).toBeNull();
     });
   });
 
