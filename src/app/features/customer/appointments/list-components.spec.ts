@@ -9,7 +9,7 @@ import { AppointmentsSkeleton } from './appointments-skeleton';
 import { EmptyState } from './empty-state';
 import { InlineError } from './inline-error';
 import { LoadMore } from './load-more';
-import { StatusBadge } from './status-badge';
+import { AppointmentStatusBadge } from './status-badge';
 
 const NOW = new Date('2026-10-04T12:00:00Z');
 const view = (start: string, over: { tab?: 'upcoming' | 'past'; zone?: string | null } = {}) =>
@@ -21,30 +21,30 @@ const view = (start: string, over: { tab?: 'upcoming' | 'past'; zone?: string | 
     service: { name: 'Health check' },
   });
 
-describe('StatusBadge', () => {
+describe('AppointmentStatusBadge', () => {
   it('shows Booked and Cancelled as text', async () => {
-    await render(StatusBadge, { inputs: { status: 'Booked' } });
+    await render(AppointmentStatusBadge, { inputs: { status: 'Booked' } });
     expect(screen.getByText('Booked')).toBeTruthy();
   });
 
   it('a past Booked keeps "Booked" with hidden "(past)" and never "Completed"', async () => {
-    await render(StatusBadge, { inputs: { status: 'Booked', isPast: true } });
+    await render(AppointmentStatusBadge, { inputs: { status: 'Booked', isPast: true } });
     expect(screen.getByText('Booked', { exact: false }).textContent).toContain('(past)');
     expect(screen.queryByText(/completed/i)).toBeNull();
   });
 
   it('Cancelled is neutral text', async () => {
-    await render(StatusBadge, { inputs: { status: 'Cancelled' } });
+    await render(AppointmentStatusBadge, { inputs: { status: 'Cancelled' } });
     expect(screen.getByText('Cancelled').getAttribute('data-variant')).toBe('secondary');
   });
 
   it('an unknown status renders its own text, neutral', async () => {
-    await render(StatusBadge, { inputs: { status: 'NoShow' } });
+    await render(AppointmentStatusBadge, { inputs: { status: 'NoShow' } });
     expect(screen.getByText('NoShow').getAttribute('data-variant')).toBe('secondary');
   });
 
   it('the cancelling state reads "Cancelling…" and the spinner is motion-safe', async () => {
-    const { container } = await render(StatusBadge, {
+    const { container } = await render(AppointmentStatusBadge, {
       inputs: { status: 'Booked', cancelling: true },
     });
     expect(screen.getByText('Cancelling…')).toBeTruthy();

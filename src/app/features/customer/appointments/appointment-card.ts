@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { AppointmentView } from './appointment.model';
-import { StatusBadge } from './status-badge';
+import { AppointmentStatusBadge } from './status-badge';
 
 /** The whole card is one link (a single focus stop); it nests no other interactive element. */
 @Component({
   selector: 'app-appointment-card',
-  imports: [RouterLink, StatusBadge],
+  imports: [RouterLink, AppointmentStatusBadge],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a
@@ -30,7 +30,7 @@ import { StatusBadge } from './status-badge';
           <span class="text-xs text-muted-foreground">{{ view().browserLine }}</span>
         }
       </span>
-      <app-status-badge
+      <app-appointment-status-badge
         [status]="view().status"
         [isPast]="view().isPast"
         [cancelling]="cancelling()"

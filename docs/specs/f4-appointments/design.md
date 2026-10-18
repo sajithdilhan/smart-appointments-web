@@ -118,8 +118,8 @@ Rules: zone = `branch?.timeZoneId` if `Intl.DateTimeFormat` accepts it, else bro
 
 - `AppointmentTabs`: `role="tablist"` with two `role="tab"` buttons (roving `tabindex`, Left/Right/Home/End handler), emitting the selected tab; the "Show cancelled" helm `switch` (`aria-describedby` hint) only on `upcoming`. It writes the URL with `router.navigate([], { queryParams: { tab, cancelled }, queryParamsHandling: 'merge', replaceUrl: true })` (Req 1.2, 1.4).
 - `AppointmentTimeline`: `@for (group of groups(); track group.dateKey)` rendering `<h2>` date heading then `<ul>` of `AppointmentCard` (`<li>`), with `h3`-free cards so the outline stays valid (Req 10.2); a polite `role="status"` for "N appointments" below the tabs (Req 1.6).
-- `AppointmentCard`: one `<a [routerLink]="['/appointments', id]" [state]="{fromList:true}" [attr.aria-label]="view.a11yName">` containing service, branch, time range, `StatusBadge`, optional zone/browser lines; `min-h-11`; the focus ring token from F0; a past card uses `text-muted-foreground` and the hidden `(past)` text (Req 3.3, 3.4, 3.6).
-- `StatusBadge`: helm `badge`; text plus icon (lucide `calendar-check`, `ban`, `loader-circle` animated unless reduced motion) so meaning is never colour-only; `"Cancelling..."` variant; an unknown status renders neutral with its own text (Req 3.4, 6.3).
+- `AppointmentCard`: one `<a [routerLink]="['/appointments', id]" [state]="{fromList:true}" [attr.aria-label]="view.a11yName">` containing service, branch, time range, `AppointmentStatusBadge`, optional zone/browser lines; `min-h-11`; the focus ring token from F0; a past card uses `text-muted-foreground` and the hidden `(past)` text (Req 3.3, 3.4, 3.6).
+- `AppointmentStatusBadge`: helm `badge`; text plus icon (lucide `calendar-check`, `ban`, `loader-circle` animated unless reduced motion) so meaning is never colour-only; `"Cancelling..."` variant; an unknown status renders neutral with its own text (Req 3.4, 6.3).
 - `AppointmentsSkeleton`: three `hlm-skeleton` cards with the same height as a real card, `aria-hidden`, parent `aria-busy` (Req 2.1); the pulse is `motion-safe:animate-pulse` (Req 10.6).
 - `LoadMore`: a `<button hlmBtn variant="outline">` with `aria-busy`; disabled while `loading-more`.
 - `EmptyState`: inline SVG (`aria-hidden`), heading, sentence and `<a hlmBtn routerLink="/book">`; text varies by tab (Req 8.1, 8.2).
@@ -244,7 +244,7 @@ Vitest + Angular Testing Library (queries by role and label), MSW with `onUnhand
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | 1 Page and tabs   | `parseTab`, `toListQuery`, `AppointmentTabs`, `AppointmentsStore.setFilter`, abort + `requestId`                                    |
 | 2 Paging          | `AppointmentsStore.loadFirst/loadMore/quietRefresh`, `dedupeById`, `LoadMore`, `AppointmentsSkeleton`, `InlineError`, outage effect |
-| 3 Cards           | `toViewModel`, `groupByDate`, `AppointmentTimeline`, `AppointmentCard`, `StatusBadge`                                               |
+| 3 Cards           | `toViewModel`, `groupByDate`, `AppointmentTimeline`, `AppointmentCard`, `AppointmentStatusBadge`                                    |
 | 4 Reference data  | F3 `ReferenceDataStore` (reused), fallbacks in `toViewModel`, lookup notice                                                         |
 | 5 Detail          | child route, `presentation` computed, `AppointmentDetail` + `AppointmentDetailStore`, `guidIdMatcher`, `AppointmentNotFound`        |
 | 6 Cancel          | `CancelDialog`, `cancelReducer`, `AppointmentDetailStore`, `applyCancelled`, `RateLimitNotice`                                      |

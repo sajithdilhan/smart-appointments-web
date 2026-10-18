@@ -8,7 +8,7 @@ import { HlmBadgeImports } from '@app/shared/ui/badge';
  * "(past)" text (no invented "Completed"); an unknown status shows its own value, neutral.
  */
 @Component({
-  selector: 'app-status-badge',
+  selector: 'app-appointment-status-badge',
   imports: [HlmBadgeImports, NgIcon],
   providers: [provideIcons({ lucideBan, lucideCalendarCheck, lucideLoaderCircle })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,7 +32,7 @@ import { HlmBadgeImports } from '@app/shared/ui/badge';
     </span>
   `,
 })
-export class StatusBadge {
+export class AppointmentStatusBadge {
   readonly status = input.required<string>();
   /** The item came from the Past tab. */
   readonly isPast = input(false);

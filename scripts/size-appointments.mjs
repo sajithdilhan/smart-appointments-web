@@ -7,7 +7,7 @@ export const APPOINTMENTS_MARKERS = [
   'app-profile-page',
   'app-appointment-card',
   'app-theme-picker',
-  'app-status-badge',
+  'app-appointment-status-badge',
 ];
 
 /**

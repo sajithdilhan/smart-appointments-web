@@ -47,7 +47,7 @@ Rules (from the template):
   - _Requirements: 1.3, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 4.2, 6.5, 10.4_
 
 - [x] 7. List UI: tabs, timeline, cards, skeleton, empty and error
-  - `AppointmentTabs` (ARIA tab list with arrows/Home/End, URL via `replaceUrl`, "Show cancelled" only on Upcoming), `AppointmentTimeline`, `AppointmentCard` (one link, `[state]="{ fromList: true }"`), `StatusBadge` (incl. past `(past)` text and "Cancelling..."), `AppointmentsSkeleton`, `LoadMore`, `EmptyState`, `InlineError`, the "N appointments" status, and `AppointmentsPage` binding `queryParamMap` to the store and showing the lookup notice.
+  - `AppointmentTabs` (ARIA tab list with arrows/Home/End, URL via `replaceUrl`, "Show cancelled" only on Upcoming), `AppointmentTimeline`, `AppointmentCard` (one link, `[state]="{ fromList: true }"`), `AppointmentStatusBadge` (incl. past `(past)` text and "Cancelling..."), `AppointmentsSkeleton`, `LoadMore`, `EmptyState`, `InlineError`, the "N appointments" status, and `AppointmentsPage` binding `queryParamMap` to the store and showing the lookup notice.
   - Wire the `/appointments` route (title `My appointments`) replacing the F1 placeholder; call F3's `ensureLoaded()`; skeletons wait for the lookup.
   - Component specs: tab keyboard and URL, request change for the switch, skeleton then cards, empty states not flashing, card name and single link, zone label only when it differs, lookup failure not blocking, `403` message.
   - _Requirements: 1.1, 1.2, 1.4, 1.6, 1.7, 2.1, 2.2, 2.4, 3.1, 3.2, 3.3, 3.4, 3.6, 4.1, 4.2, 8.1, 8.2, 8.3, 8.4, 10.2_

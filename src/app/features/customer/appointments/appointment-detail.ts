@@ -29,7 +29,7 @@ import { AppointmentDetailStore } from './appointment-detail.store';
 import { CancelDialog } from './cancel-dialog';
 import { DetailHost } from './detail-host';
 import { InlineError } from './inline-error';
-import { StatusBadge } from './status-badge';
+import { AppointmentStatusBadge } from './status-badge';
 
 const RETRYABLE_MESSAGE =
   'We could not cancel right now. Nothing was changed. Try again in a moment.';
@@ -57,7 +57,7 @@ function browserZone(): string {
     RateLimitNotice,
     CancelDialog,
     InlineError,
-    StatusBadge,
+    AppointmentStatusBadge,
   ],
   providers: [AppointmentDetailStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -85,7 +85,7 @@ function browserZone(): string {
           </div>
         } @else if (view(); as v) {
           <div class="flex flex-wrap items-center gap-2">
-            <app-status-badge [status]="v.status" [cancelling]="store.isCancelling()" />
+            <app-appointment-status-badge [status]="v.status" [cancelling]="store.isCancelling()" />
           </div>
 
           <dl class="grid grid-cols-1 gap-x-4 gap-y-3 text-sm sm:grid-cols-[10rem_1fr]">
