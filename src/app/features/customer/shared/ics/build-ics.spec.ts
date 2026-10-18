@@ -131,4 +131,24 @@ describe('icsFileName', () => {
   ])('%s', (code, ms, expected) => {
     expect(icsFileName(code, new Date(ms))).toBe(expected);
   });
+
+  it('with no names: summary "Appointment", no LOCATION, no phone or start lines (F4)', () => {
+    const text = buildIcs(
+      { appointmentId: base.appointmentId, startUtc: base.startUtc, endUtc: base.endUtc },
+      NOW,
+    );
+    const props = parse(text);
+    expect(props.get('SUMMARY')).toBe('Appointment');
+    expect(props.has('LOCATION')).toBe(false);
+    expect(props.get('DESCRIPTION')).toBe(`Booking reference: ${base.appointmentId}`);
+    expect(text).not.toContain('Unavailable');
+  });
+
+  it('with a service but no branch: the summary is the service name alone', () => {
+    const props = parse(
+      buildIcs({ ...base, branchName: undefined, branchAddress: undefined }, NOW),
+    );
+    expect(props.get('SUMMARY')).toBe('Check-up');
+    expect(props.has('LOCATION')).toBe(false);
+  });
 });

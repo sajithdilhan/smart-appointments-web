@@ -25,6 +25,7 @@
       "@app/shared/ui/inline-alert": ["./src/app/shared/ui/inline-alert/index.ts"],
       "@app/shared/ui/input": ["./src/app/shared/ui/input/src/index.ts"],
       "@app/shared/ui/label": ["./src/app/shared/ui/label/src/index.ts"],
+      "@app/shared/ui/radio-group": ["./src/app/shared/ui/radio-group/src/index.ts"],
       "@app/shared/ui/rate-limit-notice": ["./src/app/shared/ui/rate-limit-notice/index.ts"],
       "@app/shared/ui/separator": ["./src/app/shared/ui/separator/src/index.ts"],
       "@app/shared/ui/sheet": ["./src/app/shared/ui/sheet/src/index.ts"],

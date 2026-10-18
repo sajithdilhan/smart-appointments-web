@@ -3,10 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { AppointmentsBackend } from '../testing/appointments-backend';
 import { availabilityHandlers } from '../testing/availability.handlers';
 import { createBookingBackend } from '../testing/booking-backend';
 import { provideAdminApi, useAdminBackend } from '../testing/admin-test-setup';
 import { createFakeSession, provideFakeSession } from '../testing/fake-session';
+import { appointmentsHandlers } from '../testing/handlers/appointments.handlers';
 import { server } from '../testing/server';
 import { routes } from './app.routes';
 import { AREA_ROLES, roleCanOpen } from './core/auth/post-login-target';
@@ -26,7 +28,9 @@ async function visit(who: Who, url: string) {
     who === 'anonymous' ? 'anonymous' : 'authenticated',
     who === 'anonymous' ? null : who,
   );
-  // The booking wizard loads the branches and services when it opens.
+  // The appointment screens load their data from an empty backend. The booking backend is installed
+  // last, so it wins on the shared branches and services the wizard loads when it opens.
+  server.use(...appointmentsHandlers(API_BASE, new AppointmentsBackend()));
   server.use(...availabilityHandlers(createBookingBackend(), API_BASE));
   TestBed.configureTestingModule({
     providers: [
@@ -101,7 +105,7 @@ describe('route table', () => {
   it.each([
     ['/book', 'Book an appointment'],
     ['/appointments', 'My appointments'],
-    ['/appointments/3', 'Appointment details'],
+    ['/appointments/3', 'Appointment not found'],
     ['/profile', 'Profile'],
   ])('shows %s to a Customer with its heading and title', async (url, heading) => {
     expect(await visit('Customer', url)).toEqual({

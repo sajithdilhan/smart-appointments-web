@@ -50,6 +50,11 @@ for (const theme of THEMES) {
       await page.addInitScript((t) => localStorage.setItem('sa.theme', t), theme);
       await openStep(page, backend, step);
       await page.evaluate(() => document.fonts.ready);
+      // Entrance animations (book-step, success check) fade opacity in; axe would blend
+      // the mid-fade colours and report false contrast failures.
+      await page.waitForFunction(() =>
+        document.getAnimations().every((a) => a.playState !== 'running'),
+      );
       const dark = await page.evaluate(() => document.documentElement.classList.contains('dark'));
       expect(dark).toBe(theme === 'dark');
       const results = await new AxeBuilder({ page }).analyze();

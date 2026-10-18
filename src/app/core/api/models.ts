@@ -81,6 +81,8 @@ export interface SlotResponse {
   availableCapacity: number;
 }
 
+export type AppointmentStatus = 'Booked' | 'Cancelled';
+
 export interface AppointmentResponse {
   id: string;
   customerId: string;
@@ -89,10 +91,18 @@ export interface AppointmentResponse {
   serviceTypeId: string;
   startUtc: string;
   endUtc: string;
-  status: 'Booked' | 'Cancelled';
+  /** Unknown values must be tolerated (a later backend adds statuses). */
+  status: AppointmentStatus | (string & {});
   createdAtUtc: string;
   updatedAtUtc: string;
   cancelledAtUtc?: string | null;
+}
+
+export interface MyAppointmentsPage {
+  items: AppointmentResponse[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
 }
 
 export interface SlotSearchParams {

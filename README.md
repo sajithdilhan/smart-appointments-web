@@ -4,7 +4,7 @@
 
 The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), a .NET microservices portfolio project: a smart appointment and queue management system. The backend owns the business rules; this repository is the single-page app that customers, staff and administrators will use, and it talks to the backend only through its API gateway.
 
-> **Status: F0 scaffold, F1 core, F2 public pages, the F3 booking wizard and the F5 admin console are built; the my-appointments and profile screens (F4) are not.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register), the five-step booking wizard at `/book` and the admin console under `/admin` (see "What F3 provides" and "What F5 provides"), with placeholder pages behind the other customer routes and the staff route. The roadmap below is the plan.
+> **Status: F0 scaffold, F1 core, F2 public pages, the F3 booking wizard, the F4 my-appointments and profile screens and the F5 admin console are built.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register), the five-step booking wizard at `/book` and the admin console under `/admin` (see "What F3 provides" and "What F5 provides"), the customer's appointments list, detail with cancel and profile (see "What F4 provides"), with a placeholder page behind the staff route. The roadmap below is the plan.
 
 ## What it will do
 
@@ -17,15 +17,16 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 
 ## Roadmap
 
-| Phase | Scope                                                                                              | State                                     |
-| ----- | -------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                               |
-| F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending)  |
-| F2    | Public pages: landing, login, register                                                             | Implemented (live-gateway check pending)  |
-| F3    | Booking wizard, success page, calendar export                                                      | Built (live-gateway check pending)        |
-| F4    | My appointments, detail, cancel, profile                                                           | Not started                               |
-| F5    | Admin console                                                                                      | Built (manual live-gateway check pending) |
-| F6    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                               |
+| Phase | Scope                                                                                              | State                                    |
+| ----- | -------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                              |
+| F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending) |
+| F2    | Public pages: landing, login, register                                                             | Implemented                              |
+| F3    | Booking wizard, success page, calendar export                                                      | Implemented (live check partly run)      |
+| F4    | My appointments, detail, cancel, profile                                                           | Implemented                              |
+| F5    | Admin console                                                                                      | Implemented                              |
+| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Planned                                  |
+| F7    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                              |
 
 Specs for every phase live in [`docs/specs/`](docs/specs/README.md).
 
@@ -59,8 +60,8 @@ src/app/
   shared/forms/    form primitives: field view and form field, field a11y directive, form alert, generic
                    validators, phone normaliser, first-invalid focus
   shared/a11y/     heading focus directive
-  features/        one folder per area (public, customer, admin, staff), lazy routes; admin is built, the
-                   customer and staff areas still show placeholder pages
+  features/        one folder per area (public, customer, admin, staff), lazy routes; admin and customer are built, the
+                   staff area still shows a placeholder page
     public/          landing/ (hero, value props, how it works, call-to-action band), login/, register/
                      (with the password checklist), auth/ (auth layout, illustration, password field),
                      validation/ (password rules and messages), public.routes.ts, titles.ts
@@ -110,6 +111,7 @@ pnpm exec playwright install chromium
 | `pnpm size:public`                 | Gzip size of the public feature chunks (needs a build); fails above 50 kB            |
 | `pnpm size:admin`                  | Gzip size of the admin lazy group (shared chunks counted once); fails above 120 kB   |
 | `pnpm size:book`                   | Gzip size of the booking wizard's lazy chunks; fails above 60 kB                     |
+| `pnpm size:appointments`           | Gzip size of the F4 lazy chunks (appointments, profile); fails above 40 kB           |
 | `pnpm test:scripts`                | Node tests of `scripts/` (the generator, the date lint rules)                        |
 | `pnpm e2e`                         | Playwright tests, routes mocked (starts `pnpm start`, or uses `E2E_BASE_URL`)        |
 | `pnpm gen:api`                     | Regenerates `src/app/core/api/generated/*.d.ts` from the gateway's OpenAPI documents |
@@ -144,6 +146,17 @@ pnpm exec playwright install chromium
 - **No double booking.** The `Idempotency-Key` is created when Review opens for a slot and kept in `sessionStorage` as `sa.idem.<slotId>`; a retry, a reload or a lost response re-sends the same key and gets the original result. The confirm flow is an explicit state machine with the verbatim backend `409` strings mapped in one module. `sa.book.justBooked` remembers for 10 minutes that a booking was just made, for the "saved" hint.
 - **Success** shows the reference, an animated check, a light confetti burst (own lazy chunk, off under reduced motion) and an `.ics` calendar download generated in the browser.
 - **Known gaps:** conflict reasons are told apart by their text; the idempotency key is per tab; there is no per-day availability or branch-service mapping; "Open now" is not availability (it ignores holidays). The response types in `core/api/models.ts` are temporary until `pnpm gen:api` can run against a gateway that documents them.
+
+## What F4 provides
+
+- **Routes.** `/appointments` (list) with the detail as its child `/appointments/:id` (a sheet at 1024 px and wider when opened from a card, otherwise a page; a reloaded deep link is always a page; a non-GUID id shows "Appointment not found" without a request) and `/profile`.
+- **URL state.** `?tab=upcoming|past` and `cancelled=1` (only honoured on Upcoming); an unknown tab falls back to Upcoming. The tabs write the URL with `replaceUrl`.
+- **Cancel state machine.** `cancelReducer` (pure) with `AppointmentDetailStore` running the effects. After every outcome the store re-reads the appointment (`GET /api/appointments/{id}`): a `204` shows the server copy; a `503`, network error or timeout is never trusted, the re-GET decides between "cancelled, the slot may take a moment" and "nothing was changed, try again"; a known `409` text means "already started"; any other `409` is a generic refresh message (the raw server text is never shown).
+- **Reference lookup.** Branch and service names come from F3's `ReferenceDataStore`; a missing name shows "Unavailable branch/service" and the time falls back to "your time". F4 does not add a second lookup.
+- **Temporary type.** `MyAppointmentsPage` (and the appointment body types) in `core/api/models.ts` are removed once `pnpm gen:api` is rerun against a backend that documents the `/api/appointments/my` response.
+- **Profile.** Read-only name, email and phone from the session store, a theme radio group in sync with the header toggle, and Sign out.
+- **Manual check** (needs the Compose stack with the `booking-my-appointments` backend; task 14 of the F4 tasks): book two appointments, see both under Upcoming, cancel one and see it leave Upcoming and appear with "Show cancelled", deactivate its branch as an Admin and see "Unavailable branch", stop Availability and cancel to see the `503` guidance, check the profile theme survives a reload, sign out.
+- **Size.** The F4 lazy chunks measure 36.6 kB gzipped (budget 40 kB, `pnpm size:appointments`, which CI runs after the build).
 
 ## What F5 provides
 

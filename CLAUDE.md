@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core), F2 (public pages: landing, login, register), F3 (the booking wizard) and F5 (the admin console) are built; the my-appointments and profile screens (F4) are not, they still show placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F4 and F6 specs are added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core), F2 (public pages: landing, login, register), F3 (the booking wizard), F4 (my appointments, detail and cancel, profile) and F5 (the admin console) are built (the F4 manual live-gateway check is pending).** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F6 spec is added one phase at a time.
 
 What exists today:
 
@@ -25,7 +25,7 @@ What exists today:
 - **No admin API exists** for appointments, staff or reports, or for deleting a branch or service (deactivation is the only removal); do not build screens for them.
 - **Quality and delivery**: ESLint (angular-eslint, flat config, date and layering rules), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW (with a stateful mock of the auth endpoints), Playwright with mocked routes, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
 
-Not present yet (do not assume): the my-appointments and profile screens (F4), the API methods F4 needs (cancel, profile edit), i18n, the command palette outside admin (only the `PaletteLauncher` seam exists).
+Not present yet (do not assume): profile editing (the profile page is read-only), i18n, the command palette outside admin (only the `PaletteLauncher` seam exists).
 
 ## Commands
 
@@ -42,6 +42,7 @@ pnpm size                          # gzip size of the initial files in dist; fai
 pnpm size:public                   # gzip size of the public feature chunks (after pnpm build); fails above 50 kB
 pnpm size:admin                    # gzip size of the admin lazy group; fails above MAX_GZIP_KB_ADMIN (120)
 pnpm size:book                     # gzip size of the booking wizard's lazy chunks; fails above MAX_GZIP_KB_BOOK (60)
+pnpm size:appointments             # gzip size of the F4 lazy chunks (appointments, profile); fails above MAX_GZIP_KB_APPOINTMENTS (40)
 pnpm test:scripts                  # node --test of scripts/ (gen-api, the date lint rules)
 pnpm gen:api                       # regenerate core/api/generated from a running Development gateway (GATEWAY_URL overrides)
 pnpm e2e                           # Playwright (routes mocked); starts pnpm start unless E2E_BASE_URL is set
@@ -112,6 +113,16 @@ Angular rules:
 - Angular starts all app initializers at once and does not wait for the previous one: an initializer that needs `APP_CONFIG` must await `APP_CONFIG_READY` first (see `provideAuth`).
 - Route titles are strings or functions; the format "<Page> | Smart Appointments" comes from `AppTitleStrategy`. A function title that throws fails the navigation, so it must not throw.
 - Rate limits: use `createRetryCountdown()` with `<app-rate-limit-notice>`; do not write another countdown.
+
+### Appointments and profile conventions (F4)
+
+- `features/customer/appointments/`: `/appointments` has `/appointments/:id` as a child route (`guidIdMatcher` first, `AppointmentNotFound` second). `DetailHost` (provided on the page) decides sheet versus page and returns focus on close; one `AppointmentDetail` instance is projected into either container.
+- URL state is `?tab=upcoming|past&cancelled=1`; the `AppointmentsStore` reacts to it and never keeps a second copy. Parse it only through `parseTab` / `toListQuery`.
+- Cancel goes through the pure `cancelReducer` and `AppointmentDetailStore`. The re-GET rule: a `204`, `503`, network error or timeout is always followed by `GET /api/appointments/{id}` before the UI claims anything. A `409` shows a fixed client message (`cancelConflictMessage`); never render the raw `detail`.
+- Names and zones come from F3's `ReferenceDataStore`; missing ones render as "Unavailable branch/service" and "your time". `buildIcs` takes optional names for that case.
+- The temporary `MyAppointmentsPage` / `AppointmentResponse` types in `core/api/models.ts` go away when `pnpm gen:api` documents the `/my` response.
+- The generated helm `sheet` and `alert-dialog` carry `motion-safe:` on their animation classes; regenerating them restores the bare classes, so re-apply. The destructive action buttons are solid (`bg-destructive text-destructive-foreground`) because the tinted helm variant fails contrast.
+- `pnpm size:appointments` checks the F4 lazy chunks (40 kB gzipped, `MAX_GZIP_KB_APPOINTMENTS`; CI runs it after the build; plain `pnpm size` is the initial bundle only). `e2e/appointments-mock.ts` mocks the appointment endpoints for Playwright; `e2e/a11y-appointments.spec.ts` runs axe (the open-sheet test exempts `aria-hidden-focus`, a CDK modal artefact).
 
 ### Backend contract
 

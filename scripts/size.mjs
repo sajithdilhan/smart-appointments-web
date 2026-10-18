@@ -14,14 +14,19 @@
 // the booking wizard's lazy chunks (entry points under src/app/features/customer/book/ plus the
 // non-initial chunks they import statically, shared chunks once) and reports the confetti and
 // `.ics` chunks separately, against MAX_GZIP_KB_BOOK (default 60).
+//
+// `--group appointments` is the third: it dispatches to appointmentsGroup in size-appointments.mjs
+// (the chunks holding the appointments and profile components plus the chunks only they import),
+// against MAX_GZIP_KB_APPOINTMENTS (default 40).
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
+import { appointmentsGroup } from './size-appointments.mjs';
 import { groupChunks } from './size-book.mjs';
 import { adminGroup, initialClosure } from './size-group.mjs';
 
-export const GROUP_DEFAULTS = { public: 50, admin: 120, book: 60 };
+export const GROUP_DEFAULTS = { public: 50, admin: 120, book: 60, appointments: 40 };
 
 /** Files referenced by script, modulepreload and stylesheet tags of index.html. */
 export function initialFiles(html) {
@@ -173,6 +178,21 @@ export function reportBook(root, initial, maxKb) {
   console.log(`OK: booking wizard within ${maxKb} kB gzipped`);
 }
 
+/** F4's report: the appointments and profile chunks, found by component markers in the built sources. */
+export function reportAppointments(root, initial, maxKb) {
+  const sources = new Map(
+    readdirSync(root)
+      .filter((f) => f.endsWith('.js'))
+      .map((f) => [f, readFileSync(join(root, f), 'utf8')]),
+  );
+  const files = appointmentsGroup(sources, initial);
+  if (files.size === 0) {
+    console.error('No appointments chunk found in the build output.');
+    process.exit(1);
+  }
+  report(root, files, maxKb, 'Appointments group');
+}
+
 function main() {
   const root = process.env.DIST_DIR ?? 'dist/smart-appointments-web/browser';
   const initial = initialFiles(readFileSync(join(root, 'index.html'), 'utf8'));
@@ -193,6 +213,14 @@ function main() {
   }
   if (group === 'book') {
     reportBook(root, initial, Number(process.env.MAX_GZIP_KB_BOOK ?? GROUP_DEFAULTS.book));
+    return;
+  }
+  if (group === 'appointments') {
+    reportAppointments(
+      root,
+      initial,
+      Number(process.env.MAX_GZIP_KB_APPOINTMENTS ?? GROUP_DEFAULTS.appointments),
+    );
     return;
   }
   const statsPath = process.env.STATS_JSON ?? `${root}-stats.json`;
