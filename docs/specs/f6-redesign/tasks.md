@@ -58,7 +58,8 @@ Rules (from the template):
   - Specs: `auth-layout.component.spec` (form slot before aside, aside classes, tagline), form-field icon hidden and label association unchanged, register spec (5 `.sr-only`, eyebrow is not a heading), login spec.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
 
-- [ ] 7. Stepper
+- [x] 7. Stepper
+  - _Done: 18/10/2026 4:55pm_
   - `step-indicator` from 640 px: numbered circles, labels under, connectors, completed with check and sr-only "completed", current filled with `aria-current="step"`, earlier steps as buttons; success shows all four completed; below 640 px text unchanged.
   - Specs: `step-indicator.component.spec` rewritten for each step, the success state, `disabled`, and the small-screen line.
   - _Requirements: 6.1_
