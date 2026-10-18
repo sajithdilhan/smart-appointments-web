@@ -1,22 +1,30 @@
 import { render, screen } from '@testing-library/angular';
+import { HeroSceneComponent } from './hero-scene.component';
 import { HeroPreviewComponent } from './hero-preview.component';
 import { HowItWorksComponent } from './how-it-works.component';
 import { ValuePropsComponent } from './value-props.component';
 
 describe('landing sections', () => {
-  it('value props: a labelled section with an h2 and four items', async () => {
-    await render(ValuePropsComponent);
-    const region = screen.getByRole('region', { name: /booking, without the back and forth/i });
+  it('value props: a labelled "Why choose us?" section with four cards', async () => {
+    const { container } = await render(ValuePropsComponent);
+    const region = screen.getByRole('region', { name: 'Why choose us?' });
     expect(region.querySelector('h2')).not.toBeNull();
     expect(screen.getAllByRole('listitem')).toHaveLength(4);
-    for (const title of [
-      'See real availability',
-      'Confirmed straight away',
-      'Times that make sense',
-      'Cancel when plans change',
-    ]) {
+    const cards = [
+      ['Fast & easy booking', 'Book in seconds, anytime.', 'lavender'],
+      ['Instant confirmation', 'Get your booking details immediately.', 'blue'],
+      ['Multiple branches', 'Find a branch near you.', 'mint'],
+      ['Flexible cancellation', 'Cancel online anytime, hassle-free.', 'peach'],
+    ] as const;
+    const items = [...container.querySelectorAll('li')];
+    cards.forEach(([title, text, tint], i) => {
       expect(screen.getByRole('heading', { level: 3, name: title })).toBeTruthy();
-    }
+      expect(items[i].querySelector('p')?.textContent?.trim()).toBe(text);
+      const tile = items[i].querySelector('span')!;
+      expect(tile.classList.contains(`bg-tile-${tint}`)).toBe(true);
+      expect(tile.classList.contains(`text-tile-${tint}-foreground`)).toBe(true);
+      expect(tile.querySelector('ng-icon')?.getAttribute('aria-hidden')).toBe('true');
+    });
   });
 
   it('how it works: a labelled section with an ordered list of three steps', async () => {
@@ -39,6 +47,7 @@ describe('landing sections', () => {
     ['value props', ValuePropsComponent],
     ['how it works', HowItWorksComponent],
     ['hero preview', HeroPreviewComponent],
+    ['hero scene', HeroSceneComponent],
   ])('%s: no <img>, no external URL and no h1', async (_name, component) => {
     const { container } = await render(component);
     expect(container.querySelector('img, h1')).toBeNull();

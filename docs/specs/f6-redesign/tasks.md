@@ -35,7 +35,8 @@ Rules (from the template):
   - Specs: shell specs updated only for the new markup; the accessible name of the brand link is "Smart Appointments"; `aria-current` kept.
   - _Requirements: 2.1, 2.2, 2.4, 2.5_
 
-- [ ] 4. Landing hero and scene
+- [x] 4. Landing hero and scene
+  - _Done: 18/10/2026 4:59pm_
   - Hero pill, two-line `<h1>` with "in just a few clicks." in `text-primary`, supporting sentence, CTA arrow icon.
   - `hero-scene.component.ts` (inline SVG blobs and reception scene, `aria-hidden`, `focusable="false"`, shown from `lg`).
   - `hero-preview` reworked into the floating "Appointment Confirmed!" card (mint check, branch and service, date, mint time chip, "Confirmed"); still `aria-hidden` and `inert`.
@@ -43,7 +44,8 @@ Rules (from the template):
   - Specs: `landing.page.spec` (one `<h1>` with both lines, pill text, no `<img>`, no external URL, reveal rules), scene and card hidden from assistive technology; 320 px no horizontal scroll still covered by e2e.
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 5. Landing sections
+- [x] 5. Landing sections
+  - _Done: 18/10/2026 4:59pm_
   - "Why choose us?" with the four cards and tile icons (`zap`, `calendar-check`, `map-pin`, `shield-check`) in `tile-*` colours.
   - How-it-works and CTA band on the new tokens.
   - Specs: `landing-sections.spec` (heading, four titles and sentences, icons hidden, landmarks kept).

@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideArrowRight } from '@ng-icons/lucide';
 import { RouterLink } from '@angular/router';
 import { HlmButton } from '@app/shared/ui/button';
 import { landingCtas } from '../../../core/auth/landing-cta';
@@ -10,17 +12,18 @@ import { landingCtas } from '../../../core/auth/landing-cta';
  */
 @Component({
   selector: 'app-cta-buttons',
-  imports: [RouterLink, HlmButton],
+  imports: [RouterLink, HlmButton, NgIcon],
+  providers: [provideIcons({ lucideArrowRight })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-col gap-3 sm:flex-row">
-      <a hlmBtn class="h-11 px-6 text-base" [routerLink]="ctas().primary.href">{{
-        ctas().primary.label
-      }}</a>
+      <a hlmBtn class="h-11 gap-2 px-6 text-base" [routerLink]="ctas().primary.href"
+        >{{ ctas().primary.label }}<ng-icon name="lucideArrowRight" size="18" aria-hidden="true"
+      /></a>
       @if (ctas().secondary; as secondary) {
-        <a hlmBtn variant="outline" class="h-11 px-6 text-base" [routerLink]="secondary.href">{{
-          secondary.label
-        }}</a>
+        <a hlmBtn variant="outline" class="h-11 gap-2 px-6 text-base" [routerLink]="secondary.href"
+          >{{ secondary.label }}<ng-icon name="lucideArrowRight" size="18" aria-hidden="true"
+        /></a>
       }
     </div>
   `,
