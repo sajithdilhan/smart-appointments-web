@@ -1,6 +1,11 @@
-<app-auth-layout illustration="register">
+<app-auth-layout
+  illustration="register"
+  tagline="Small steps, better access."
+  subtitle="Get started today and manage your appointments easily."
+>
   <div authForm>
-    <h1 id="register-heading" appFocusHeading class="text-3xl font-semibold tracking-tight">
+    <p class="text-xs font-semibold tracking-wider text-primary uppercase">Create account</p>
+    <h1 id="register-heading" appFocusHeading class="mt-2 text-3xl font-bold tracking-tight">
       Create your account
     </h1>
     <p class="mt-2 text-muted-foreground">
@@ -25,7 +30,7 @@
       </div>
 
       <div class="grid gap-5 sm:grid-cols-2">
-        <app-form-field [view]="firstNameView" label="First name">
+        <app-form-field [view]="firstNameView" label="First name" icon="lucideUser">
           <input
             hlmInput
             class="h-11"
@@ -38,7 +43,7 @@
             [readOnly]="pending()"
           />
         </app-form-field>
-        <app-form-field [view]="lastNameView" label="Last name">
+        <app-form-field [view]="lastNameView" label="Last name" icon="lucideUser">
           <input
             hlmInput
             class="h-11"
@@ -53,7 +58,7 @@
         </app-form-field>
       </div>
 
-      <app-form-field [view]="emailView" label="Email">
+      <app-form-field [view]="emailView" label="Email" icon="lucideMail">
         <input
           hlmInput
           class="h-11"
@@ -79,6 +84,7 @@
       <app-form-field
         [view]="phoneView"
         label="Phone number"
+        icon="lucidePhone"
         hint="International format, for example +14155550123"
       >
         <input
@@ -115,6 +121,7 @@
           <ng-icon name="lucideLoaderCircle" size="18" class="animate-spin" aria-hidden="true" />
         }
         Create account
+        <ng-icon name="lucideArrowRight" size="18" aria-hidden="true" />
       </button>
     </form>
 

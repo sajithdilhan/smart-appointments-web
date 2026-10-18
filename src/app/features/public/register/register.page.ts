@@ -14,7 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoaderCircle } from '@ng-icons/lucide';
+import { lucideArrowRight, lucideLoaderCircle } from '@ng-icons/lucide';
 import { HlmButton } from '@app/shared/ui/button';
 import { HlmInput } from '@app/shared/ui/input';
 import { firstValueFrom, map, startWith } from 'rxjs';
@@ -61,7 +61,7 @@ interface ErrorAlert {
     PasswordChecklistComponent,
     RateLimitNotice,
   ],
-  providers: [provideIcons({ lucideLoaderCircle })],
+  providers: [provideIcons({ lucideArrowRight, lucideLoaderCircle })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register.page.html',
 })

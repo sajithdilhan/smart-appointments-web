@@ -4,7 +4,11 @@ import { AuthLayoutComponent } from './auth-layout.component';
 
 @Component({
   imports: [AuthLayoutComponent],
-  template: `<app-auth-layout [illustration]="variant()">
+  template: `<app-auth-layout
+    [illustration]="variant()"
+    tagline="Small steps, better access."
+    subtitle="Get started today."
+  >
     <form authForm aria-label="Test form"><input aria-label="Field" /></form>
   </app-auth-layout>`,
 })
@@ -25,7 +29,16 @@ describe('AuthLayoutComponent', () => {
     expect(panel.getAttribute('aria-hidden')).toBe('true');
     expect(panel.classList).toContain('hidden');
     expect(panel.classList).toContain('lg:flex');
-    expect(panel.textContent?.trim()).toBe('');
+  });
+
+  it('puts the form slot before the panel in the DOM and shows the tagline as plain text', async () => {
+    const { container } = await render(Host);
+    const slot = screen.getByTestId('auth-form-slot');
+    const panel = container.querySelector('aside')!;
+    expect(slot.compareDocumentPosition(panel) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByTestId('auth-tagline').textContent).toContain('Small steps, better access.');
+    expect(screen.getByTestId('auth-subtitle').textContent).toContain('Get started today.');
+    expect(panel.querySelector('h1,h2,h3,[role=heading]')).toBeNull();
   });
 
   it('draws a decorative svg that is not focusable', async () => {

@@ -49,7 +49,7 @@ Rules (from the template):
   - Specs: `landing-sections.spec` (heading, four titles and sentences, icons hidden, landmarks kept).
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 6. Login and register
+- [x] 6. Login and register
   - `auth-layout`: form first, gradient aside second (`hidden lg:flex` kept), `tagline` and `subtitle` inputs with the texts from the design.
   - Redrawn `auth-illustration` (3D-style calendar, mint check, plant).
   - Eyebrows "Create account" and "Sign in" above the unchanged `<h1>`s.
@@ -57,6 +57,7 @@ Rules (from the template):
   - Checklist icons (mint check, muted circle); full-width submit with arrow; primary underlined switch link.
   - Specs: `auth-layout.component.spec` (form slot before aside, aside classes, tagline), form-field icon hidden and label association unchanged, register spec (5 `.sr-only`, eyebrow is not a heading), login spec.
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
+  - _Done: 18/10/2026 5:22pm_
 
 - [ ] 7. Stepper
   - `step-indicator` from 640 px: numbered circles, labels under, connectors, completed with check and sr-only "completed", current filled with `aria-current="step"`, earlier steps as buttons; success shows all four completed; below 640 px text unchanged.
