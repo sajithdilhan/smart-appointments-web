@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { groupFiles, initialFiles } from './size.mjs';
+import { GROUP_DEFAULTS, groupFiles, initialFiles, reportAdmin } from './size.mjs';
 
 const outDir = 'dist/app/browser';
 const out = (entryPoint, imports = []) => ({
@@ -66,4 +66,9 @@ test('groupFiles accepts Windows separators in keys and entry points', () => {
     initial: new Set(),
   });
   assert.deepEqual([...files], ['a.js']);
+});
+
+test('admin is a known group with its own 120 kB default, handled by the size-group walker', () => {
+  assert.equal(GROUP_DEFAULTS.admin, 120);
+  assert.equal(typeof reportAdmin, 'function');
 });

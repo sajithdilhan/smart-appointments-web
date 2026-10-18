@@ -8,6 +8,17 @@ export interface Crumb {
 }
 
 /**
+ * A route's breadcrumb: the static `data.breadcrumb`, else the value a resolver stored under the
+ * same key (a record's name, or a list of crumbs with absolute URLs for a route that spans several
+ * levels, such as `branches/:id/schedule`).
+ */
+function labelOf(route: ActivatedRouteSnapshot): unknown {
+  const fixed = route.routeConfig?.data?.['breadcrumb'];
+  if (fixed !== undefined) return fixed;
+  return route.routeConfig?.resolve?.['breadcrumb'] ? route.data['breadcrumb'] : undefined;
+}
+
+/**
  * Crumbs from the activated route chain: each route that sets `data.breadcrumb` adds one,
  * linking to the URL accumulated so far. A later route on the same URL (an index child) replaces
  * the earlier label, so `/admin` shows just "Dashboard".
@@ -18,12 +29,18 @@ export function crumbsOf(root: ActivatedRouteSnapshot): Crumb[] {
   for (let route: ActivatedRouteSnapshot | null = root; route; route = route.firstChild) {
     const segment = route.url.map((s) => s.path).join('/');
     if (segment) url += `/${segment}`;
-    const label = route.routeConfig?.data?.['breadcrumb'];
-    if (typeof label !== 'string' || !label) continue;
-    const crumb = { label, url: url || '/' };
-    const last = crumbs.at(-1);
-    if (last && last.url === crumb.url) crumbs[crumbs.length - 1] = crumb;
-    else crumbs.push(crumb);
+    const label = labelOf(route);
+    const entries: Crumb[] =
+      typeof label === 'string' && label
+        ? [{ label, url: url || '/' }]
+        : Array.isArray(label)
+          ? label
+          : [];
+    for (const crumb of entries) {
+      const last = crumbs.at(-1);
+      if (last && last.url === crumb.url) crumbs[crumbs.length - 1] = crumb;
+      else crumbs.push(crumb);
+    }
   }
   return crumbs;
 }

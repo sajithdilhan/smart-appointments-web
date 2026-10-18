@@ -5,12 +5,17 @@
 // src/app/features/<name>/, plus the non-initial chunks those outputs import statically (each counted
 // once), read from the build's stats metafile (`statsJson` in the production configuration). Fails
 // when the total exceeds MAX_GZIP_KB_<NAME> (default from GROUP_DEFAULTS).
-import { readFileSync } from 'node:fs';
+//
+// `--group admin` is the exception: it dispatches to the walker in size-group.mjs, which follows
+// dynamic imports too (every lazy file reachable from the admin route chunk, shared chunks counted
+// once and listed apart), against MAX_GZIP_KB_ADMIN (default 120).
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
+import { adminGroup, initialClosure } from './size-group.mjs';
 
-export const GROUP_DEFAULTS = { public: 50 };
+export const GROUP_DEFAULTS = { public: 50, admin: 120 };
 
 /** Files referenced by script, modulepreload and stylesheet tags of index.html. */
 export function initialFiles(html) {
@@ -78,6 +83,54 @@ function report(root, files, maxKb, label) {
   console.log(`OK: within ${maxKb} kB gzipped`);
 }
 
+/** F5's admin report: walks the built sources (static and dynamic imports) instead of the metafile. */
+export function reportAdmin(root, initialSet, maxKb) {
+  const sources = new Map(
+    readdirSync(root)
+      .filter((f) => f.endsWith('.js'))
+      .map((f) => [f, readFileSync(join(root, f), 'utf8')]),
+  );
+  const initial = initialClosure(
+    sources,
+    [...initialSet].filter((f) => f.endsWith('.js')),
+  );
+  // Never walk into another feature's lazy entry chunks (e.g. public), reached by dynamic import.
+  const statsPath = process.env.STATS_JSON ?? `${root}-stats.json`;
+  const stats = JSON.parse(readFileSync(statsPath, 'utf8'));
+  const outDir = root.replace(/\\/g, '/');
+  const stop = new Set();
+  for (const [key, output] of Object.entries(stats.outputs)) {
+    const entryPoint = output.entryPoint?.replace(/\\/g, '/');
+    const foreign = /^src\/app\/features\/([^/]+)\//.exec(entryPoint ?? '')?.[1];
+    if (foreign && foreign !== 'admin') {
+      stop.add(key.replace(/\\/g, '/').replace(`${outDir}/`, ''));
+    }
+  }
+  const { entry, group, shared } = adminGroup(sources, initial, undefined, stop);
+  if (!entry) {
+    console.error('No admin chunk found in the build output.');
+    process.exit(1);
+  }
+  const gzOf = (f) => gzipSync(readFileSync(join(root, f)), { level: 9 }).length;
+  let gz = 0;
+  const lines = group.map((f) => {
+    const size = gzOf(f);
+    gz += size;
+    return `${f.padEnd(34)} ${(size / 1000).toFixed(2).padStart(8)} kB gzip${shared.includes(f) ? '  (shared with other lazy code)' : ''}`;
+  });
+  console.log(`Admin lazy group (entry ${entry}), ${group.length} files:`);
+  for (const line of lines) console.log(line);
+  const sharedGz = shared.reduce((n, f) => n + gzOf(f), 0);
+  console.log(
+    `total ${(gz / 1000).toFixed(2)} kB gzip, of which shared ${(sharedGz / 1000).toFixed(2)} kB`,
+  );
+  if (gz / 1000 > maxKb) {
+    console.error(`Admin group gzip size ${(gz / 1000).toFixed(2)} kB exceeds ${maxKb} kB`);
+    process.exit(1);
+  }
+  console.log(`OK: within ${maxKb} kB gzipped`);
+}
+
 function main() {
   const root = process.env.DIST_DIR ?? 'dist/smart-appointments-web/browser';
   const initial = initialFiles(readFileSync(join(root, 'index.html'), 'utf8'));
@@ -91,6 +144,10 @@ function main() {
   if (!group || !(group in GROUP_DEFAULTS)) {
     console.error(`Unknown group "${group}"; known: ${Object.keys(GROUP_DEFAULTS).join(', ')}`);
     process.exit(2);
+  }
+  if (group === 'admin') {
+    reportAdmin(root, initial, Number(process.env.MAX_GZIP_KB_ADMIN ?? GROUP_DEFAULTS.admin));
+    return;
   }
   const statsPath = process.env.STATS_JSON ?? `${root}-stats.json`;
   const stats = JSON.parse(readFileSync(statsPath, 'utf8'));
