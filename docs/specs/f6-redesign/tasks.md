@@ -72,7 +72,8 @@ Rules (from the template):
   - Specs: `branch-step.component.spec` (clear button empties the search and returns focus to the field; existing search tests green), `service-step` and `action-bar` specs green.
   - _Requirements: 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 9. Month grid model
+- [x] 9. Month grid model
+  - _Done: 18/10/2026 5:06pm_
   - `core/time/month-grid.ts`: `monthGrid(year, month, firstBookable, lastBookable)` and `windowMonths(first, last)` as in the design (Monday-first weeks, `inMonth`, `bookable`, `isToday`, full labels via `Intl` in UTC on noon instants).
   - Table-driven spec: window inside one month, across two months, across a year end; leading and trailing days; a month starting on Monday and on Sunday; labels identical under a browser zone ahead of and behind UTC.
   - _Requirements: 7.1, 7.2_
