@@ -4,12 +4,12 @@
   background:
     radial-gradient(
       60rem 28rem at 15% -10%,
-      color-mix(in oklab, var(--color-brand-400) 24%, transparent),
+      color-mix(in oklab, var(--color-lavender-300) 40%, transparent),
       transparent 65%
     ),
     radial-gradient(
       42rem 22rem at 95% 0%,
-      color-mix(in oklab, var(--color-brand-700) 14%, transparent),
+      color-mix(in oklab, var(--color-lavender-200) 55%, transparent),
       transparent 60%
     ),
     var(--color-background);
@@ -29,12 +29,12 @@
   background:
     radial-gradient(
       60rem 28rem at 15% -10%,
-      color-mix(in oklab, var(--color-brand-400) 14%, transparent),
+      color-mix(in oklab, var(--color-lavender-700) 14%, transparent),
       transparent 65%
     ),
     radial-gradient(
       42rem 22rem at 95% 0%,
-      color-mix(in oklab, var(--color-brand-700) 10%, transparent),
+      color-mix(in oklab, var(--color-brand-700) 14%, transparent),
       transparent 60%
     ),
     var(--color-background);
