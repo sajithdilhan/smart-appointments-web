@@ -107,7 +107,8 @@ Rules (from the template):
   - Add the F2 `Known gaps` that remain open (enumeration via duplicate-email message, no gateway limit on register) to the README's known-gaps list if one exists.
   - _Requirements: Introduction, Known gaps_
 
-- [ ] 17. Manual verification against the live gateway
+- [x] 17. Manual verification against the live gateway
+  - _Done: 18/10/2026 9:56am_
   - Start the backend with `docker compose up --build` (its `WEB_ORIGIN` set to the web origin) and the web app with `pnpm start` or the web compose file.
   - Register a new customer and confirm the auto-login lands on `/book`; log in as that customer and as the seeded Admin and confirm `/book` and `/admin`; try a wrong password and confirm the generic message.
   - Send six rapid wrong-password logins and confirm the 429 countdown and the re-enabling; register the same email twice and confirm the inline duplicate message.

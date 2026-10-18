@@ -27,7 +27,7 @@ Templates live in [`_templates/`](_templates/).
 | ------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------- | ------------------------------------------- |
 | F0 Scaffold and tooling                                                                           | Implemented | — (no FR-ID)                                       | [requirements](f0-scaffold/requirements.md) |
 | F1 Core (runtime config use, API types, error normalizer, auth store and refresh, guards, shells) | Built       | FR-AUTH-002, FR-AUTH-003, FR-AUTH-004, FR-AUTH-005 | [requirements](f1-core/requirements.md)     |
-| F2 Public (landing, login, register)                                                              | Built       | FR-AUTH-001, FR-AUTH-002                           | [requirements](f2-public/requirements.md)   |
+| F2 Public (landing, login, register)                                                              | Implemented | FR-AUTH-001, FR-AUTH-002                           | [requirements](f2-public/requirements.md)   |
 | F3 Booking wizard, success and .ics                                                               | Not specced | FR-AVL-004, FR-BKG-001                             | —                                           |
 | F4 My appointments, detail, cancel, profile                                                       | Not specced | FR-BKG-002, FR-BKG-003, FR-BKG-005, FR-AUTH-003    | —                                           |
 | F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette)      | Not specced | FR-AVL-001, FR-AVL-002, FR-AVL-003                 | —                                           |
