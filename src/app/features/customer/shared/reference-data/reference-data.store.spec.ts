@@ -9,6 +9,7 @@ import {
   SERVICE_IDS,
   createBookingBackend,
 } from '../../../../../testing/booking-backend';
+import { createFakeSession, provideFakeSession } from '../../../../../testing/fake-session';
 import { server } from '../../../../../testing/server';
 import { ReferenceDataStore } from './reference-data.store';
 
@@ -17,10 +18,15 @@ const BASE = 'http://gw.test:5290';
 function setup() {
   const backend = createBookingBackend();
   server.use(...availabilityHandlers(backend, BASE));
+  const session = createFakeSession('authenticated', 'Customer');
   TestBed.configureTestingModule({
-    providers: [provideCoreHttp(), { provide: APP_CONFIG, useValue: { apiBaseUrl: BASE } }],
+    providers: [
+      provideCoreHttp(),
+      { provide: APP_CONFIG, useValue: { apiBaseUrl: BASE } },
+      ...provideFakeSession(session),
+    ],
   });
-  return { backend, store: TestBed.inject(ReferenceDataStore) };
+  return { backend, session, store: TestBed.inject(ReferenceDataStore) };
 }
 
 async function settled(store: ReferenceDataStore): Promise<void> {
@@ -95,6 +101,28 @@ describe('ReferenceDataStore', () => {
     store.clear();
     expect(store.branches()).toBeNull();
     expect(store.branchesState()).toBe('idle');
+    store.ensureBranches();
+    await settled(store);
+    expect(backend.state.counters.branches).toBe(2);
+  });
+
+  it('clears everything when the session leaves authenticated, and not before', async () => {
+    const { backend, session, store } = setup();
+    store.ensureBranches();
+    store.ensureServices();
+    await settled(store);
+    TestBed.tick();
+    expect(store.branches()).not.toBeNull();
+
+    session.status.set('anonymous');
+    TestBed.tick();
+    expect(store.branches()).toBeNull();
+    expect(store.services()).toBeNull();
+    expect(store.branchesState()).toBe('idle');
+
+    // The next session loads again.
+    session.status.set('authenticated');
+    TestBed.tick();
     store.ensureBranches();
     await settled(store);
     expect(backend.state.counters.branches).toBe(2);

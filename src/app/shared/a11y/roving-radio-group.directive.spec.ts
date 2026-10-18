@@ -152,4 +152,31 @@ describe('roving radio group', () => {
     detectChanges();
     expect(radio('A')).toHaveAttribute('tabindex', '0');
   });
+
+  it('with selectOnMove off, arrows only move focus and Enter selects', async () => {
+    const picks: string[] = [];
+    @Component({
+      selector: 'app-no-move',
+      imports: [RovingRadioGroupDirective, RadioItemDirective],
+      template: `
+        <div [appRadioGroup]="'Cards'" [selectOnMove]="false" (selected)="pick($event)">
+          <button type="button" [appRadioItem]="'x'">X</button>
+          <button type="button" [appRadioItem]="'y'">Y</button>
+        </div>
+      `,
+    })
+    class NoMove {
+      pick(v: string) {
+        picks.push(v);
+      }
+    }
+    await render(NoMove);
+    const user = userEvent.setup();
+    radio('X').focus();
+    await user.keyboard('{ArrowRight}');
+    expect(radio('Y')).toHaveFocus();
+    expect(picks).toEqual([]);
+    await user.keyboard('{Enter}');
+    expect(picks).toEqual(['y']);
+  });
 });

@@ -1,0 +1,26 @@
+<section class="hero" aria-labelledby="hero-heading">
+  <div
+    class="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24"
+  >
+    <div class="flex flex-col gap-6">
+      <h1
+        id="hero-heading"
+        appFocusHeading
+        class="reveal text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl"
+        style="--i: 0"
+      >
+        Book your next appointment <span class="text-primary">in minutes.</span>
+      </h1>
+      <p class="reveal max-w-xl text-lg text-muted-foreground" style="--i: 1">
+        Choose a branch and a service, pick a time that suits you, and get it confirmed. No phone
+        calls, no waiting on hold.
+      </p>
+      <div class="reveal" style="--i: 2">
+        <app-cta-buttons />
+      </div>
+    </div>
+    <div class="reveal flex justify-center lg:justify-end" style="--i: 3">
+      <app-hero-preview />
+    </div>
+  </div>
+</section>

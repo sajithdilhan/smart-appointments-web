@@ -113,6 +113,8 @@
 @layer base {
   html {
     color-scheme: light;
+    /* The booking wizard's sticky action bar sits above the bottom tab bar (WCAG 2.4.11). */
+    scroll-padding-bottom: 9rem;
   }
   html.dark {
     color-scheme: dark;
@@ -136,5 +138,23 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* The booking wizard's step change: opacity and transform only, 200 ms, off under reduced motion. */
+@keyframes book-step-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .book-step {
+    animation: book-step-in 200ms ease-out both;
   }
 }

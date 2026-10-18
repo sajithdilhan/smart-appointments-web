@@ -59,7 +59,7 @@ describe('the real application configuration', () => {
     await router.navigateByUrl('/book');
     await fixture.whenStable();
     expect(router.url).toBe('/login?returnUrl=%2Fbook');
-    expect(heading(fixture.nativeElement)).toBe('Sign in');
+    expect(heading(fixture.nativeElement)).toBe('Welcome back');
   });
 
   it.each([

@@ -1,15 +1,11 @@
 import { Routes } from '@angular/router';
 import { guidIdMatcher } from './appointments/guid-id-matcher';
 
-const placeholder = () => import('../placeholder/placeholder-page').then((m) => m.PlaceholderPage);
-
 /** Children of the customer shell (the shell carries the guards). */
 export const CUSTOMER_ROUTES: Routes = [
   {
     path: 'book',
-    title: 'Book an appointment',
-    loadComponent: placeholder,
-    data: { heading: 'Book an appointment', phase: 'F3' },
+    loadChildren: () => import('./book/book.routes'),
   },
   {
     path: 'appointments',
