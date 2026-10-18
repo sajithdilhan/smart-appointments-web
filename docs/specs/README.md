@@ -16,7 +16,8 @@ requirements.md  ──►  design.md  ──►  tasks.md  ──►  implement
 1. **One feature per folder.** A spec covers a bounded feature or build phase, not a whole app. Folders are named after the phase (`f0-scaffold`) or feature.
 2. **Requirements are approved before a design is written.** The design is an answer to the acceptance criteria, so the criteria have to be settled first.
 3. **The design is approved before tasks are written.** Tasks are coding steps derived from the design, nothing more.
-4. **Tasks are checked off in the same commit as the code that satisfies them.** A checked box means the code exists and `pnpm lint && pnpm test && pnpm build` pass. An unchecked box is the backlog.
+4. **Tasks are checked off in the same commit as the code that satisfies them.** A checked box means the code exists, the tests the task names exist and pass, and `pnpm lint && pnpm test && pnpm build` pass. The tick carries a `_Done: <DD/MM/YYYY h:mmam>_` line under the task. An unchecked box is the backlog.
+5. **Progress across phases is tracked in [`../WORKPLAN.md`](../WORKPLAN.md)**: task status, owner (subagent, main session or you), timestamps, merge order and how to resume. Update it whenever a task changes status.
 
 Templates live in [`_templates/`](_templates/).
 
