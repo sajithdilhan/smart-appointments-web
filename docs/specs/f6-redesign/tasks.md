@@ -21,10 +21,12 @@ Rules (from the template):
   - Run the axe e2e suites (public, book, appointments, admin) in both themes; fix any token value that fails, and record a changed value in the design's palette table.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8_
 
-- [ ] 2. Brand mark, theme toggle and badge variants
+- [x] 2. Brand mark, theme toggle and badge variants
+  - _Done: 18/10/2026 4:52pm_
   - `shared/ui/brand-mark` (`BrandMark`: icon tile + wordmark, icon `aria-hidden`).
   - Theme toggle as the segmented control (names, roles and `aria-checked` unchanged).
   - Badge variants `success` and `muted`.
+    - Already done in commit 10946fd (with a test in `shared/ui/f4-helm.spec.ts`); not repeated here.
   - Specs: brand mark renders the wordmark and a hidden icon; theme toggle spec still passes; badge variants' classes.
   - _Requirements: 2.1, 2.3, 6.3, 9.2_
 
