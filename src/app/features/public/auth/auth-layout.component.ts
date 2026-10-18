@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { AuthIllustrationComponent, AuthIllustrationVariant } from './auth-illustration.component';
 
 /**
- * Split screen for the auth pages: the form on one side (slot `[authForm]`), a decorative panel
- * on the other from `lg` up. The panel carries no text and is hidden from assistive technology.
+ * Split screen for the auth pages: the form first (slot `[authForm]`), a decorative gradient panel
+ * second from `lg` up. The panel's tagline and subtitle are decoration, not headings, and the
+ * whole panel is hidden from assistive technology.
  */
 @Component({
   selector: 'app-auth-layout',
@@ -28,8 +29,14 @@ import { AuthIllustrationComponent, AuthIllustrationVariant } from './auth-illus
       </div>
       <aside
         aria-hidden="true"
-        class="grain relative hidden items-center justify-center overflow-hidden bg-linear-to-br from-brand-800 to-brand-950 p-12 lg:flex"
+        class="grain relative hidden flex-col items-center justify-center gap-8 overflow-hidden bg-linear-to-b from-lavender-600 to-brand-700 p-12 text-center text-white lg:flex dark:from-lavender-900 dark:to-brand-950"
       >
+        <div class="relative max-w-md">
+          <p class="text-4xl leading-tight font-bold tracking-tight" data-testid="auth-tagline">
+            {{ tagline() }}
+          </p>
+          <p class="mt-3 text-lg text-white/85" data-testid="auth-subtitle">{{ subtitle() }}</p>
+        </div>
         <app-auth-illustration [variant]="illustration()" class="relative w-full" />
       </aside>
     </div>
@@ -37,4 +44,6 @@ import { AuthIllustrationComponent, AuthIllustrationVariant } from './auth-illus
 })
 export class AuthLayoutComponent {
   readonly illustration = input<AuthIllustrationVariant>('login');
+  readonly tagline = input.required<string>();
+  readonly subtitle = input.required<string>();
 }

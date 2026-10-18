@@ -56,6 +56,19 @@ describe('LoginPage', () => {
   afterEach(() => vi.useRealTimers());
 
   describe('markup', () => {
+    it('shows an eyebrow that is not a heading, and the decorative panel tagline', async () => {
+      const { container } = await setup();
+      const eyebrow = [...container.querySelectorAll('p')].find(
+        (el) => el.textContent?.trim() === 'Sign in',
+      );
+      expect(eyebrow).toBeTruthy();
+      expect(eyebrow!.closest('h1,h2,h3')).toBeNull();
+      expect(screen.queryByRole('heading', { name: 'Sign in' })).toBeNull();
+      expect(screen.getByRole('heading', { level: 1, name: 'Welcome back' })).toBeTruthy();
+      expect(container.querySelectorAll('h1')).toHaveLength(1);
+      expect(container.querySelector('aside')!.getAttribute('aria-hidden')).toBe('true');
+    });
+
     it('has one h1, a labelled form, the right field attributes and a register link', async () => {
       const { container } = await setup();
       expect(container.querySelectorAll('h1')).toHaveLength(1);

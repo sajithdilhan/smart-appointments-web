@@ -15,7 +15,7 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoaderCircle } from '@ng-icons/lucide';
+import { lucideArrowRight, lucideLoaderCircle } from '@ng-icons/lucide';
 import { HlmButton } from '@app/shared/ui/button';
 import { HlmInput } from '@app/shared/ui/input';
 import { landingRouteFor } from '../../../core/auth/landing';
@@ -59,7 +59,7 @@ const EMAIL_MAX = 254;
     PasswordFieldComponent,
     RateLimitNotice,
   ],
-  providers: [provideIcons({ lucideLoaderCircle })],
+  providers: [provideIcons({ lucideArrowRight, lucideLoaderCircle })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.page.html',
 })

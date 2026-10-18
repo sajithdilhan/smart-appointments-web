@@ -24,7 +24,7 @@ import { FormFieldComponent } from '../../../shared/forms/form-field.component';
   providers: [provideIcons({ lucideEye, lucideEyeOff })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-form-field [view]="view()" [label]="label()" [hint]="hint()">
+    <app-form-field [view]="view()" [label]="label()" [hint]="hint()" icon="lucideLock">
       <div class="relative">
         <input
           #input
