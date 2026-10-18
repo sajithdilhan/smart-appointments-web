@@ -89,7 +89,7 @@ describe('SlotsStatusComponent', () => {
     await screen.findByRole('radiogroup', { name: 'Available times' });
     view.backend.state.flags.searchRateLimitAfter = view.backend.state.counters.search;
     const user = userEvent.setup();
-    await user.click(screen.getByRole('radio', { name: /Tuesday,? 6 October/ }));
+    await user.click(screen.getByRole('button', { name: /Tuesday,? (6 October|October 6)/ }));
     expect(
       (await screen.findAllByText(/Too many attempts. Try again in 60 seconds/)).length,
     ).toBeGreaterThan(0);

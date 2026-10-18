@@ -64,24 +64,28 @@ Rules (from the template):
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
   - _Done: 18/10/2026 5:22pm_
 
-- [ ] 7. Stepper
+- [x] 7. Stepper
+  - _Done: 18/10/2026 4:55pm_
   - `step-indicator` from 640 px: numbered circles, labels under, connectors, completed with check and sr-only "completed", current filled with `aria-current="step"`, earlier steps as buttons; success shows all four completed; below 640 px text unchanged.
   - Specs: `step-indicator.component.spec` rewritten for each step, the success state, `disabled`, and the small-screen line.
   - _Requirements: 6.1_
 
-- [ ] 8. Branch and service cards, action bar
+- [x] 8. Branch and service cards, action bar
+  - _Done: 18/10/2026 5:02pm_
   - Branch search gets a leading search icon and a "Clear search" button when non-empty (existing debounce and no-match state kept).
   - Branch card: "Open now"/"Closed" on the `success`/`muted` badge variants; selected card styling and the leading radio dot, also on service cards.
   - Action bar buttons with arrow icons (position classes unchanged).
   - Specs: `branch-step.component.spec` (clear button empties the search and returns focus to the field; existing search tests green), `service-step` and `action-bar` specs green.
   - _Requirements: 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 9. Month grid model
+- [x] 9. Month grid model
+  - _Done: 18/10/2026 5:06pm_
   - `core/time/month-grid.ts`: `monthGrid(year, month, firstBookable, lastBookable)` and `windowMonths(first, last)` as in the design (Monday-first weeks, `inMonth`, `bookable`, `isToday`, full labels via `Intl` in UTC on noon instants).
   - Table-driven spec: window inside one month, across two months, across a year end; leading and trailing days; a month starting on Monday and on Sunday; labels identical under a browser zone ahead of and behind UTC.
   - _Requirements: 7.1, 7.2_
 
-- [ ] 10. Month calendar and time grid
+- [x] 10. Month calendar and time grid
+  - _Done: 18/10/2026 5:20pm_
   - `month-calendar.component.ts` (grid pattern, roving tab stop, keys, previous/next month limits, today ring, selected fill, disabled days) wired to `store.date()`, `store.chooseDate()`, `store.strip()`, `store.todayInBranch()`.
   - `date-time-step` uses it in the two-column layout from 768 px; delete `date-strip.component.ts` and its spec.
   - `slot-groups` grid and `slot-chip` restyle (two to three columns, outlined, selected fill, capacity hint under the time); roles and names unchanged.
@@ -89,7 +93,8 @@ Rules (from the template):
   - Specs: `month-calendar.component.spec` (only the 14 days enabled; each key; Page Up/Down clamped; arrows skip disabled days and stop at the edge; focus does not select; Enter, Space and click call `chooseDate`; month switches when focus crosses a boundary; every day's accessible name), `slot-groups` and `slots-status` specs green ("Check <next day>" still works).
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7_
 
-- [ ] 11. Review and success
+- [x] 11. Review and success
+  - _Done: 18/10/2026 5:27pm_
   - `review-card` as "Booking summary" with icon rows, `editable` input and `edit` output, and a `contact` input; `review-step` maps Edit to `store.goTo(step)` and supplies the contact from `SessionStore.profile()` (calling `fetchProfile()` when idle; email only until ready or on failure).
   - `success-step`: mint check circle, "Booking confirmed!", sentence, mint "Booking reference" card with the copy button, summary card without Edit, "Add to calendar" filled, "View details" to `/appointments/<id>`, "Book another" and "Back to home" text links.
   - Replace "You're booked" with "Booking confirmed!" in specs and e2e.

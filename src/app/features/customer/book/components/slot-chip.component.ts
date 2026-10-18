@@ -18,7 +18,7 @@ import { capacityHint } from '../day-parts';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class:
-      'flex min-h-11 min-w-11 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg border border-input bg-card px-3 py-2 text-sm text-card-foreground hover:bg-accent aria-checked:border-primary aria-checked:bg-primary aria-checked:text-primary-foreground',
+      'flex min-h-11 min-w-11 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg border border-input bg-card px-3 py-2 text-sm text-card-foreground hover:bg-accent aria-checked:border-primary aria-checked:bg-primary aria-checked:text-primary-foreground aria-checked:hover:bg-primary/90',
     '[attr.aria-label]': 'name()',
   },
   template: `

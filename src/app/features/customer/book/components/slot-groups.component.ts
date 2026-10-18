@@ -26,7 +26,7 @@ import { SlotChipComponent } from './slot-chip.component';
       @for (g of groups(); track g.part) {
         <section class="flex flex-col gap-2">
           <h3 class="text-sm font-semibold text-muted-foreground">{{ g.heading }}</h3>
-          <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+          <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
             @for (s of g.slots; track s.id) {
               <app-slot-chip
                 [appRadioItem]="s.id"

@@ -1,7 +1,15 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { BRANCH_IDS, SERVICE_IDS } from '../src/testing/booking-backend';
-import { countdown, firstSlot, heading, reachDayWithTimes, reviewUrl, setup } from './book-helpers';
+import {
+  countdown,
+  firstSlot,
+  heading,
+  pickDate,
+  reachDayWithTimes,
+  reviewUrl,
+  setup,
+} from './book-helpers';
 
 test('books an appointment with the keyboard only and downloads the .ics', async ({ page }) => {
   await setup(page);
@@ -28,7 +36,7 @@ test('books an appointment with the keyboard only and downloads the .ics', async
   await page.getByRole('button', { name: 'Confirm booking' }).focus();
   await page.keyboard.press('Enter');
 
-  await expect(heading(page, "You're booked")).toBeFocused();
+  await expect(heading(page, 'Booking confirmed!')).toBeFocused();
   await expect(page).toHaveURL(/done=1/);
   await expect(page).not.toHaveURL(/slot=/);
 
@@ -41,6 +49,24 @@ test('books an appointment with the keyboard only and downloads the .ics', async
   const text = readFileSync(await download.path(), 'utf8');
   expect(text).toContain('DTSTART:');
   expect(text).toContain('LOCATION:10 Baker Street\\, London');
+});
+
+test('picks a day on the month calendar and lists its times', async ({ page }) => {
+  const { backend } = await setup(page);
+  const dates = [
+    ...new Set(
+      [...backend.state.slots.values()]
+        .filter((s) => s.branchId === BRANCH_IDS.london && s.serviceTypeId === SERVICE_IDS.checkup)
+        .sort((a, b) => a.startMs - b.startMs)
+        .map((s) => s.date),
+    ),
+  ];
+  const target = dates[2];
+  await page.goto(`/book?branch=${BRANCH_IDS.london}&service=${SERVICE_IDS.checkup}`);
+  await expect(page.getByRole('grid')).toBeVisible();
+  await pickDate(page, target);
+  await expect(page).toHaveURL(new RegExp(`date=${target}`));
+  await expect(page.getByRole('radiogroup', { name: 'Available times' })).toBeVisible();
 });
 
 test('a deep link to Review shows the summary', async ({ page }) => {
@@ -90,7 +116,7 @@ test('a 503 followed by a retry with the same key books once', async ({ page }) 
     'It may or may not have gone through',
   );
   await page.getByRole('button', { name: 'Try again' }).click();
-  await expect(heading(page, "You're booked")).toBeVisible();
+  await expect(heading(page, 'Booking confirmed!')).toBeVisible();
   expect(recorder.creates).toHaveLength(2);
   expect(recorder.creates[1].key).toBe(recorder.creates[0].key);
   expect(recorder.creates[0].key).toMatch(/^[0-9a-f-]{36}$/);

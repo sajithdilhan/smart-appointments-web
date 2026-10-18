@@ -39,7 +39,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       aria-hidden="true"
       focusable="false"
       viewBox="0 0 48 48"
-      class="size-16 text-primary"
+      class="size-12 text-success"
       fill="none"
       stroke="currentColor"
       stroke-width="3"

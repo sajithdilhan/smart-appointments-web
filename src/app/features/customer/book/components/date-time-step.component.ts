@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideArrowLeft, lucideArrowRight } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { fromEpochMs, zoneDiffersFromBrowser } from '../../../../core/time';
 import { StepHeadingDirective } from '../step-heading.directive';
 import { BookingWizardStore } from '../wizard.store';
 import { ActionBarComponent } from './action-bar.component';
-import { DateStripComponent } from './date-strip.component';
+import { MonthCalendarComponent } from './month-calendar.component';
 import { SlotsStatusComponent } from './slots-status.component';
 
 /** "Pacific/Auckland" becomes "Auckland": the zone's city, readable in a sentence. */
@@ -13,29 +15,41 @@ export function zoneCity(zoneId: string): string {
 }
 
 /**
- * Step 3 (Req 4, 5, 6): the date strip, the zone line, the times for the chosen day and the
- * Back and "Continue to review" actions.
+ * Step 3 (Req 4, 5, 6; F6 Req 7): the month calendar, the zone line, the times for the chosen
+ * day (beside the calendar from 768 px) and the Back and "Continue to review" actions.
  */
 @Component({
   selector: 'app-date-time-step',
   imports: [
     ActionBarComponent,
-    DateStripComponent,
     HlmButtonImports,
+    MonthCalendarComponent,
+    NgIcon,
     SlotsStatusComponent,
     StepHeadingDirective,
   ],
+  providers: [provideIcons({ lucideArrowLeft, lucideArrowRight })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'book-step flex flex-col gap-4' },
   template: `
     <h2 appStepHeading class="text-xl font-semibold">Choose a date and time</h2>
-    <app-date-strip />
-    @if (zoneLine(); as line) {
-      <p class="text-sm text-muted-foreground">{{ line }}</p>
-    }
-    <app-slots-status />
+    <div
+      class="flex flex-col gap-4 md:grid md:grid-cols-[minmax(0,20rem)_1fr] md:items-start md:gap-6"
+    >
+      <app-month-calendar />
+      <div class="flex min-w-0 flex-col gap-3">
+        <p class="text-base font-semibold">Available times</p>
+        @if (zoneLine(); as line) {
+          <p class="text-sm text-muted-foreground">{{ line }}</p>
+        }
+        <app-slots-status />
+      </div>
+    </div>
     <app-action-bar>
-      <button hlmBtn variant="outline" type="button" (click)="store.goTo('service')">Back</button>
+      <button hlmBtn variant="outline" type="button" (click)="store.goTo('service')">
+        <ng-icon name="lucideArrowLeft" aria-hidden="true" />
+        Back
+      </button>
       <button
         hlmBtn
         type="button"
@@ -43,6 +57,7 @@ export function zoneCity(zoneId: string): string {
         (click)="store.continueToReview()"
       >
         Continue to review
+        <ng-icon name="lucideArrowRight" aria-hidden="true" />
       </button>
     </app-action-bar>
   `,
