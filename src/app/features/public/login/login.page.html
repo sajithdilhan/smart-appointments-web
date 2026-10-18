@@ -1,0 +1,71 @@
+<app-auth-layout illustration="login">
+  <div authForm>
+    <h1 id="login-heading" appFocusHeading class="text-3xl font-semibold tracking-tight">
+      Welcome back
+    </h1>
+    <p class="mt-2 text-muted-foreground">Log in to book and manage your appointments.</p>
+
+    <form
+      novalidate
+      class="mt-8 flex flex-col gap-5"
+      aria-labelledby="login-heading"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+    >
+      <app-form-alert tone="info" [message]="notice()" />
+      <div>
+        <app-form-alert
+          #alertRegion
+          tone="error"
+          [message]="errorAlert()?.message ?? null"
+          [reference]="errorAlert()?.reference ?? null"
+        />
+        <app-rate-limit-notice [countdown]="countdown" />
+      </div>
+
+      <app-form-field [view]="emailView" label="Email">
+        <input
+          hlmInput
+          class="h-11"
+          type="email"
+          inputmode="email"
+          autocomplete="username"
+          formControlName="email"
+          [id]="emailView.id"
+          [appField]="emailView"
+          [readOnly]="pending()"
+        />
+      </app-form-field>
+
+      <app-password-field
+        [view]="passwordView"
+        [control]="form.controls.password"
+        [pending]="pending()"
+        autocomplete="current-password"
+      />
+
+      <button
+        hlmBtn
+        type="submit"
+        class="h-11 w-full text-base"
+        [disabled]="pending() || countdown.active()"
+        [attr.aria-busy]="pending()"
+      >
+        @if (pending()) {
+          <ng-icon name="lucideLoaderCircle" size="18" class="animate-spin" aria-hidden="true" />
+        }
+        Log in
+      </button>
+    </form>
+
+    <p class="mt-6 text-sm text-muted-foreground">
+      New here?
+      <a
+        routerLink="/register"
+        [queryParams]="{ returnUrl: safeReturn() }"
+        class="inline-block py-2 font-medium text-primary underline underline-offset-4"
+        >Create an account</a
+      >
+    </p>
+  </div>
+</app-auth-layout>

@@ -12,7 +12,7 @@ Rules (from the template):
 
 **Where code lands.** The generic form pieces (form field, field a11y directive, field view, first-invalid focus, form alert, generic field rules, validators and `normalizePhone`) are built in `src/app/shared/forms/` so F5's admin forms reuse them. F2-specific code (password rules and checklist, show/hide password field, F2 messages, error mappers, forms, auth layout) stays in `src/app/features/public/`.
 
-- [ ] 1. Route entries, titles and lazy page stubs
+- [x] 1. Route entries, titles and lazy page stubs
   - Add `features/public/titles.ts` with the three titles: `Book your next appointment | Smart Appointments`, `Log in | Smart Appointments`, `Create your account | Smart Appointments`.
   - Add `features/public/public.routes.ts` with the `/`, `/login` and `/register` entries (each its own `loadComponent`, `title` from `titles.ts`, `guestGuard` on the last two) and register them in the F1 public shell children, replacing F1's placeholder entries.
   - Create minimal `LandingPage`, `LoginPage` and `RegisterPage` components, each with a single `<h1 appFocusHeading>` placeholder text, so the routes resolve.
@@ -55,7 +55,7 @@ Rules (from the template):
   - Table-driven spec: `401` gives the fixed "Invalid email or password." and never reads `detail`; `400`, `429`, `502/503/504`, network, timeout, other 5xx with reference, anything else.
   - _Requirements: 2.5, 2.7, 2.8, 2.9, 2.10_
 
-- [ ] 8. Login page
+- [x] 8. Login page
   - `login/login.page.ts / .html`: `AuthLayout` with the form, `FormField`s, `PasswordField`, `FormAlert`, F1's countdown component, submit button with spinner, `aria-busy` and disabled while pending or counting down, links to `/register` carrying only a `safeReturnUrl`-accepted `returnUrl`.
   - `submit()` per the design: validation and first-invalid focus, one `session.login(trimmedEmail, password)` call, outcome handling (clear password and focus it on `401`, `429` starts the countdown from `retryAfterSeconds`), navigation to `resolvePostLoginTarget(role, returnUrl())` with `replaceUrl: true`, falling back to `landingRouteFor(role)` when it resolves `false`.
   - Route inputs `email`, `reason` and `returnUrl`: silent email prefill; info notices for `reason=registered` (with password focus) and `reason=session-expired`.
@@ -72,41 +72,43 @@ Rules (from the template):
   - Table-driven spec including a case-insensitive duplicate match and a changed message degrading to the general alert.
   - _Requirements: 3.4, 3.10, 3.11, 3.12_
 
-- [ ] 11. Register page
+- [x] 11. Register page
   - `register/register.page.ts / .html`: `AuthLayout` with first and last name (two columns from 640 px), email, phone (hint, `type="tel"`), password with `PasswordField` and `PasswordChecklist` (described-by wiring), `FormAlert`, countdown, links to `/login` carrying a safe `returnUrl`.
   - `submit()` per the design: validation and focus, one `POST /api/auth/register` with exactly five keys and the normalised phone, then `session.login`; success calls `ToastService.showSuccess`, resets the password control and navigates to `/book` with `replaceUrl`; a `login` failure navigates to `/login?reason=registered&email=<email>`; duplicate email on the email field (message, "Log in instead" link, `aria-invalid`, focus, no toast); other `400` in the alert with focus; pending stays until the navigation completes.
   - Component spec with MSW capturing the body: field order and `autocomplete` values, no role field, request body keys, phone normalised, validation messages and first-invalid focus, pending and double submit, both success paths, duplicate email, other `400`, `429`, offline, password control emptied on success.
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14, 4.6, 6.2, 6.3, 6.4_
 
-- [ ] 12. Landing sections
+- [x] 12. Landing sections
   - `landing/hero.component.ts / .html / .css` (headline, supporting sentence, `landingCtas()` buttons, gradient and `data:` SVG grain layers, `.reveal` entrance with the reduced-motion rule) and `landing/hero-preview.component.ts` (decorative `aria-hidden`, `inert` booking-card mock).
   - `landing/value-props.component.ts` (four items), `landing/how-it-works.component.ts` (ordered list of three steps), `landing/cta-band.component.ts` (labelled sections, `<h2>` each).
   - Compose them in `landing/landing.page.ts` with a single `<h1>`; register only the lucide icons used.
   - Specs: one `<h1>`, section order and headings, CTAs for anonymous and for each role from a fake session, no request issued, no `<img>` or external URL in the templates, the `prefers-reduced-motion` block present in the hero CSS.
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9_
-  - partial: `value-props`, `how-it-works` and `hero-preview` are built and tested (`landing/`). Remaining, waiting on F1's `landingCtas()` (and `SessionStore` for the fake-session specs): `hero.component.ts / .html / .css` (CTAs, `.reveal`, reduced-motion rule), `cta-band.component.ts`, the `LandingPage` composition with its single `<h1 appFocusHeading>`, and the CTA, one-`<h1>`, section-order and no-request specs.
 
-- [ ] 13. Playwright flows with mocked API
+- [x] 13. Playwright flows with mocked API
   - `e2e/support/mock-api.ts` (reuse F1's if present): `page.route` handlers with CORS headers and `OPTIONS`, plus an unsigned test JWT helper per role.
   - `e2e/public.spec.ts`: register success to `/book`; duplicate email; login for Customer, Admin and Staff landing on `/book`, `/admin` and `/staff`; login `401`; login `429` with `page.clock` and re-enabling; `returnUrl=/appointments` honoured and `https://evil.example` ignored; signed-in visit to `/login` redirected; keyboard-only completion of both forms.
   - _Requirements: 2.6 to 2.11, 3.8 to 3.10, 4.4, 4.5, 5.2, 5.3, 7.4_
 
-- [ ] 14. Accessibility and reflow checks
+- [x] 14. Accessibility and reflow checks
   - Add `@axe-core/playwright`; `e2e/public.a11y.spec.ts` runs axe on `/`, `/login` and `/register` in light and dark (theme set through the F0 toggle, `bypassCSP` on the context only for the axe injection) and fails on `serious` or `critical`.
   - A 320 px viewport assertion for no horizontal scroll (`scrollWidth <= clientWidth`) on each page.
   - _Requirements: 1.4, 1.5, 6.5, 6.7, 6.9, 7.4_
 
-- [ ] 15. Chunk budget check
+- [x] 15. Chunk budget check
+  - _Done: 10/10/2026 9:41am_
   - Extend `scripts/size.mjs` with `--group public` (sums the gzip size of outputs whose `entryPoint` is under `src/app/features/public/` plus their non-initial static imports, shared chunk counted once; fails over `MAX_GZIP_KB_PUBLIC`, default 50). Add `pnpm size:public` and a CI `build`-job step. Record the measured total in `design.md`.
   - Confirm the F0 budgets still pass and no F2 code is in the initial bundle.
   - _Requirements: 5.6, 7.5_
 
-- [ ] 16. Documentation
+- [x] 16. Documentation
+  - _Done: 10/10/2026 9:47am_
   - Update `README.md` and `CLAUDE.md` project status (landing, login, register built; the F2 folder layout; the `reason=registered`, `reason=session-expired` and `returnUrl` query parameters) and the spec index in `docs/specs/README.md` (F2 row status).
   - Add the F2 `Known gaps` that remain open (enumeration via duplicate-email message, no gateway limit on register) to the README's known-gaps list if one exists.
   - _Requirements: Introduction, Known gaps_
 
-- [ ] 17. Manual verification against the live gateway
+- [x] 17. Manual verification against the live gateway
+  - _Done: 18/10/2026 9:56am_
   - Start the backend with `docker compose up --build` (its `WEB_ORIGIN` set to the web origin) and the web app with `pnpm start` or the web compose file.
   - Register a new customer and confirm the auto-login lands on `/book`; log in as that customer and as the seeded Admin and confirm `/book` and `/admin`; try a wrong password and confirm the generic message.
   - Send six rapid wrong-password logins and confirm the 429 countdown and the re-enabling; register the same email twice and confirm the inline duplicate message.

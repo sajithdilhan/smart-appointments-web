@@ -29,14 +29,14 @@ export interface MockOptions {
   refreshStatus?: number;
 }
 
-const CORS = {
+export const CORS = {
   'access-control-allow-origin': '*',
   'access-control-allow-headers': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE',
   'access-control-expose-headers': 'X-Correlation-ID, Retry-After, Location',
 };
 
-const json = (route: Route, status: number, body: unknown) =>
+export const json = (route: Route, status: number, body: unknown) =>
   route.fulfill({
     status,
     headers: { ...CORS, 'content-type': 'application/json' },

@@ -1,29 +1,26 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from '../../core/auth/guards';
-
-const placeholder = () => import('../placeholder/placeholder-page').then((m) => m.PlaceholderPage);
+import { LANDING_TITLE, LOGIN_TITLE, REGISTER_TITLE } from './titles';
 
 /** Children of the public shell. `/` stays open to signed-in users; the auth pages are guest-only. */
 export const PUBLIC_ROUTES: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    loadComponent: placeholder,
-    data: { heading: 'Welcome', phase: 'F2' },
+    title: LANDING_TITLE,
+    loadComponent: () => import('./landing/landing.page').then((m) => m.LandingPage),
   },
   {
     path: 'login',
-    title: 'Sign in',
+    title: LOGIN_TITLE,
     canActivate: [guestGuard],
-    loadComponent: placeholder,
-    data: { heading: 'Sign in', phase: 'F2' },
+    loadComponent: () => import('./login/login.page').then((m) => m.LoginPage),
   },
   {
     path: 'register',
-    title: 'Create account',
+    title: REGISTER_TITLE,
     canActivate: [guestGuard],
-    loadComponent: placeholder,
-    data: { heading: 'Create account', phase: 'F2' },
+    loadComponent: () => import('./register/register.page').then((m) => m.RegisterPage),
   },
 ];
 

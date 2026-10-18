@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
@@ -7,6 +8,7 @@ import { createFakeSession, provideFakeSession } from '../testing/fake-session';
 import { routes } from './app.routes';
 import { AREA_ROLES, roleCanOpen } from './core/auth/post-login-target';
 import { ROLES, type Role } from './core/auth/session.model';
+import { APP_CONFIG } from './core/config/app-config';
 import { AppTitleStrategy } from './core/routing/app-title.strategy';
 
 type Who = 'anonymous' | Role;
@@ -23,6 +25,8 @@ async function visit(who: Who, url: string) {
     providers: [
       provideRouter(routes, withComponentInputBinding()),
       { provide: TitleStrategy, useClass: AppTitleStrategy },
+      provideHttpClient(),
+      { provide: APP_CONFIG, useValue: { apiBaseUrl: 'http://gw.test' } },
       ...provideFakeSession(session),
       ...provideAdminApi(),
     ],
@@ -50,15 +54,18 @@ const protectedPaths: Record<string, Role> = {
 
 describe('route table', () => {
   it.each([
-    ['/', 'Welcome'],
-    ['/login', 'Sign in'],
-    ['/register', 'Create account'],
+    ['/', 'Book your next appointment in minutes.'],
+    ['/login', 'Welcome back'],
+    ['/register', 'Create your account'],
   ])('renders the public page %s for an anonymous visitor', async (url, heading) => {
     expect(await visit('anonymous', url)).toMatchObject({ url, heading });
   });
 
   it.each(ROLES)('keeps / open for a signed-in %s', async (role) => {
-    expect(await visit(role, '/')).toMatchObject({ url: '/', heading: 'Welcome' });
+    expect(await visit(role, '/')).toMatchObject({
+      url: '/',
+      heading: 'Book your next appointment in minutes.',
+    });
   });
 
   it.each(ROLES)(
