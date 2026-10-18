@@ -27,5 +27,5 @@ test('Sign out lands on /login', async ({ page }) => {
   await page.goto('/profile');
   await page.getByRole('button', { name: 'Sign out' }).click();
   await expect(page).toHaveURL(/\/login/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Sign in' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Welcome back' })).toBeVisible();
 });
