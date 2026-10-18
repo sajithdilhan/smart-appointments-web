@@ -18,6 +18,7 @@ import {
   lucidePanelLeft,
   lucideSearch,
 } from '@ng-icons/lucide';
+import { BrandMark } from '@app/shared/ui/brand-mark';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { HlmSheet, HlmSheetImports } from '@app/shared/ui/sheet';
 import { ThemeToggle } from '@app/shared/ui/theme-toggle';
@@ -51,6 +52,7 @@ function platformIsApple(): boolean {
 @Component({
   selector: 'app-admin-shell',
   imports: [
+    BrandMark,
     BreadcrumbTrail,
     HlmButtonImports,
     HlmSheetImports,
@@ -109,10 +111,10 @@ function platformIsApple(): boolean {
         >
           <a
             routerLink="/admin"
-            class="flex h-14 items-center truncate px-4 text-lg font-semibold tracking-tight"
+            class="flex h-14 items-center truncate px-4 text-lg"
             [attr.aria-label]="collapsed() ? 'Smart Appointments admin' : null"
           >
-            {{ collapsed() ? 'SA' : 'Smart Appointments' }}
+            <app-brand-mark [compact]="collapsed()" />
           </a>
           <ng-container *ngTemplateOutlet="links; context: { compact: collapsed() }" />
         </aside>

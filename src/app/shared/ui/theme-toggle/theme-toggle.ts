@@ -24,14 +24,14 @@ interface ThemeOption {
     <div
       role="radiogroup"
       aria-label="Theme"
-      class="inline-flex gap-1 rounded-lg border border-input bg-background p-1"
+      class="inline-flex gap-0.5 rounded-full border border-border bg-card p-0.5"
     >
       @for (option of options; track option.value) {
         <button
           #radio
           type="button"
           role="radio"
-          class="inline-flex size-8 items-center justify-center rounded-md text-foreground transition-colors hover:bg-muted aria-checked:bg-primary aria-checked:text-primary-foreground"
+          class="inline-flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted aria-checked:bg-primary aria-checked:text-primary-foreground aria-checked:shadow-soft"
           [attr.aria-checked]="theme.preference() === option.value"
           [attr.aria-label]="option.label"
           [attr.title]="option.label"
@@ -39,7 +39,7 @@ interface ThemeOption {
           (click)="select(option.value)"
           (keydown)="onKeydown($event, $index)"
         >
-          <ng-icon [name]="option.icon" size="16" aria-hidden="true" />
+          <ng-icon [name]="option.icon" size="14" aria-hidden="true" />
         </button>
       }
     </div>

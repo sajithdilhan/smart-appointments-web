@@ -16,6 +16,7 @@
       "@app/shared/layout/outage-banner": ["./src/app/shared/layout/outage-banner/index.ts"],
       "@app/shared/ui/alert": ["./src/app/shared/ui/alert/src/index.ts"],
       "@app/shared/ui/alert-dialog": ["./src/app/shared/ui/alert-dialog/src/index.ts"],
+      "@app/shared/ui/brand-mark": ["./src/app/shared/ui/brand-mark/index.ts"],
       "@app/shared/ui/badge": ["./src/app/shared/ui/badge/src/index.ts"],
       "@app/shared/ui/breadcrumb": ["./src/app/shared/ui/breadcrumb/src/index.ts"],
       "@app/shared/ui/button": ["./src/app/shared/ui/button/src/index.ts"],
