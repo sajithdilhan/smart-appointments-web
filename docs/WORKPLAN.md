@@ -55,23 +55,23 @@ Tasks 1 to 14 done before this plan.
 
 Tasks 2 to 10 done before this plan.
 
-| ID     | Task                                    | Status                  | Owner | Notes                                                         |
-| ------ | --------------------------------------- | ----------------------- | ----- | ------------------------------------------------------------- |
-| F3-T1  | Generated types, API methods, MSW model | done 17/10/2026 4:56pm  | main  | `8adeeb8`; regeneration byte-identical (see Watch list)       |
-| F3-T11 | Service step                            | done 10/10/2026 9:49am  | agent | `5a4d579`                                                     |
-| F3-T12 | Date strip                              | done 10/10/2026 9:55am  | agent | `fc68a52`                                                     |
-| F3-T13 | Slot chips and slot states              | done 10/10/2026 10:01am | agent | `641b919`; fixed a stale selection after forced refresh       |
-| F3-T14 | Confirm flow (state machine)            | done 10/10/2026 10:06am | agent | `9c8c66c`                                                     |
-| F3-T15 | Review step                             | done 10/10/2026 10:10am | agent | `e15c076`                                                     |
-| F3-T16 | `buildIcs`, download, calendar button   | done 10/10/2026 10:13am | agent | `6f7e840`                                                     |
-| F3-T17 | Success step and confetti               | done 10/10/2026 10:17am | agent | `57ff68e`                                                     |
-| F3-T18 | Invariant test                          | done 10/10/2026 10:24am | agent | `14aac54`                                                     |
-| F3-T19 | Playwright flows with mocked API        | done 10/10/2026 10:34am | agent | `3e72942`; 31/31 e2e on port 4303                             |
-| F3-T20 | Accessibility and reflow checks         | done 10/10/2026 10:43am | agent | `d04128d`; fixed 84 px header overflow at 320 px (`UserMenu`) |
-| F3-T21 | Chunk budget check                      | done 10/10/2026 10:48am | agent | `c891891`; `pnpm size:book`: 30.38 kB of 60                   |
-| F3-T22 | Documentation                           | done 10/10/2026 10:51am | agent | `b7daf44`                                                     |
-| F3-T23 | Manual verification against the gateway | todo                    | user  |                                                               |
-| F3-PR  | Raise the F3 pull request               | todo                    | user  | after F2 merges (rebase on `main`) and F3-T23                 |
+| ID     | Task                                    | Status                  | Owner | Notes                                                                                                                      |
+| ------ | --------------------------------------- | ----------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
+| F3-T1  | Generated types, API methods, MSW model | done 17/10/2026 4:56pm  | main  | `8adeeb8`; regeneration byte-identical (see Watch list)                                                                    |
+| F3-T11 | Service step                            | done 10/10/2026 9:49am  | agent | `5a4d579`                                                                                                                  |
+| F3-T12 | Date strip                              | done 10/10/2026 9:55am  | agent | `fc68a52`                                                                                                                  |
+| F3-T13 | Slot chips and slot states              | done 10/10/2026 10:01am | agent | `641b919`; fixed a stale selection after forced refresh                                                                    |
+| F3-T14 | Confirm flow (state machine)            | done 10/10/2026 10:06am | agent | `9c8c66c`                                                                                                                  |
+| F3-T15 | Review step                             | done 10/10/2026 10:10am | agent | `e15c076`                                                                                                                  |
+| F3-T16 | `buildIcs`, download, calendar button   | done 10/10/2026 10:13am | agent | `6f7e840`                                                                                                                  |
+| F3-T17 | Success step and confetti               | done 10/10/2026 10:17am | agent | `57ff68e`                                                                                                                  |
+| F3-T18 | Invariant test                          | done 10/10/2026 10:24am | agent | `14aac54`                                                                                                                  |
+| F3-T19 | Playwright flows with mocked API        | done 10/10/2026 10:34am | agent | `3e72942`; 31/31 e2e on port 4303                                                                                          |
+| F3-T20 | Accessibility and reflow checks         | done 10/10/2026 10:43am | agent | `d04128d`; fixed 84 px header overflow at 320 px (`UserMenu`)                                                              |
+| F3-T21 | Chunk budget check                      | done 10/10/2026 10:48am | agent | `c891891`; `pnpm size:book`: 30.38 kB of 60                                                                                |
+| F3-T22 | Documentation                           | done 10/10/2026 10:51am | agent | `b7daf44`                                                                                                                  |
+| F3-T23 | Manual verification against the gateway | in progress             | user  | 18/10: booking end to end and viewing passed; retry, `409`, outage, `429`, no-schedule and accessibility steps not run yet |
+| F3-PR  | Raise the F3 pull request               | in progress             | main  | `main` merged in (`be21a22`); PR raised with T23 partial (your call)                                                       |
 
 ## F4 Appointments (`f4-appointments`)
 
@@ -121,6 +121,9 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 
 ## Watch list
 
+- `pnpm size:admin` labels the whole admin group as "shared" since F3 merged (its shared count still walks without the stop set). The total and the limit check are right; fix the label in F6.
+- `models.ts` holds two hand-written shapes for the same backend records (F3's `BranchResponse`/`ServiceTypeResponse`, F5's `Branch`/`ServiceType`). Collapse them when the backend documents its responses and `pnpm gen:api` replaces both.
+
 - Nx daemon (since the Nx workspace, PR #3): the first `nx` command starts a background daemon that inherits the caller's stdout, so a script that captures `pnpm test` output with `$(...)` or a pipe never returns. Run gates with `NX_DAEMON=false` or write output to a file. Nx also caches task results; pass `--skip-nx-cache` when a fresh run is needed.
 - Manual-check environment (18/10/2026): Windows reserved TCP 8071 to 8170 (Hyper-V/WinNAT, changes per reboot), so the web container could not bind 8081; it ran with `WEB_PORT=4200`. The backend Compose `Cors__AllowedOrigins__0: ${WEB_ORIGIN}` replaces the development list's 4200 entry, so the backend `.env` needed `WEB_ORIGIN=http://localhost:4200` (backend quirk to fix). The Compose database already held `admin@example.com` with an unknown password, so the seeder skipped; a QA admin `qa-admin@example.com` was registered and promoted to `Role=3` instead.
 - When rebasing or merging F3 to F5 onto `main`: `angular.json` is gone, and any edit to it (for example F3's `statsJson`) moves to `project.json`.
@@ -145,6 +148,8 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 18/10/2026 10:42am: `main` (F2, F5, Nx) merged into `f3-booking` (`be21a22`; book size group in `scripts/size-book.mjs`); full gate passed. F3-T23 partly done (booking and viewing passed; the other steps are still open). At your call, the F3 PR is raised with T23 partial.
 
 - 18/10/2026 10:24am: F5-T25 done (manual check by you). `main` (F2, Nx) merged into `f5-admin`; `size:admin` fixed to stop at `main` and other features' chunks (90.03 kB, was 124.01 with the over-count); CI MSW grep no longer matches `hlmSwitch`. Full gate passed. F5 PR next.
 

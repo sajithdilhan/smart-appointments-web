@@ -144,4 +144,5 @@ Rules (from the template):
   - Click through many dates quickly and confirm no `429`, then force one (about 31 searches in a minute) and confirm the countdown and the manual retry; check a branch with no schedule shows as disabled.
   - Complete a booking with only the keyboard, with a screen reader on at least one pass, in light and dark, and with reduced motion enabled; test at 320 px and on a phone.
   - Record the result in the PR description; tick this box only when every step passed.
+  - _Partial, 18/10/2026 10:42am:_ passed against the Compose gateway (web on :4200): signing in as a customer, booking a slot end to end and viewing the appointment. Not yet run: `.ics` in a calendar, same-key retry on Review, overlapping `409`, a just-filled slot, the booking-container outage, the `429` countdown, a branch with no schedule, and the keyboard, screen-reader, theme, reduced-motion, 320 px and phone passes.
   - _Requirements: 13.6_
