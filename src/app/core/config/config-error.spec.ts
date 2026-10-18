@@ -13,6 +13,7 @@ describe('renderConfigError', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     reload.mockReset();
+    document.body.innerHTML = '';
   });
 
   it('replaces the page with a heading, the reason and a Try again button', () => {

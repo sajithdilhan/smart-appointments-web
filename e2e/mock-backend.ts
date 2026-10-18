@@ -36,7 +36,7 @@ export const CORS = {
   'access-control-expose-headers': 'X-Correlation-ID, Retry-After, Location',
 };
 
-const json = (route: Route, status: number, body: unknown) =>
+export const json = (route: Route, status: number, body: unknown) =>
   route.fulfill({
     status,
     headers: { ...CORS, 'content-type': 'application/json' },

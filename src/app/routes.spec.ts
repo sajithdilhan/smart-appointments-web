@@ -1,15 +1,16 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { availabilityHandlers } from '../testing/availability.handlers';
 import { createBookingBackend } from '../testing/booking-backend';
+import { provideAdminApi, useAdminBackend } from '../testing/admin-test-setup';
 import { createFakeSession, provideFakeSession } from '../testing/fake-session';
 import { server } from '../testing/server';
 import { routes } from './app.routes';
 import { AREA_ROLES, roleCanOpen } from './core/auth/post-login-target';
 import { APP_CONFIG } from './core/config/app-config';
-import { provideCoreHttp } from './core/http/http.providers';
 import { ROLES, type Role } from './core/auth/session.model';
 import { AppTitleStrategy } from './core/routing/app-title.strategy';
 
@@ -20,6 +21,7 @@ const WHOS: Who[] = ['anonymous', ...ROLES];
 
 async function visit(who: Who, url: string) {
   TestBed.resetTestingModule();
+  useAdminBackend();
   const session = createFakeSession(
     who === 'anonymous' ? 'anonymous' : 'authenticated',
     who === 'anonymous' ? null : who,
@@ -28,11 +30,12 @@ async function visit(who: Who, url: string) {
   server.use(...availabilityHandlers(createBookingBackend(), API_BASE));
   TestBed.configureTestingModule({
     providers: [
-      provideCoreHttp(),
-      { provide: APP_CONFIG, useValue: { apiBaseUrl: API_BASE } },
       provideRouter(routes, withComponentInputBinding()),
       { provide: TitleStrategy, useClass: AppTitleStrategy },
+      provideHttpClient(),
+      { provide: APP_CONFIG, useValue: { apiBaseUrl: 'http://gw.test' } },
       ...provideFakeSession(session),
+      ...provideAdminApi(),
     ],
   });
   const harness = await RouterTestingHarness.create();
@@ -58,15 +61,18 @@ const protectedPaths: Record<string, Role> = {
 
 describe('route table', () => {
   it.each([
-    ['/', 'Welcome'],
-    ['/login', 'Sign in'],
-    ['/register', 'Create account'],
+    ['/', 'Book your next appointment in minutes.'],
+    ['/login', 'Welcome back'],
+    ['/register', 'Create your account'],
   ])('renders the public page %s for an anonymous visitor', async (url, heading) => {
     expect(await visit('anonymous', url)).toMatchObject({ url, heading });
   });
 
   it.each(ROLES)('keeps / open for a signed-in %s', async (role) => {
-    expect(await visit(role, '/')).toMatchObject({ url: '/', heading: 'Welcome' });
+    expect(await visit(role, '/')).toMatchObject({
+      url: '/',
+      heading: 'Book your next appointment in minutes.',
+    });
   });
 
   it.each(ROLES)(
@@ -108,7 +114,7 @@ describe('route table', () => {
   it.each([
     ['/admin', 'Dashboard'],
     ['/admin/branches', 'Branches'],
-    ['/admin/services', 'Service types'],
+    ['/admin/services', 'Services'],
     ['/admin/slots', 'Slot generation'],
   ])('shows %s to an Admin', async (url, heading) => {
     expect(await visit('Admin', url)).toMatchObject({ url, heading });

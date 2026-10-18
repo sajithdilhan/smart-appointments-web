@@ -37,8 +37,9 @@ export class ToastService {
     toast.info(message);
   }
 
-  showSuccess(message: string): void {
-    toast.success(message, { duration: SUCCESS_TOAST_MS });
+  /** `action` adds one button to the toast (for example "Set schedule"). */
+  showSuccess(message: string, action?: { label: string; onClick: () => void }): void {
+    toast.success(message, { duration: SUCCESS_TOAST_MS, action });
   }
 
   showSessionExpired(): void {

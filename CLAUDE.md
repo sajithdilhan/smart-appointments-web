@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core) and F3 (the booking wizard) are built; the other feature screens do not exist yet, only placeholder pages behind their routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything else is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core), F2 (public pages: landing, login, register), F3 (the booking wizard) and F5 (the admin console) are built; the my-appointments and profile screens (F4) are not, they still show placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F4 and F6 specs are added one phase at a time.
 
 What exists today:
 
-- **Workspace**: Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
+- **Workspace**: an Nx 23 standalone workspace (`nx.json` plus a root `project.json` whose `build`, `serve` and `test` targets run the `@angular/build` executors; no `angular.json`; Nx caches `build` and `test` locally under `.nx/cache`; Nx Cloud is off through `neverConnectToCloud`), Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
 - **Styling**: Tailwind v4 (CSS-first, `src/styles.css`, no `tailwind.config.js`), the teal/zinc token sheet with a light and a `.dark` theme, self-hosted Inter, Spartan/ui helm components (`button`, `card`, `input`, `label`, `switch`, `sonner`, `alert`, `dropdown-menu`, `separator`, `sheet`, `breadcrumb`) under `src/app/shared/ui/` (aliases `@app/shared/ui/<name>`).
 - **Core (F1)**, all non-visual, under `src/app/core/`:
   - `config` (runtime `/config.json` loader, `APP_CONFIG`, `APP_CONFIG_READY`, error page), `theme` (`ThemeService`).
@@ -17,17 +17,21 @@ What exists today:
   - `auth`: `SessionStore` (`@ngrx/signals`), `TokenStorage`, JWT decode, `RefreshCoordinator` (single flight inside a Web Lock), `RefreshScheduler`, `CrossTabSync` and `SessionSync`, `SessionEnder`, `authGuard`/`guestGuard`/`roleGuard`, `landingRouteFor`, `safeReturnUrl`, `resolvePostLoginTarget`, `landingCtas`, `provideAuth()` (the restore initializer).
   - `notify` (`ToastService`), `routing` (`AppTitleStrategy`), `time` (all UTC parsing, zone formatting, calendar, `localToUtc` and branch-hours maths), `util` (`CLOCK`, `localSafe`/`sessionSafe`, `ViewportService`), `ui` (`PaletteLauncher`).
 - **Layout (F1)** under `src/app/shared/layout/`: public, customer, admin and staff shells, user menu, skip link, route progress and announcer, breadcrumb trail, outage banner, not-found page. App primitives in `shared/ui/`: `theme-toggle`, `rate-limit-notice`.
-- **Routes**: all lazy; public (`/`, `/login`, `/register`), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page. `/book` is the booking wizard (F3); the others render a `PlaceholderPage` (or the staff placeholder) until F2, F4 and F5.
+- **Public pages (F2)** under `src/app/features/public/`: `landing/` (hero, value props, how it works, call-to-action band), `login/`, `register/` (with the password checklist), `auth/` (auth layout, illustration, password field), `validation/` (password rules and messages), `public.routes.ts`, `titles.ts`. Form primitives live in `src/app/shared/forms/` (field view, form field, field a11y directive, form alert, validators, phone normaliser, first-invalid focus) and the heading focus directive in `src/app/shared/a11y/`. `/` renders for signed-in users too; `/login` and `/register` use `guestGuard`. Query parameters on `/login`: `returnUrl` (through `safeReturnUrl`), `reason=session-expired` (set by `SessionEnder` and `SessionSync`) and `reason=registered` with `email` (set by register when the automatic login fails; a successful registration lands on `/book`). Spec: `docs/specs/f2-public/`.
+- **Routes**: all lazy; public (`/`, `/login`, `/register`, built in F2), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**` (the F5 console), `/staff`, and a `**` 404 page. `/book` is the booking wizard (F3); the other customer routes and the staff route render a `PlaceholderPage` (or the staff placeholder) until F4.
 - **Booking wizard (F3)** at `/book`, under `src/app/features/customer/book/` (the page, `BookingWizardStore`, `SlotSearchService`, the confirm state machine in `confirm.machine.ts`, the idempotency-key store, the pure modules `wizard-params`, `conflict-map`, `confirm-outcome`, `slot-cache`, `request-budget`, `day-parts`) and `features/customer/shared/` (`ReferenceDataStore` for branches and services, `ics/build-ics.ts` and `ics-download.ts`, shared with F4). The selections are URL query parameters: `branch`, `service`, `date`, `slot`, and `done=1` for the success view (never deep-linkable). Session-storage keys: `sa.idem.<slotId>` (one `Idempotency-Key` per slot, reused on retry and reload) and `sa.book.justBooked` (10 minute marker). Also `shared/a11y` (`appRadioGroup` and `appRadioItem`, a roving-tabindex radio group), helm `skeleton` and `badge`, and `ViewportService.prefersReducedMotion`.
+- **Admin (F5)** under `src/app/features/admin/`, mounted as children of the admin shell: `admin.routes.ts` and `AdminFrame` (stores, command palette, Ctrl/Cmd+K), `dashboard/`, `branches/` and `services/` (list page plus a drawer that is a child route over the still-mounted list), `schedule/` (time-zone combobox, weekly grid), `slots/` (generation form, local estimate, result card), `palette/` (pure command registry), `data/` (`BranchesStore`, `ServicesStore`, `SlotActivityStore`: the whole lists, reset when the frame is destroyed), `validation/` (pure rules, one messages file, the `400` splitter and field tables) and `shared/` (list view, drawer frame, status confirm, dirty-form guard, listbox engine). It reuses `shared/forms` (`form-field`, `field-a11y`, `field-view`, `form-alert`, `focus-first-invalid`) and `shared/ui/confirm-dialog`. Every way out of a dirty form is a router navigation, so one `unsavedChangesGuard` decides.
+- **Contract fixture convention**: backend validation messages, regexes and error texts are copied once into `src/testing/fixtures/availability-contract.json` (with the C# file and rule); client messages that mirror the backend, the server-message tables and the MSW admin backend (`src/testing/availability-admin-backend.ts`) are tested against it. A backend wording change is one fixture edit and a failing test. `slot-planner-vectors.json` is generated manually (see `src/testing/fixtures/README.md`).
+- **No admin API exists** for appointments, staff or reports, or for deleting a branch or service (deactivation is the only removal); do not build screens for them.
 - **Quality and delivery**: ESLint (angular-eslint, flat config, date and layering rules), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW (with a stateful mock of the auth endpoints), Playwright with mocked routes, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
 
-Not present yet (do not assume): any feature screen other than booking (login and register forms, appointments, admin pages), the API methods F4 and F5 need (cancel, profile edit, admin), i18n, the command palette (only the `PaletteLauncher` seam exists).
+Not present yet (do not assume): the my-appointments and profile screens (F4), the API methods F4 needs (cancel, profile edit), i18n, the command palette outside admin (only the `PaletteLauncher` seam exists).
 
 ## Commands
 
 ```powershell
 pnpm install --frozen-lockfile     # Husky installs through the prepare script
-pnpm start                         # ng serve on http://localhost:4200
+pnpm start                         # nx serve on http://localhost:4200
 pnpm build                         # production build with budgets -> dist/smart-appointments-web/browser
 pnpm test                          # Vitest once; `pnpm test --coverage` writes coverage/
 pnpm test:watch
@@ -35,14 +39,16 @@ pnpm lint                          # eslint . --max-warnings 0
 pnpm format                        # prettier --write . ; pnpm format:check to verify
 pnpm typecheck                     # tsc on tsconfig.app.json and tsconfig.spec.json
 pnpm size                          # gzip size of the initial files in dist; fails above 250 kB
-pnpm size:book                     # gzip size of the booking wizard's lazy chunks; fails above 60 kB
+pnpm size:public                   # gzip size of the public feature chunks (after pnpm build); fails above 50 kB
+pnpm size:admin                    # gzip size of the admin lazy group; fails above MAX_GZIP_KB_ADMIN (120)
+pnpm size:book                     # gzip size of the booking wizard's lazy chunks; fails above MAX_GZIP_KB_BOOK (60)
 pnpm test:scripts                  # node --test of scripts/ (gen-api, the date lint rules)
 pnpm gen:api                       # regenerate core/api/generated from a running Development gateway (GATEWAY_URL overrides)
 pnpm e2e                           # Playwright (routes mocked); starts pnpm start unless E2E_BASE_URL is set
 
 # One spec file, or tests by name (use pnpm exec: `pnpm test --filter` is eaten by pnpm itself)
 pnpm test --include "src/app/core/config/*.spec.ts"
-pnpm exec ng test --watch=false --filter "ThemeService"
+pnpm exec nx test --watch=false --filter "ThemeService"
 
 # One Playwright test by title
 pnpm e2e -g "dark theme persists"
@@ -78,7 +84,7 @@ There are no secrets in this repository and none may be added: a SPA's bundle an
 Layout under `src/app`:
 
 - `core/`: non-visual code only (config, theme, api, http, auth, notify, routing, time, util, ui). Imports neither `shared` nor `features`. `core/time` owns all calendar, zone and branch-time maths (parsing UTC, formatting in a zone, `todayInZone`, `addDays`, `localToUtc`, `isOpenNow`, ...): never reimplement it elsewhere. `sessionSafe` / `localSafe` (`core/util/safe-storage`) are the only way to touch web storage; no direct `localStorage` or `sessionStorage` calls (they throw in blocked browsers).
-- `shared/ui/`: Spartan helm components (generated, do not hand-edit beyond what a feature needs; regenerate with `pnpm exec ng g @spartan-ng/cli:ui <name> --interactive=false`, one name per call) and small app primitives such as `theme-toggle` and `rate-limit-notice`. May import `core`. `shared/layout/` holds the application frames (the four shells, user menu, skip link, route progress and announcer, breadcrumbs, outage banner, not-found); shells accept projected content with the router outlet as the default (`<ng-content><router-outlet /></ng-content>`) so the 404 page renders inside the right shell.
+- `shared/ui/`: Spartan helm components (generated, do not hand-edit beyond what a feature needs; regenerate with `pnpm exec nx g @spartan-ng/cli:ui <name> --interactive=false`, one name per call) and small app primitives such as `theme-toggle` and `rate-limit-notice`. May import `core`. `shared/layout/` holds the application frames (the four shells, user menu, skip link, route progress and announcer, breadcrumbs, outage banner, not-found); shells accept projected content with the router outlet as the default (`<ng-content><router-outlet /></ng-content>`) so the 404 page renders inside the right shell.
 - `features/`: one folder per area (`public/`, `customer/`, `admin/`, `staff/`), each lazy-loaded from `app.routes.ts` through a `*.routes.ts` file. May import `shared` and `core`.
 - ESLint enforces the direction with `no-restricted-imports` zones; the generated helm folders have their own override (their selectors use `hlm`/`brn` prefixes).
 
@@ -128,6 +134,7 @@ Angular rules:
 ## Git and workflow
 
 - Spec-driven loop: `requirements.md` -> `design.md` -> `tasks.md`, each approved before the next; tasks are coding steps and are ticked in the same commit as the code. See `docs/specs/README.md` for the index and templates in `docs/specs/_templates/`.
+- **Work plan**: `docs/WORKPLAN.md` (on `main`) is the tracker across phases: every task's status, owner and completion time (`done 10/10/2026 9:41am`), the worktree per phase (`../saw-wt/<branch>`), merge order and the resume steps. Read it first when resuming and reconcile it with each worktree's `git status`, `git log` and `tasks.md`; update it (and its Log) whenever a task changes status. Done means the task's tests pass and the gate passes; a ticked task in `tasks.md` gets a `_Done: <DD/MM/YYYY h:mmam>_` line in the same commit.
 - Commits follow Conventional Commits (`feat(core): ...`, `fix:`, `chore:`, `test:`, `build:`, `ci:`, `docs:`); commitlint rejects anything else. Use branch `main` for F0; later phases use one branch and one pull request per phase. A feature is done only when its unit tests pass and the pull request is raised.
 - Update `README.md` and this file in the same commit as any change that makes them untrue.
 
@@ -139,3 +146,5 @@ project's chosen subagent model because delegated tasks (codebase searches, spec
 refactors) don't need the larger model and run faster and cheaper on it. The intended model is
 **Sonnet 5.5**; the `sonnet` alias resolves to the latest Sonnet release, so it picks up Sonnet 5.5
 without pinning a version-specific model ID.
+
+Phase work is delegated one subagent per phase worktree, following the **Delegation** rules in `docs/WORKPLAN.md` (stay inside the worktree, one commit per task, stop at the first task that cannot be finished, never push or edit the work plan, use the phase's e2e port lane). The main session updates the work plan from each agent's report.

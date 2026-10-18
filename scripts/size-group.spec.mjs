@@ -1,53 +1,69 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { groupChunks } from './size-group.mjs';
+import { adminGroup, initialClosure, referencedFiles } from './size-group.mjs';
 
-const out = (entryPoint, ...imports) => ({
-  ...(entryPoint ? { entryPoint } : {}),
-  imports: imports.map(([path, kind]) => ({ path, kind })),
-});
-const S = 'import-statement';
-const D = 'dynamic-import';
-const PREFIX = 'src/app/features/customer/book/';
+const files = new Map([
+  [
+    'main.js',
+    'import{a}from"./chunk-init.js";const r=()=>import("./chunk-admin.js");const p=()=>import("./chunk-public.js");',
+  ],
+  ['chunk-init.js', 'export const a=1;'],
+  [
+    'chunk-admin.js',
+    'path:"branches/:id/schedule";import("./chunk-page.js");import{f}from"./chunk-forms.js";',
+  ],
+  ['chunk-page.js', 'import{f}from"./chunk-forms.js";import{u}from"./chunk-init.js";'],
+  ['chunk-forms.js', 'export const f=1;'],
+  ['chunk-public.js', 'import{f}from"./chunk-forms.js";'],
+  ['chunk-other.js', 'nothing'],
+]);
 
-const meta = {
-  outputs: {
-    'main.js': out('src/main.ts', ['common.js', S], ['book-routes.js', D]),
-    'common.js': out(),
-    'book-routes.js': out(
-      `${PREFIX}book.routes.ts`,
-      ['common.js', S],
-      ['shared-a.js', S],
-      ['confetti.js', D],
-      ['build-ics.js', D],
-    ),
-    'shared-a.js': out(undefined, ['shared-b.js', S]),
-    'shared-b.js': out(),
-    'confetti.js': out(`${PREFIX}components/confetti.component.ts`, ['common.js', S]),
-    'build-ics.js': out('src/app/features/customer/shared/ics/build-ics.ts'),
-    'ics-download.js': out('src/app/features/customer/shared/ics/ics-download.ts'),
-    'admin.js': out('src/app/features/admin/admin.routes.ts', ['shared-a.js', S]),
-  },
-};
-
-test('counts the group entries and their non-initial static imports once', () => {
-  const { group } = groupChunks(meta, new Set(['main.js', 'common.js']), PREFIX);
-  assert.deepEqual(group, ['book-routes.js', 'shared-a.js', 'shared-b.js']);
+test('referencedFiles finds static and dynamic imports', () => {
+  assert.deepEqual(referencedFiles(files.get('main.js')), [
+    'chunk-init.js',
+    'chunk-admin.js',
+    'chunk-public.js',
+  ]);
 });
 
-test('reports the confetti and ics chunks separately and never in the group', () => {
-  const { group, separate } = groupChunks(meta, new Set(['main.js', 'common.js']), PREFIX);
-  assert.deepEqual(separate.confetti, ['confetti.js']);
-  assert.deepEqual(separate.ics, ['build-ics.js', 'ics-download.js']);
-  assert.ok(!group.includes('confetti.js'));
+test('the initial closure follows static imports only', () => {
+  assert.deepEqual([...initialClosure(files, ['main.js'])].sort(), ['chunk-init.js', 'main.js']);
 });
 
-test('an initial chunk is never counted and another feature is not in the group', () => {
-  const { group } = groupChunks(meta, new Set(['main.js', 'common.js', 'shared-a.js']), PREFIX);
-  assert.ok(!group.includes('shared-a.js'));
-  assert.ok(!group.includes('admin.js'));
+test('the admin group is everything reachable from the admin entry, minus the initial files', () => {
+  const initial = initialClosure(files, ['main.js']);
+  const { entry, group, shared } = adminGroup(files, initial);
+  assert.equal(entry, 'chunk-admin.js');
+  assert.deepEqual(group, ['chunk-admin.js', 'chunk-forms.js', 'chunk-page.js']);
+  assert.deepEqual(shared, ['chunk-forms.js']);
 });
 
-test('an empty group when nothing is under the prefix', () => {
-  assert.deepEqual(groupChunks(meta, new Set(), 'src/app/nowhere/').group, []);
+test('a stopped chunk is not entered, but chunks admin reaches itself still count', () => {
+  const withForeign = new Map(files);
+  withForeign.set('chunk-admin.js', `${files.get('chunk-admin.js')}import("./chunk-public.js");`);
+  withForeign.set(
+    'chunk-public.js',
+    'import{f}from"./chunk-forms.js";import("./chunk-pub-only.js");',
+  );
+  withForeign.set('chunk-pub-only.js', 'export const x=1;');
+  const initial = initialClosure(withForeign, ['main.js']);
+
+  const open = adminGroup(withForeign, initial);
+  assert.ok(open.group.includes('chunk-public.js'));
+  assert.ok(open.group.includes('chunk-pub-only.js'));
+
+  const { group, shared } = adminGroup(
+    withForeign,
+    initial,
+    undefined,
+    new Set(['chunk-public.js']),
+  );
+  assert.deepEqual(group, ['chunk-admin.js', 'chunk-forms.js', 'chunk-page.js']);
+  assert.deepEqual(shared, ['chunk-forms.js']);
+});
+
+test('no admin entry gives an empty group', () => {
+  const { entry, group } = adminGroup(new Map([['main.js', '']]), new Set(['main.js']));
+  assert.equal(entry, null);
+  assert.deepEqual(group, []);
 });

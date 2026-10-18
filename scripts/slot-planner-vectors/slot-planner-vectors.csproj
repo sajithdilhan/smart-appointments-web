@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    One-off tool, not part of the web build. Copy this folder outside both repositories and run it
+    there (see src/testing/fixtures/README.md), so no obj/ or bin/ appears in either repo.
+    Set AvailabilityDomain to the backend's Availability.Domain.csproj.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(AvailabilityDomain)" />
+  </ItemGroup>
+
+</Project>

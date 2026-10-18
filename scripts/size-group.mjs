@@ -1,42 +1,66 @@
-// Pure grouping of the esbuild metafile (`browser-stats.json`) for `pnpm size --group book`.
+// Which built files belong to the admin lazy group. The application builder writes hashed chunk
+// names, so the group is found from the code: the chunk that holds the admin route table (it names the schedule route) is
+// the entry, and everything it reaches through static or dynamic imports (the pages, the shared
+// forms, the palette) belongs to the group, except files that are already part of the initial
+// bundle. A chunk that other lazy code also imports is "shared": counted once, reported apart.
 
-/** Entry points reported on their own: lazy chunks the wizard loads on demand. */
-const SEPARATE = [
-  { label: 'confetti', match: /\/confetti\.component\.ts$/ },
-  { label: 'ics', match: /\/ics\/(build-ics|ics-download)\.ts$/ },
-];
+const REF = /(?:from|import)\s*\(?\s*["'`]\.\/([\w.-]+\.js)["'`]/g;
+
+/** @param {string} source */
+export function referencedFiles(source) {
+  return [...source.matchAll(REF)].map((m) => m[1]);
+}
 
 /**
- * @param {{ outputs: Record<string, { entryPoint?: string, imports: { path: string, kind: string }[] }> }} meta
- * @param {Set<string>} initial output files of the initial bundle (from index.html)
- * @param {string} prefix source folder of the group, for example `src/app/features/customer/book/`
- * @returns {{ group: string[], separate: Record<string, string[]> }}
- *   `group`: the group's entry chunks plus every non-initial chunk they statically import,
- *   shared chunks once. `separate`: the lazy chunks reported on their own, which are never
- *   counted in `group`.
+ * @param {Map<string, string>} files file name to source, for every `.js` file in the output
+ * @param {Set<string>} initial the files the index page loads, and what they import statically
+ * @param {string} marker text that appears only in the admin entry chunk
+ * @param {Set<string>} stop files the walk from the entry never enters (other features' lazy entries)
+ * @returns {{ entry: string | null; group: string[]; shared: string[] }}
  */
-export function groupChunks(meta, initial, prefix) {
-  const outputs = meta.outputs;
-  const separate = Object.fromEntries(SEPARATE.map((s) => [s.label, []]));
-  const separateFiles = new Set();
-  for (const [file, out] of Object.entries(outputs)) {
-    const hit = SEPARATE.find((s) => out.entryPoint && s.match.test(out.entryPoint));
-    if (hit) {
-      separate[hit.label].push(file);
-      separateFiles.add(file);
-    }
-  }
+export function adminGroup(files, initial, marker = 'branches/:id/schedule', stop = new Set()) {
+  const entry = [...files].find(
+    ([name, source]) => !initial.has(name) && source.includes(marker),
+  )?.[0];
+  if (!entry) return { entry: null, group: [], shared: [] };
 
-  const group = new Set();
-  const visit = (file) => {
-    if (group.has(file) || initial.has(file) || separateFiles.has(file) || !outputs[file]) return;
-    group.add(file);
-    for (const imp of outputs[file].imports) {
-      if (imp.kind === 'import-statement') visit(imp.path);
+  // `stop` holds other features' lazy entry chunks: the admin walk never enters them, but they
+  // still count as "other lazy code" when looking for shared chunks.
+  const reach = (start, stopAt = new Set()) => {
+    const seen = new Set();
+    const queue = [start];
+    while (queue.length) {
+      const name = queue.pop();
+      if (seen.has(name) || !files.has(name) || stopAt.has(name)) continue;
+      seen.add(name);
+      for (const ref of referencedFiles(files.get(name))) queue.push(ref);
     }
+    return seen;
   };
-  for (const [file, out] of Object.entries(outputs)) {
-    if (out.entryPoint?.startsWith(prefix)) visit(file);
+
+  const group = new Set(
+    [...reach(entry, new Set([...stop, ...initial]))].filter((name) => !initial.has(name)),
+  );
+  // Other lazy files (not initial, not in the group) that reach into the group.
+  const others = [...files.keys()].filter((name) => !initial.has(name) && !group.has(name));
+  const shared = new Set();
+  for (const name of others) {
+    for (const reached of reach(name)) if (group.has(reached)) shared.add(reached);
   }
-  return { group: [...group].sort(), separate };
+  return { entry, group: [...group].sort(), shared: [...shared].sort() };
+}
+
+/** Files the index loads plus everything they import statically (the initial bundle). */
+export function initialClosure(files, roots) {
+  const seen = new Set();
+  const queue = [...roots];
+  while (queue.length) {
+    const name = queue.pop();
+    if (seen.has(name) || !files.has(name)) continue;
+    seen.add(name);
+    // Only static imports keep a file initial: strip dynamic `import("...")` calls first.
+    const source = files.get(name).replace(/import\s*\(\s*["'`][^"'`]+["'`]\s*\)/g, '');
+    for (const ref of referencedFiles(source)) queue.push(ref);
+  }
+  return seen;
 }
