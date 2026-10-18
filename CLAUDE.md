@@ -8,7 +8,7 @@ This is the Angular web client of the SmartAppointments backend (`https://github
 
 What exists today:
 
-- **Workspace**: an Nx 23 standalone workspace (`nx.json` plus a root `project.json` whose `build`, `serve` and `test` targets run the `@angular/build` executors; no `angular.json`; Nx caches `build` and `test` under `.nx/cache`), Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
+- **Workspace**: an Nx 23 standalone workspace (`nx.json` plus a root `project.json` whose `build`, `serve` and `test` targets run the `@angular/build` executors; no `angular.json`; Nx caches `build` and `test` locally under `.nx/cache`; Nx Cloud is off through `neverConnectToCloud`), Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
 - **Styling**: Tailwind v4 (CSS-first, `src/styles.css`, no `tailwind.config.js`), the teal/zinc token sheet with a light and a `.dark` theme, self-hosted Inter, Spartan/ui helm components (`button`, `card`, `input`, `label`, `switch`, `sonner`, `alert`, `dropdown-menu`, `separator`, `sheet`, `breadcrumb`) under `src/app/shared/ui/` (aliases `@app/shared/ui/<name>`).
 - **Core (F1)**, all non-visual, under `src/app/core/`:
   - `config` (runtime `/config.json` loader, `APP_CONFIG`, `APP_CONFIG_READY`, error page), `theme` (`ThemeService`).

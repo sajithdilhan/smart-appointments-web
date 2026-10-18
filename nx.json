@@ -16,5 +16,5 @@
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": ["default", "!{projectRoot}/.eslintrc.json", "!{projectRoot}/eslint.config.cjs"]
   },
-  "nxCloudId": "6ad4128f684682353ce011a2"
+  "neverConnectToCloud": true
 }
