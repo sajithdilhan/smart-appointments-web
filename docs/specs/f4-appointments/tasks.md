@@ -90,6 +90,8 @@ Rules (from the template):
   - Record the measured chunk size and mark F4 done in the plan.
   - _Requirements: 11.4, 11.5_
 
-- [ ] 14. Manual verification against the live gateway
+- [x] 14. Manual verification against the live gateway
+  - _Done: 18/10/2026 3:45pm_
   - With the Compose stack (the `booking-my-appointments` backend merged): book two appointments through F3, see both in Upcoming, cancel one and see it leave Upcoming and appear with "Show cancelled" and in its detail as Cancelled; open the detail by deep link after a reload (sheet vs page at both widths); deactivate its branch as an Admin and see "Unavailable branch"; stop Availability and cancel to see the `503` guidance and the re-GET rule; check the profile, the theme survives a reload, sign out; run `pnpm gen:api` and remove the temporary type if the `/my` schema is present. Record results and any deviations as new Known gaps.
+  - _Result, 18/10/2026:_ every step passed against the Compose gateway (web on :4200): two appointments booked (one through the wizard) and listed under Upcoming; cancel from the sheet (`204`, re-GET, quiet list refresh), "Show cancelled" and the Cancelled detail; deep link and reload at 1280 and 390 px (page on direct open, sheet from the list at desktop); "Unavailable branch" while the branch was inactive; cancel with Availability stopped showed the outcome after the re-GET (the server had cancelled); profile, theme kept across a reload, sign out and the login redirects; `pnpm gen:api` produced no changes. Known gap: during an Availability outage the cancel shows "Cancelling…" for about 20 s (gateway and Booking retries) with no progress text.
   - _Requirements: 11.5_

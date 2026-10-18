@@ -17,15 +17,16 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 
 ## Roadmap
 
-| Phase | Scope                                                                                              | State                                     |
-| ----- | -------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                               |
-| F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending)  |
-| F2    | Public pages: landing, login, register                                                             | Implemented (live-gateway check pending)  |
-| F3    | Booking wizard, success page, calendar export                                                      | Built (live-gateway check pending)        |
-| F4    | My appointments, detail, cancel, profile                                                           | Built (live-gateway check pending)        |
-| F5    | Admin console                                                                                      | Built (manual live-gateway check pending) |
-| F6    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                               |
+| Phase | Scope                                                                                              | State                                    |
+| ----- | -------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                              |
+| F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending) |
+| F2    | Public pages: landing, login, register                                                             | Implemented                              |
+| F3    | Booking wizard, success page, calendar export                                                      | Implemented (live check partly run)      |
+| F4    | My appointments, detail, cancel, profile                                                           | Implemented                              |
+| F5    | Admin console                                                                                      | Implemented                              |
+| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Planned                                  |
+| F7    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                              |
 
 Specs for every phase live in [`docs/specs/`](docs/specs/README.md).
 

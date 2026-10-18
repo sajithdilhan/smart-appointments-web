@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 18/10/2026 9:56am
+Last updated: 18/10/2026 3:45pm
 
 ## How to resume
 
@@ -30,13 +30,14 @@ Last updated: 18/10/2026 9:56am
 
 ## Phases and merge order
 
-| Phase           | Branch / worktree                            | Built on                   | Merge order                 | PR          |
-| --------------- | -------------------------------------------- | -------------------------- | --------------------------- | ----------- |
-| F2 Public       | `f2-public` / `saw-wt/f2-public`             | `main` (F1)                | 1st                         | not raised  |
-| F3 Booking      | `f3-booking` / `saw-wt/f3-booking`           | `main` (F1)                | 2nd                         | not raised  |
-| F4 Appointments | `f4-appointments` / `saw-wt/f4-appointments` | F3 commits up to `afc816b` | after F3 (rebase on `main`) | not raised  |
-| F5 Admin        | `f5-admin` / `saw-wt/f5-admin`               | F2 commits up to `a12dd9a` | after F2 (rebase on `main`) | not raised  |
-| F6 Polish       | not created                                  | —                          | after F5                    | not specced |
+| Phase           | Branch / worktree                            | Built on         | Merge order | PR          |
+| --------------- | -------------------------------------------- | ---------------- | ----------- | ----------- |
+| F2 Public       | `f2-public` / `saw-wt/f2-public`             | `main` (F1)      | 1st         | #4 merged   |
+| F3 Booking      | `f3-booking` / `saw-wt/f3-booking`           | `main` (F1)      | 2nd         | #6 merged   |
+| F4 Appointments | `f4-appointments` / `saw-wt/f4-appointments` | `main` merged in | after F3    | raised      |
+| F5 Admin        | `f5-admin` / `saw-wt/f5-admin`               | `main` merged in | after F2    | #5 merged   |
+| F6 Redesign     | not created                                  | `main` after F4  | after F4    | not specced |
+| F7 Polish       | not created                                  | —                | after F6    | not specced |
 
 The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; keep them until their phase is merged, then delete.
 
@@ -84,8 +85,8 @@ Tasks 1 to 8 done before this plan.
 | F4-T11 | Accessibility and motion pass                     | done 10/10/2026 10:01am | agent | `ea76676`; helm sheet and alert-dialog motion behind `motion-safe:`                 |
 | F4-T12 | Playwright suites and size budget                 | done 10/10/2026 10:18am | agent | `f171c57`; 28/28 e2e; F4 lazy 36.63 kB of 40; axe fixed destructive-button contrast |
 | F4-T13 | Documentation                                     | done 10/10/2026 10:22am | agent | `5691b66`                                                                           |
-| F4-T14 | Manual verification against the gateway           | todo                    | user  |                                                                                     |
-| F4-PR  | Raise the F4 pull request                         | todo                    | user  | after F3 merges and F4 is rebased on `main`                                         |
+| F4-T14 | Manual verification against the gateway           | done 18/10/2026 3:45pm  | main  |                                                                                     |
+| F4-PR  | Raise the F4 pull request                         | done 18/10/2026         | main  | after F3 merges and F4 is rebased on `main`                                         |
 
 ## F5 Admin (`f5-admin`)
 
@@ -108,12 +109,11 @@ Tasks 1 to 13 and 17 done before this plan.
 
 ## Next up
 
-All agent-owned tasks for F2 to F5 are done (no agent is running). What remains is yours:
+F2, F3 and F5 are merged (PRs #4, #6, #5; the Nx workspace is #3). F4 is complete and its PR is raised.
 
-1. Decide the open items under **Decisions for you**.
-2. With the backend gateway running, do the manual checks: F2-T17 first, then F3-T23, F4-T14 and F5-T25.
-3. Raise the F2 PR and merge it; then rebase F3 and F5 on `main` (resolving the size-check and timeout items in the watch list), F3 PR; then rebase F4, F4 PR; then F5 PR.
-4. After that: write the F6 Polish spec.
+1. Review and merge the F4 PR. Then move the main checkout off the merged `build/nx-workspace` branch onto `main`, and delete the `backup-*` and `backup2-*` branches.
+2. F6 Redesign (agreed 18/10/2026): an Indigo + Lavender theme in light and dark, plus the mockup's layouts: the landing hero and "Why choose us" tiles, the split register page with a gradient panel, the numbered wizard stepper, a month calendar with a time grid inside the 14-day window, the booking-summary review and the success reference card. Illustrations are inline SVG only. The spec goes in `docs/specs/f6-redesign/` (requirements, then design, then tasks, each approved by you).
+3. F7 Polish takes over the old F6 items: unify the size scripts, the `size:admin` "shared" label, and revisiting the admin budget.
 
 ## Decisions for you
 
@@ -148,6 +148,8 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 18/10/2026 3:45pm: `main` (F2, F3, F5, Nx) merged into `f4-appointments` (`4f62c9b`, `570fd63`). Two e2e specs fixed after the merge (`945273f`): the login heading is now "Welcome back", and the booking axe check waits for the entrance animations. Gate, every size group and 95/95 e2e pass. F4-T14 done: a live pass against the Compose gateway, every step passed. F4 PR raised. F6 is now the Indigo + Lavender redesign; Polish moves to F7.
 
 - 18/10/2026 10:42am: `main` (F2, F5, Nx) merged into `f3-booking` (`be21a22`; book size group in `scripts/size-book.mjs`); full gate passed. F3-T23 partly done (booking and viewing passed; the other steps are still open). At your call, the F3 PR is raised with T23 partial.
 
