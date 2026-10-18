@@ -83,7 +83,7 @@ import { SlotGroupsComponent } from './slot-groups.component';
             @for (n of placeholders; track n) {
               <div class="flex flex-col gap-2" aria-hidden="true">
                 <div hlmSkeleton class="h-4 w-24"></div>
-                <div class="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   @for (c of chips; track c) {
                     <div hlmSkeleton class="h-11"></div>
                   }

@@ -78,7 +78,8 @@ Rules (from the template):
   - Table-driven spec: window inside one month, across two months, across a year end; leading and trailing days; a month starting on Monday and on Sunday; labels identical under a browser zone ahead of and behind UTC.
   - _Requirements: 7.1, 7.2_
 
-- [ ] 10. Month calendar and time grid
+- [x] 10. Month calendar and time grid
+  - _Done: 18/10/2026 5:20pm_
   - `month-calendar.component.ts` (grid pattern, roving tab stop, keys, previous/next month limits, today ring, selected fill, disabled days) wired to `store.date()`, `store.chooseDate()`, `store.strip()`, `store.todayInBranch()`.
   - `date-time-step` uses it in the two-column layout from 768 px; delete `date-strip.component.ts` and its spec.
   - `slot-groups` grid and `slot-chip` restyle (two to three columns, outlined, selected fill, capacity hint under the time); roles and names unchanged.

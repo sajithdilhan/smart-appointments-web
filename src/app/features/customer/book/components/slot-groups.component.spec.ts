@@ -11,7 +11,6 @@ const LONDON = BRANCH_IDS.london;
 const MONDAY = '2026-10-05';
 const url = (date: string) => `/book?branch=${LONDON}&service=${SERVICE_IDS.checkup}&date=${date}`;
 const group = () => screen.findByRole('radiogroup', { name: 'Available times' });
-const day = (text: string) => new RegExp(text.replace(/(\w+) (\d)/, '$1,? $2'));
 
 describe('slot chips (SlotGroupsComponent)', () => {
   afterEach(() => vi.unstubAllGlobals());
@@ -23,6 +22,14 @@ describe('slot chips (SlotGroupsComponent)', () => {
       'Morning',
       'Afternoon',
     ]);
+  });
+
+  it('lays the times out in two to three columns as outlined buttons', async () => {
+    await renderBook({ url: url(MONDAY) });
+    const radios = within(await group()).getAllByRole('radio');
+    const grid = radios[0].parentElement!;
+    expect(grid).toHaveClass('grid-cols-2', 'sm:grid-cols-3');
+    expect(radios[0]).toHaveClass('rounded-lg', 'border', 'aria-checked:bg-primary');
   });
 
   it('shows an Evening group for a 17:00 start', async () => {
@@ -93,7 +100,7 @@ describe('slot chips (SlotGroupsComponent)', () => {
       await renderBook({ url: url(MONDAY) });
       const user = userEvent.setup();
       await user.click(await screen.findByRole('radio', { name: /^09:00 to 09:30/ }));
-      await user.click(screen.getByRole('radio', { name: day('Tuesday 6 October') }));
+      await user.click(screen.getByRole('button', { name: /Tuesday,? (6 October|October 6)/ }));
       await screen.findByRole('radio', { name: /^09:00 to 09:30/ });
       await vi.waitFor(() =>
         expect(screen.getByRole('button', { name: 'Continue to review' })).toBeDisabled(),

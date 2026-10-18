@@ -49,3 +49,23 @@ export async function reachDayWithTimes(page: Page) {
   }
   throw new Error('no day with times in the strip');
 }
+
+/**
+ * Picks a day on the month calendar by its full-date name ("Wednesday, October 21, 2026"; the
+ * browser runs in en-US), moving to the next month first when the day is not on show.
+ */
+export async function pickDate(page: Page, date: string) {
+  const [y, m, d] = date.split('-').map(Number);
+  const name = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'UTC',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(Date.UTC(y, m - 1, d, 12)));
+  const day = page
+    .getByRole('grid')
+    .getByRole('button', { name: new RegExp(`^(Today, )?${name}$`) });
+  if ((await day.count()) === 0) await page.getByRole('button', { name: 'Next month' }).click();
+  await day.click();
+}
