@@ -25,7 +25,7 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 | F3    | Booking wizard, success page, calendar export                                                      | Implemented (live check partly run)      |
 | F4    | My appointments, detail, cancel, profile                                                           | Implemented                              |
 | F5    | Admin console                                                                                      | Implemented                              |
-| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Built (live-gateway check pending)       |
+| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Implemented                              |
 | F7    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                              |
 
 Specs for every phase live in [`docs/specs/`](docs/specs/README.md).

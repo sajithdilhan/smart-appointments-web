@@ -121,7 +121,9 @@ Rules (from the template):
   - README: the theme description (indigo and lavender, light and dark) and the roadmap row; `docs/specs/README.md` row for F6; `docs/WORKPLAN.md`; record any design deviation at the end of `design.md`.
   - _Requirements: 10.5_
 
-- [ ] 15. Manual verification against the live gateway
+- [x] 15. Manual verification against the live gateway
+  - _Done: 18/10/2026 6:19pm_
+  - _Result, 18/10/2026:_ every step passed against the Compose gateway with the F6 web image on :4200, at 1280 and 390 px in light and dark: landing; registering through the UI (checklist turns green, lands on `/book`); a full booking (stepper, branch search and badge, month calendar by mouse and keyboard, time grid, booking summary with Contact and an Edit round trip, "Booking confirmed!" with the reference card, "View details"); `/appointments` with the indigo Booked badge, `/profile`, sign out; the admin console (branches, drawer, schedule, services, slot generation, Ctrl+K). No console errors. Fixed afterwards: the wordmark was truncated in the admin sidebar and the customer phone header. Known gaps: the admin breadcrumb wraps "Slot generation" at 390 px; the disabled date inputs on slot generation show ", dd/mm/yyyy" (F5); the today ring is subtle in dark mode; Page Up/Down do nothing when the adjacent month is outside the window; the landing headline's first part wraps to two lines at 1280 px.
   - With the Compose stack and the F6 web image: landing, register, book to success, my appointments and the admin console at 1280 and 390 px, light and dark, with screenshots compared to the mockup; keyboard pass of the calendar.
   - Record the result in the PR description; tick only when every step passed.
   - _Requirements: 10.4_

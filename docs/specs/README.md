@@ -31,7 +31,7 @@ Templates live in [`_templates/`](_templates/).
 | F3 Booking wizard, success and .ics                                                               | Built       | FR-AVL-004, FR-BKG-001                             | [requirements](f3-booking/requirements.md)      |
 | F4 My appointments, detail, cancel, profile                                                       | Implemented | FR-BKG-002, FR-BKG-003, FR-BKG-005, FR-AUTH-003    | [requirements](f4-appointments/requirements.md) |
 | F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette)      | Implemented | FR-AVL-001, FR-AVL-002, FR-AVL-003                 | [requirements](f5-admin/requirements.md)        |
-| F6 Redesign (Indigo + Lavender theme, landing, auth and booking layouts)                          | Built       | — (no FR-ID)                                       | [requirements](f6-redesign/requirements.md)     |
+| F6 Redesign (Indigo + Lavender theme, landing, auth and booking layouts)                          | Implemented | — (no FR-ID)                                       | [requirements](f6-redesign/requirements.md)     |
 | F7 Polish (a11y audit, motion, empty and error states, Playwright suites, Lighthouse budgets)     | Not specced | — (no FR-ID)                                       | —                                               |
 
 Backend-dependent features (queue, staff workspace, notifications, reports) wait for their backends and are not planned here.

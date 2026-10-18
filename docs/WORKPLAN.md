@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 18/10/2026 3:58pm
+Last updated: 18/10/2026 6:19pm
 
 ## How to resume
 
@@ -36,7 +36,7 @@ Last updated: 18/10/2026 3:58pm
 | F3 Booking      | `f3-booking` / `saw-wt/f3-booking`           | `main` (F1)      | 2nd         | #6 merged   |
 | F4 Appointments | `f4-appointments` / `saw-wt/f4-appointments` | `main` merged in | after F3    | #7 merged   |
 | F5 Admin        | `f5-admin` / `saw-wt/f5-admin`               | `main` merged in | after F2    | #5 merged   |
-| F6 Redesign     | `f6-redesign` / `saw-wt/f6-redesign`         | `main` after F4  | after F4    | not raised  |
+| F6 Redesign     | `f6-redesign` / `saw-wt/f6-redesign`         | `main` after F4  | after F4    | raised      |
 | F7 Polish       | not created                                  | —                | after F6    | not specced |
 
 The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; keep them until their phase is merged, then delete.
@@ -111,24 +111,24 @@ Tasks 1 to 13 and 17 done before this plan.
 
 Spec approved 18/10/2026 (requirements `b7e1669`, design `e29294e`, tasks). Task 1 first, then chunks A (T2, T3), B (T4, T5), C (T6), D (T7 to T11) and E (T12) in parallel, each in its own worktree `saw-wt/f6-<chunk>` branched from `f6-redesign` and merged back; then T13 to T15.
 
-| ID     | Task                                    | Status      | Owner |
-| ------ | --------------------------------------- | ----------- | ----- |
-| F6-T1  | Palette and tokens                      | in progress | agent |
-| F6-T2  | Brand mark, theme toggle, badges        | todo        | agent |
-| F6-T3  | Shell headers                           | todo        | agent |
-| F6-T4  | Landing hero and scene                  | todo        | agent |
-| F6-T5  | Landing sections                        | todo        | agent |
-| F6-T6  | Login and register                      | todo        | agent |
-| F6-T7  | Stepper                                 | todo        | agent |
-| F6-T8  | Branch and service cards, action bar    | todo        | agent |
-| F6-T9  | Month grid model                        | todo        | agent |
-| F6-T10 | Month calendar and time grid            | todo        | agent |
-| F6-T11 | Review and success                      | todo        | agent |
-| F6-T12 | Other screens                           | todo        | agent |
-| F6-T13 | Full gate, budgets and e2e              | todo        | main  |
-| F6-T14 | Documentation                           | todo        | agent |
-| F6-T15 | Manual verification against the gateway | todo        | main  |
-| F6-PR  | Raise the F6 pull request               | todo        | main  |
+| ID     | Task                                    | Status                 | Owner |
+| ------ | --------------------------------------- | ---------------------- | ----- |
+| F6-T1  | Palette and tokens                      | done 18/10/2026 4:13pm | agent |
+| F6-T2  | Brand mark, theme toggle, badges        | done                   | agent |
+| F6-T3  | Shell headers                           | done                   | agent |
+| F6-T4  | Landing hero and scene                  | done 18/10/2026 4:59pm | agent |
+| F6-T5  | Landing sections                        | done 18/10/2026 4:59pm | agent |
+| F6-T6  | Login and register                      | done 18/10/2026 5:33pm | agent |
+| F6-T7  | Stepper                                 | done                   | agent |
+| F6-T8  | Branch and service cards, action bar    | done                   | agent |
+| F6-T9  | Month grid model                        | done                   | agent |
+| F6-T10 | Month calendar and time grid            | done                   | agent |
+| F6-T11 | Review and success                      | done                   | agent |
+| F6-T12 | Other screens                           | done 18/10/2026 4:46pm | agent |
+| F6-T13 | Full gate, budgets and e2e              | done                   | main  |
+| F6-T14 | Documentation                           | done 18/10/2026 5:46pm | agent |
+| F6-T15 | Manual verification against the gateway | done 18/10/2026 6:19pm | main  |
+| F6-PR  | Raise the F6 pull request               | done (raised)          | main  |
 
 ## Next up
 
@@ -171,6 +171,8 @@ F2, F3 and F5 are merged (PRs #4, #6, #5; the Nx workspace is #3). F4 is complet
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 18/10/2026 6:19pm: F6 complete: chunks A to E merged into `f6-redesign`, polish fixes and docs (T14), full gate (T13: 96/96 e2e, every size within budget) and the live check (T15) passed; the F6 PR is raised. The `saw-wt/f6-a` to `f6-e` worktrees and branches can be removed after the merge.
 
 - 18/10/2026 3:58pm: F4 PR #7 merged. F6 spec approved (requirements, design, tasks); F6-T1 started.
 
