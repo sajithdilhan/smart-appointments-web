@@ -145,6 +145,7 @@ Rules (from the template):
   - Update the README (feature list, admin routes, `pnpm size --group admin`, fixture regeneration note) and `CLAUDE.md` (project status: F5 built; layout under `features/admin`; the `shared/forms` reuse; the contract-fixture convention; no admin API for appointments or reports). Update `docs/specs/README.md` if it indexes specs. Tick this file in the same commit.
   - _Requirements: 13.5, 13.6_
 
-- [ ] 25. Manual verification against the live gateway
+- [x] 25. Manual verification against the live gateway
+  - _Done: 18/10/2026 10:24am_
   - With the backend Compose stack running and the seeded Admin (`Seed:Admin`) signed in: create a branch, set its schedule and time zone, create a service, generate slots for a range, and compare the result card's `createdCount` with the estimate; reproduce a duplicate-code `409`, a no-schedule `409` and an inactive-branch `409`; deactivate and reactivate a branch; open the palette with Ctrl+K; sign in as a Customer and confirm the branch and slots are visible and a deactivated branch is not, and that `/admin/branches` redirects to `/book`. Record the outcome, including the `gen:api` verifications (`TimeOnly` format, `PUT` response bodies), in the PR description.
   - _Requirements: 13.6_

@@ -30,7 +30,7 @@ Templates live in [`_templates/`](_templates/).
 | F2 Public (landing, login, register)                                                              | Implemented | FR-AUTH-001, FR-AUTH-002                           | [requirements](f2-public/requirements.md)   |
 | F3 Booking wizard, success and .ics                                                               | Not specced | FR-AVL-004, FR-BKG-001                             | —                                           |
 | F4 My appointments, detail, cancel, profile                                                       | Not specced | FR-BKG-002, FR-BKG-003, FR-BKG-005, FR-AUTH-003    | —                                           |
-| F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette)      | Built       | FR-AVL-001, FR-AVL-002, FR-AVL-003                 | [requirements](f5-admin/requirements.md)    |
+| F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette)      | Implemented | FR-AVL-001, FR-AVL-002, FR-AVL-003                 | [requirements](f5-admin/requirements.md)    |
 | F6 Polish (a11y audit, motion, empty and error states, Playwright suites, Lighthouse budgets)     | Not specced | — (no FR-ID)                                       | —                                           |
 
 Backend-dependent features (queue, staff workspace, notifications, reports) wait for their backends and are not planned here.

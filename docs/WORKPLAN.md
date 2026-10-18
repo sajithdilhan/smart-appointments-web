@@ -91,20 +91,20 @@ Tasks 1 to 8 done before this plan.
 
 Tasks 1 to 13 and 17 done before this plan.
 
-| ID     | Task                                    | Status                  | Owner | Notes                                                                    |
-| ------ | --------------------------------------- | ----------------------- | ----- | ------------------------------------------------------------------------ |
-| F5-T14 | Drawer frame and focus return           | done 10/10/2026 9:49am  | agent | `f2c69d1`; CDK `cdkTrapFocus`, helm `dialog` added                       |
-| F5-T15 | Branch drawer (create and edit)         | done 10/10/2026 9:59am  | agent | `fbfef39`                                                                |
-| F5-T16 | Activate and deactivate                 | done 10/10/2026 10:04am | agent | `f2362d0`                                                                |
-| F5-T18 | Schedule page                           | done 10/10/2026 10:11am | agent | `18d044c`                                                                |
-| F5-T19 | Services list, drawer, duration stepper | done 10/10/2026 10:20am | agent | `15e51e8`                                                                |
-| F5-T20 | Command palette                         | done 10/10/2026 10:25am | agent | `c100486`                                                                |
-| F5-T21 | Slot generation page                    | done 10/10/2026 10:36am | agent | `602552a`                                                                |
-| F5-T22 | Size group, README note, e2e support    | done 10/10/2026 10:42am | agent | `de1afc8`; admin group 111.55 kB, limit raised to 120 (see Decisions)    |
-| F5-T23 | Playwright and accessibility suites     | done 10/10/2026 10:52am | agent | `2778d14`; 29/29 e2e on port 4305                                        |
-| F5-T24 | Documentation                           | done 10/10/2026 10:54am | agent | `ee5b79b`                                                                |
-| F5-T25 | Manual verification against the gateway | todo                    | user  |                                                                          |
-| F5-PR  | Raise the F5 pull request               | todo                    | user  | after F2 merges, F5 is rebased on `main` and the budget decision is made |
+| ID     | Task                                    | Status                  | Owner | Notes                                                                                                                                        |
+| ------ | --------------------------------------- | ----------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| F5-T14 | Drawer frame and focus return           | done 10/10/2026 9:49am  | agent | `f2c69d1`; CDK `cdkTrapFocus`, helm `dialog` added                                                                                           |
+| F5-T15 | Branch drawer (create and edit)         | done 10/10/2026 9:59am  | agent | `fbfef39`                                                                                                                                    |
+| F5-T16 | Activate and deactivate                 | done 10/10/2026 10:04am | agent | `f2362d0`                                                                                                                                    |
+| F5-T18 | Schedule page                           | done 10/10/2026 10:11am | agent | `18d044c`                                                                                                                                    |
+| F5-T19 | Services list, drawer, duration stepper | done 10/10/2026 10:20am | agent | `15e51e8`                                                                                                                                    |
+| F5-T20 | Command palette                         | done 10/10/2026 10:25am | agent | `c100486`                                                                                                                                    |
+| F5-T21 | Slot generation page                    | done 10/10/2026 10:36am | agent | `602552a`                                                                                                                                    |
+| F5-T22 | Size group, README note, e2e support    | done 10/10/2026 10:42am | agent | `de1afc8`; admin group 111.55 kB, limit raised to 120 (see Decisions)                                                                        |
+| F5-T23 | Playwright and accessibility suites     | done 10/10/2026 10:52am | agent | `2778d14`; 29/29 e2e on port 4305                                                                                                            |
+| F5-T24 | Documentation                           | done 10/10/2026 10:54am | agent | `ee5b79b`                                                                                                                                    |
+| F5-T25 | Manual verification against the gateway | done 18/10/2026 10:24am | user  | by you against the Compose gateway (web on :4200); API checks: `TimeOnly` as `HH:mm:ss`, `PUT` returns the branch body, duplicate code `409` |
+| F5-PR  | Raise the F5 pull request               | in progress             | main  | `main` merged in (`4f1b487`); admin size walker fixed (`5a0725e`, 90.03 kB)                                                                  |
 
 ## Next up
 
@@ -145,6 +145,8 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 18/10/2026 10:24am: F5-T25 done (manual check by you). `main` (F2, Nx) merged into `f5-admin`; `size:admin` fixed to stop at `main` and other features' chunks (90.03 kB, was 124.01 with the over-count); CI MSW grep no longer matches `hlmSwitch`. Full gate passed. F5 PR next.
 
 - 18/10/2026 9:56am: F2-T17 done (manual check by you against the Compose gateway, web on :4200). `main` with the Nx workspace merged into `f2-public`; gate passes (lint, format, typecheck, test with coverage, build, size, size:public, test:scripts). F2 PR next.
 
