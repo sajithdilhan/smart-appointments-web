@@ -109,7 +109,9 @@ Rules (from the template):
   - _Requirements: 9.1, 9.2, 9.3_
   - _Done: 18/10/2026 4:46pm_
 
-- [ ] 13. Full gate, budgets and e2e
+- [x] 13. Full gate, budgets and e2e
+  - _Done: 18/10/2026 5:47pm_
+  - Measured on the merged branch after the polish fixes: lint, format:check, typecheck, test, build, test:scripts and 96/96 e2e (axe in both themes) pass. Sizes (gzip): initial 165.94 of 250, public 32.86 of 50, book 39.31 of 60, appointments 19.98 of 40, admin 93.81 of 120 kB.
   - `pnpm lint`, `format:check`, `typecheck`, `test`, `build`, every `size:*` group within its budget, `test:scripts`, and `pnpm e2e` (all flows and axe suites, both themes) on the merged branch; fix what fails.
   - Record the measured sizes in this task's note.
   - _Requirements: 1.4, 10.1, 10.2, 10.3_
