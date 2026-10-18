@@ -4,7 +4,7 @@
 
 The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), a .NET microservices portfolio project: a smart appointment and queue management system. The backend owns the business rules; this repository is the single-page app that customers, staff and administrators will use, and it talks to the backend only through its API gateway.
 
-> **Status: F0 scaffold, F1 core, F2 public pages and the F5 admin console are built; the booking and customer screens (F3, F4) are not.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register) and the admin console under `/admin` (see "What F5 provides"), with placeholder pages behind the customer and staff routes. The roadmap below is the plan.
+> **Status: F0 scaffold, F1 core, F2 public pages, the F3 booking wizard and the F5 admin console are built; the my-appointments and profile screens (F4) are not.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register), the five-step booking wizard at `/book` and the admin console under `/admin` (see "What F3 provides" and "What F5 provides"), with placeholder pages behind the other customer routes and the staff route. The roadmap below is the plan.
 
 ## What it will do
 
@@ -22,7 +22,7 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 | F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                               |
 | F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending)  |
 | F2    | Public pages: landing, login, register                                                             | Implemented (live-gateway check pending)  |
-| F3    | Booking wizard, success page, calendar export                                                      | Not started                               |
+| F3    | Booking wizard, success page, calendar export                                                      | Built (live-gateway check pending)        |
 | F4    | My appointments, detail, cancel, profile                                                           | Not started                               |
 | F5    | Admin console                                                                                      | Built (manual live-gateway check pending) |
 | F6    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                               |
@@ -109,6 +109,7 @@ pnpm exec playwright install chromium
 | `pnpm size`                        | Gzip size of the initial bundle; fails above 250 kB                                  |
 | `pnpm size:public`                 | Gzip size of the public feature chunks (needs a build); fails above 50 kB            |
 | `pnpm size:admin`                  | Gzip size of the admin lazy group (shared chunks counted once); fails above 120 kB   |
+| `pnpm size:book`                   | Gzip size of the booking wizard's lazy chunks; fails above 60 kB                     |
 | `pnpm test:scripts`                | Node tests of `scripts/` (the generator, the date lint rules)                        |
 | `pnpm e2e`                         | Playwright tests, routes mocked (starts `pnpm start`, or uses `E2E_BASE_URL`)        |
 | `pnpm gen:api`                     | Regenerates `src/app/core/api/generated/*.d.ts` from the gateway's OpenAPI documents |
@@ -135,6 +136,14 @@ pnpm exec playwright install chromium
 
 - **Registration reveals whether an email is registered.** The backend answers `400` "Email is already registered." and the page shows it inline, which allows account enumeration; login stays uniform. A neutral flow needs email verification, which does not exist.
 - **Registration is not rate limited at the gateway.** Only login, appointment creation and slot search are, so the `429` branch on the register page is defensive and cannot be exercised end to end yet.
+
+## What F3 provides
+
+- **Booking wizard at `/book`** (customers only): branch, service, date and time, review, success. The selections live in the URL as the `branch`, `service`, `date` and `slot` query parameters (and `done=1` on the success view, which needs the booking held in memory and is never deep-linkable), so Back, reload and shared links work; an invalid link is repaired with `replaceUrl` and a short note.
+- **Slot search** is debounced (250 ms), cached for 60 s, limited to 25 requests per minute per tab (the gateway allows 30) and shows the `429` countdown with a manual retry. Branch dates and hours use the branch's own time zone, never the browser's.
+- **No double booking.** The `Idempotency-Key` is created when Review opens for a slot and kept in `sessionStorage` as `sa.idem.<slotId>`; a retry, a reload or a lost response re-sends the same key and gets the original result. The confirm flow is an explicit state machine with the verbatim backend `409` strings mapped in one module. `sa.book.justBooked` remembers for 10 minutes that a booking was just made, for the "saved" hint.
+- **Success** shows the reference, an animated check, a light confetti burst (own lazy chunk, off under reduced motion) and an `.ics` calendar download generated in the browser.
+- **Known gaps:** conflict reasons are told apart by their text; the idempotency key is per tab; there is no per-day availability or branch-service mapping; "Open now" is not availability (it ignores holidays). The response types in `core/api/models.ts` are temporary until `pnpm gen:api` can run against a gateway that documents them.
 
 ## What F5 provides
 

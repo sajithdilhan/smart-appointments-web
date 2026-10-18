@@ -25,7 +25,7 @@ import { SessionStore } from '../../../core/auth/session.store';
       align="end"
     >
       <ng-icon name="lucideUser" aria-hidden="true" />
-      <span class="max-w-40 truncate">{{ session.displayName() }}</span>
+      <span class="hidden max-w-40 truncate sm:inline">{{ session.displayName() }}</span>
       <ng-icon name="lucideChevronDown" aria-hidden="true" />
     </button>
 

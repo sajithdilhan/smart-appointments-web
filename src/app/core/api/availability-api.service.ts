@@ -3,12 +3,16 @@ import { Observable } from 'rxjs';
 import { ApiClient } from './api-client';
 import type {
   Branch,
+  BranchResponse,
   CreateBranchBody,
   CreateServiceBody,
   GenerateSlotsBody,
   GenerateSlotsResult,
   ScheduleBody,
   ServiceType,
+  ServiceTypeResponse,
+  SlotResponse,
+  SlotSearchParams,
   UpdateBranchBody,
   UpdateServiceBody,
 } from './models';
@@ -21,6 +25,20 @@ import type {
 @Injectable({ providedIn: 'root' })
 export class AvailabilityApiService {
   protected readonly api = inject(ApiClient);
+
+  branches(): Observable<BranchResponse[]> {
+    return this.api.get<BranchResponse[]>('/api/Branches');
+  }
+
+  services(): Observable<ServiceTypeResponse[]> {
+    return this.api.get<ServiceTypeResponse[]>('/api/Services');
+  }
+
+  availableSlots(params: SlotSearchParams): Observable<SlotResponse[]> {
+    return this.api.get<SlotResponse[]>('/api/Slots/available', {
+      params: { branchId: params.branchId, serviceId: params.serviceId, date: params.date },
+    });
+  }
 
   listBranches(o: { includeInactive: boolean }): Observable<Branch[]> {
     return this.api.get<Branch[]>('/api/Branches', {

@@ -15,6 +15,10 @@ export interface FakeSession {
   logout: ReturnType<typeof vi.fn>;
   reloadProfile: ReturnType<typeof vi.fn>;
   loadProfile: ReturnType<typeof vi.fn>;
+  /** No bearer: requests made through the real HTTP pipeline are sent anonymously. */
+  accessTokenForRequest: ReturnType<typeof vi.fn>;
+  refreshAfterUnauthorized: ReturnType<typeof vi.fn>;
+  endSession: ReturnType<typeof vi.fn>;
 }
 
 export function createFakeSession(status: SessionStatus, role: Role | null = null): FakeSession {
@@ -30,6 +34,11 @@ export function createFakeSession(status: SessionStatus, role: Role | null = nul
     logout: vi.fn(() => Promise.resolve()),
     reloadProfile: vi.fn(() => Promise.resolve()),
     loadProfile: vi.fn(() => Promise.resolve()),
+    accessTokenForRequest: vi.fn(() => Promise.resolve(null)),
+    refreshAfterUnauthorized: vi.fn(() =>
+      Promise.reject(new Error('no refresh in a fake session')),
+    ),
+    endSession: vi.fn(),
   };
 }
 

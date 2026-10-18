@@ -21,6 +21,8 @@
       "@app/shared/ui/button": ["./src/app/shared/ui/button/src/index.ts"],
       "@app/shared/ui/card": ["./src/app/shared/ui/card/src/index.ts"],
       "@app/shared/ui/dropdown-menu": ["./src/app/shared/ui/dropdown-menu/src/index.ts"],
+      "@app/shared/ui/empty-state": ["./src/app/shared/ui/empty-state/index.ts"],
+      "@app/shared/ui/inline-alert": ["./src/app/shared/ui/inline-alert/index.ts"],
       "@app/shared/ui/input": ["./src/app/shared/ui/input/src/index.ts"],
       "@app/shared/ui/label": ["./src/app/shared/ui/label/src/index.ts"],
       "@app/shared/ui/rate-limit-notice": ["./src/app/shared/ui/rate-limit-notice/index.ts"],

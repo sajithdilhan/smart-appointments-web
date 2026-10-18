@@ -9,13 +9,19 @@
 // `--group admin` is the exception: it dispatches to the walker in size-group.mjs, which follows
 // dynamic imports too (every lazy file reachable from the admin route chunk, shared chunks counted
 // once and listed apart), against MAX_GZIP_KB_ADMIN (default 120).
+//
+// `--group book` is the other exception: it dispatches to groupChunks in size-book.mjs, which sums
+// the booking wizard's lazy chunks (entry points under src/app/features/customer/book/ plus the
+// non-initial chunks they import statically, shared chunks once) and reports the confetti and
+// `.ics` chunks separately, against MAX_GZIP_KB_BOOK (default 60).
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
+import { groupChunks } from './size-book.mjs';
 import { adminGroup, initialClosure } from './size-group.mjs';
 
-export const GROUP_DEFAULTS = { public: 50, admin: 120 };
+export const GROUP_DEFAULTS = { public: 50, admin: 120, book: 60 };
 
 /** Files referenced by script, modulepreload and stylesheet tags of index.html. */
 export function initialFiles(html) {
@@ -131,6 +137,42 @@ export function reportAdmin(root, initialSet, maxKb) {
   console.log(`OK: within ${maxKb} kB gzipped`);
 }
 
+/** F3's booking report: the wizard's chunks from the metafile, confetti and ics reported apart. */
+export function reportBook(root, initial, maxKb) {
+  const statsPath = process.env.STATS_JSON ?? `${root}-stats.json`;
+  let meta;
+  try {
+    meta = JSON.parse(readFileSync(statsPath, 'utf8'));
+  } catch {
+    console.error(`Cannot read ${statsPath}: build with "statsJson" enabled (pnpm build does).`);
+    process.exit(1);
+  }
+  const gzipKb = (file) => gzipSync(readFileSync(join(root, file)), { level: 9 }).length / 1000;
+  const { group, separate } = groupChunks(meta, initial, 'src/app/features/customer/book/');
+  const width = Math.max(...group.map((f) => f.length), 5, 'confetti (separate)'.length);
+  let total = 0;
+  console.log(`${'chunk'.padEnd(width)}  gzip kB`);
+  for (const file of group) {
+    const kb = gzipKb(file);
+    total += kb;
+    console.log(`${file.padEnd(width)}  ${kb.toFixed(2).padStart(7)}`);
+  }
+  console.log(`${'book total'.padEnd(width)}  ${total.toFixed(2).padStart(7)}`);
+  for (const [label, list] of Object.entries(separate)) {
+    const kb = list.reduce((sum, f) => sum + gzipKb(f), 0);
+    console.log(`${(label + ' (separate)').padEnd(width)}  ${kb.toFixed(2).padStart(7)}`);
+  }
+  if (group.some((file) => initial.has(file))) {
+    console.error('A booking chunk is in the initial bundle');
+    process.exit(1);
+  }
+  if (total > maxKb) {
+    console.error(`Booking gzip size ${total.toFixed(2)} kB exceeds ${maxKb} kB`);
+    process.exit(1);
+  }
+  console.log(`OK: booking wizard within ${maxKb} kB gzipped`);
+}
+
 function main() {
   const root = process.env.DIST_DIR ?? 'dist/smart-appointments-web/browser';
   const initial = initialFiles(readFileSync(join(root, 'index.html'), 'utf8'));
@@ -147,6 +189,10 @@ function main() {
   }
   if (group === 'admin') {
     reportAdmin(root, initial, Number(process.env.MAX_GZIP_KB_ADMIN ?? GROUP_DEFAULTS.admin));
+    return;
+  }
+  if (group === 'book') {
+    reportBook(root, initial, Number(process.env.MAX_GZIP_KB_BOOK ?? GROUP_DEFAULTS.book));
     return;
   }
   const statsPath = process.env.STATS_JSON ?? `${root}-stats.json`;

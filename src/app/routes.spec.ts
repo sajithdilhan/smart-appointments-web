@@ -3,13 +3,18 @@ import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { availabilityHandlers } from '../testing/availability.handlers';
+import { createBookingBackend } from '../testing/booking-backend';
 import { provideAdminApi, useAdminBackend } from '../testing/admin-test-setup';
 import { createFakeSession, provideFakeSession } from '../testing/fake-session';
+import { server } from '../testing/server';
 import { routes } from './app.routes';
 import { AREA_ROLES, roleCanOpen } from './core/auth/post-login-target';
-import { ROLES, type Role } from './core/auth/session.model';
 import { APP_CONFIG } from './core/config/app-config';
+import { ROLES, type Role } from './core/auth/session.model';
 import { AppTitleStrategy } from './core/routing/app-title.strategy';
+
+const API_BASE = 'http://gw.test:5290';
 
 type Who = 'anonymous' | Role;
 const WHOS: Who[] = ['anonymous', ...ROLES];
@@ -21,6 +26,8 @@ async function visit(who: Who, url: string) {
     who === 'anonymous' ? 'anonymous' : 'authenticated',
     who === 'anonymous' ? null : who,
   );
+  // The booking wizard loads the branches and services when it opens.
+  server.use(...availabilityHandlers(createBookingBackend(), API_BASE));
   TestBed.configureTestingModule({
     providers: [
       provideRouter(routes, withComponentInputBinding()),

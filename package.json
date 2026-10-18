@@ -20,6 +20,7 @@
     "size": "node scripts/size.mjs",
     "size:public": "node scripts/size.mjs --group public",
     "size:admin": "node scripts/size.mjs --group admin",
+    "size:book": "node scripts/size.mjs --group book",
     "e2e": "playwright test",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky",

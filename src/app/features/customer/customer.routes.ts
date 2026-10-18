@@ -6,9 +6,7 @@ const placeholder = () => import('../placeholder/placeholder-page').then((m) => 
 export const CUSTOMER_ROUTES: Routes = [
   {
     path: 'book',
-    title: 'Book an appointment',
-    loadComponent: placeholder,
-    data: { heading: 'Book an appointment', phase: 'F3' },
+    loadChildren: () => import('./book/book.routes'),
   },
   {
     path: 'appointments',

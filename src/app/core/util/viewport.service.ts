@@ -24,4 +24,6 @@ export class ViewportService {
   readonly isLg = watch('(min-width: 1024px)', this.destroyRef);
   /** Viewport is at least 640 px wide. */
   readonly isSm = watch('(min-width: 640px)', this.destroyRef);
+  /** The user asks for less motion (`prefers-reduced-motion: reduce`). */
+  readonly prefersReducedMotion = watch('(prefers-reduced-motion: reduce)', this.destroyRef);
 }
