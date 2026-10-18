@@ -114,7 +114,8 @@ Rules (from the template):
   - Record the measured sizes in this task's note.
   - _Requirements: 1.4, 10.1, 10.2, 10.3_
 
-- [ ] 14. Documentation
+- [x] 14. Documentation
+  - _Done: 18/10/2026 5:46pm_
   - README: the theme description (indigo and lavender, light and dark) and the roadmap row; `docs/specs/README.md` row for F6; `docs/WORKPLAN.md`; record any design deviation at the end of `design.md`.
   - _Requirements: 10.5_
 

@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core), F2 (public pages: landing, login, register), F3 (the booking wizard), F4 (my appointments, detail and cancel, profile) and F5 (the admin console) are built (the F4 manual live-gateway check is pending).** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F6 spec is added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core), F2 (public pages: landing, login, register), F3 (the booking wizard), F4 (my appointments, detail and cancel, profile), F5 (the admin console) and F6 (the Indigo + Lavender redesign: landing, auth and booking layouts, month calendar) are built (the F4 manual live-gateway check is pending).** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F6 spec is added one phase at a time.
 
 What exists today:
 
 - **Workspace**: an Nx 23 standalone workspace (`nx.json` plus a root `project.json` whose `build`, `serve` and `test` targets run the `@angular/build` executors; no `angular.json`; Nx caches `build` and `test` locally under `.nx/cache`; Nx Cloud is off through `neverConnectToCloud`), Angular 22 (standalone only, zoneless, `provideZonelessChangeDetection()` registered in `app.config.ts`, no `zone.js`), TypeScript 6 with extra strict flags, pnpm, plain CSS.
-- **Styling**: Tailwind v4 (CSS-first, `src/styles.css`, no `tailwind.config.js`), the teal/zinc token sheet with a light and a `.dark` theme, self-hosted Inter, Spartan/ui helm components (`button`, `card`, `input`, `label`, `switch`, `sonner`, `alert`, `dropdown-menu`, `separator`, `sheet`, `breadcrumb`) under `src/app/shared/ui/` (aliases `@app/shared/ui/<name>`).
+- **Styling**: Tailwind v4 (CSS-first, `src/styles.css`, no `tailwind.config.js`), the Indigo + Lavender token sheet (`brand-*` and `lavender-*` ramps) with a light and a `.dark` theme, self-hosted Inter, Spartan/ui helm components (`button`, `card`, `input`, `label`, `switch`, `sonner`, `alert`, `dropdown-menu`, `separator`, `sheet`, `breadcrumb`) under `src/app/shared/ui/` (aliases `@app/shared/ui/<name>`).
 - **Core (F1)**, all non-visual, under `src/app/core/`:
   - `config` (runtime `/config.json` loader, `APP_CONFIG`, `APP_CONFIG_READY`, error page), `theme` (`ThemeService`).
   - `api`: `generated/{auth,availability,booking}.d.ts` (from `pnpm gen:api`), `ApiClient`, `AuthApiService`, empty `AvailabilityApiService` and `BookingApiService`, `models.ts` (temporary type extensions).
@@ -100,7 +100,7 @@ Angular rules:
 
 - Tailwind v4 with `@theme` tokens in `src/styles.css`. Use the semantic names (`bg-background`, `text-foreground`, `text-muted-foreground`, `bg-primary`, `text-primary-foreground`, `border-border`, `border-input`, `ring-ring`, `bg-accent`, `bg-destructive`, ...) and the `brand-*` ramp; never raw hex or arbitrary colour values in templates. Helm components already use these names.
 - Dark mode is class-based (`.dark` on `<html>`, `@custom-variant dark`), driven by `ThemeService`; do not use `prefers-color-scheme` media queries in components.
-- Contrast rules (WCAG 2.2 AA, enforced by `src/app/styles.contrast.spec.ts`): teal-600 is never text on white; filled buttons and links use `--primary` (teal-700 in light, teal-400 in dark); control borders use `--input`, not `--border`. If you change a token, update the spec's pair list.
+- Contrast rules (WCAG 2.2 AA, enforced by `src/app/styles.contrast.spec.ts`): brand-500 and lighter are never text on white; filled buttons and links use `--primary` (indigo `#4f46e5` in light, `#a5b4fc` in dark); control borders use `--input`, not `--border`. If you change a token, update the spec's pair list.
 - Honour `prefers-reduced-motion` (a global rule in `styles.css` disables non-essential motion); no `inlineCritical` (it needs an inline event handler the CSP forbids).
 - The CSP allows scripts from `'self'` only: no inline scripts or event-handler attributes, no third-party origins (fonts are self-hosted).
 

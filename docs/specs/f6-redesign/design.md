@@ -198,3 +198,27 @@ Inline SVGs are the main growth: the hero scene and card (estimated 4 to 6 kB gz
 
 1. **Req 6.3 badge wording.** F3 already shows "Open now" / "Closed" (computed live in the branch's zone, with today's hours). The design keeps that and restyles it, instead of adding "Open today" / "Closed today". Approving this design amends Req 6.3 accordingly.
 2. **Calendar selection model.** The grid pattern moves focus with the arrows and selects with Enter/Space or a click (the strip selected on arrow). This is the standard date-picker behaviour; approving the design accepts it.
+
+## Implementation deviations
+
+Where the build differs from this design:
+
+- Stepper buttons keep the F3 names ("N. Label") through screen-reader text, with "completed" added by `aria-describedby`.
+- The inline "Clear search" button shows only when results exist; the empty state has its own.
+- The Open now / Closed badge sits top-right on the branch card and is part of its `aria-describedby`.
+- Calendar: the arrows, Home and End clamp to the 14-day window, Page Up and Page Down do nothing outside it, and clicking the selected day again does nothing.
+- "Available times" is a `<p>`, not an `<h3>`, because the F3 slot-groups spec asserts the `<h3>` list.
+- Day labels include the year and follow the runtime locale.
+- The summary is one `<dl>` per row with per-row Edit buttons ("Edit branch", "Edit service", "Edit date and time"), hidden while a confirm is in flight.
+- "Book another" stays a button styled as a link; "View my appointments" was replaced by "View details" and "Back to home".
+- The landing secondary call to action also got an arrow.
+- The landing `<h1>` text changed, so `e2e/public.a11y`, `e2e/smoke` and `routes.spec` were updated.
+- Tasks 4 and 5 were one commit.
+- The collapsed admin sidebar shows only the icon tile (its `aria-label` is kept).
+- The wordmark truncates at 320 px.
+- Past Booked appointments use the muted badge.
+- Polish after the screenshot review:
+  - The dark hero gradient never applied, because the `:where(.dark) .hero` rule does not survive Angular's view encapsulation and the light lavender gradient showed through as a grey band. It now uses `:host-context(.dark)` with a deep indigo and violet glow, and a lighter grain.
+  - The public and staff headers collapse the brand to its icon tile below `sm` (a new `collapseOnPhone` input on `BrandMark`; the name stays as screen-reader text), so the theme toggle and buttons fit one row at 390 px. At 320 px the public header may still wrap.
+  - The booking reference uses a smaller, tighter monospace (`text-sm`, `sm:text-base`, `tracking-tight`, still `break-all`) so the 36-character id fits one line on desktop.
+  - The summary card has top padding above "You can cancel this appointment from My appointments."
