@@ -60,7 +60,9 @@ interface NavItem {
       } @else {
         <header class="sticky top-0 z-40 border-b border-border bg-background">
           <div class="flex items-center justify-between gap-2 px-4 py-2">
-            <a routerLink="/book" class="flex min-w-0"><app-brand-mark /></a>
+            <a routerLink="/book" class="flex min-w-0"
+              ><app-brand-mark [collapseOnPhone]="true"
+            /></a>
             <div class="flex items-center gap-2">
               <app-theme-toggle />
               <app-user-menu />

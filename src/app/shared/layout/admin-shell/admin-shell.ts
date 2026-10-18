@@ -111,7 +111,7 @@ function platformIsApple(): boolean {
         >
           <a
             routerLink="/admin"
-            class="flex h-14 items-center truncate px-4 text-lg"
+            class="flex h-14 items-center px-4 text-base"
             [attr.aria-label]="collapsed() ? 'Smart Appointments admin' : null"
           >
             <app-brand-mark [compact]="collapsed()" />
