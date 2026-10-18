@@ -36,7 +36,7 @@ async function openStep(
       await page.goto(url);
       await expect(page.getByRole('button', { name: 'Confirm booking' })).toBeEnabled();
       await page.getByRole('button', { name: 'Confirm booking' }).click();
-      await expect(heading(page, "You're booked")).toBeVisible();
+      await expect(heading(page, 'Booking confirmed!')).toBeVisible();
       break;
   }
 }

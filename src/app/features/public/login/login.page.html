@@ -1,6 +1,11 @@
-<app-auth-layout illustration="login">
+<app-auth-layout
+  illustration="login"
+  tagline="Welcome back to easier booking."
+  subtitle="Sign in to see and manage your appointments."
+>
   <div authForm>
-    <h1 id="login-heading" appFocusHeading class="text-3xl font-semibold tracking-tight">
+    <p class="text-xs font-semibold tracking-wider text-primary uppercase">Sign in</p>
+    <h1 id="login-heading" appFocusHeading class="mt-2 text-3xl font-bold tracking-tight">
       Welcome back
     </h1>
     <p class="mt-2 text-muted-foreground">Log in to book and manage your appointments.</p>
@@ -23,7 +28,7 @@
         <app-rate-limit-notice [countdown]="countdown" />
       </div>
 
-      <app-form-field [view]="emailView" label="Email">
+      <app-form-field [view]="emailView" label="Email" icon="lucideMail">
         <input
           hlmInput
           class="h-11"
@@ -55,6 +60,7 @@
           <ng-icon name="lucideLoaderCircle" size="18" class="animate-spin" aria-hidden="true" />
         }
         Log in
+        <ng-icon name="lucideArrowRight" size="18" aria-hidden="true" />
       </button>
     </form>
 

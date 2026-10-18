@@ -20,7 +20,7 @@ const PRIMARY = ['Confirm booking', 'Try again', 'Check again'];
 const primary = () =>
   PRIMARY.map((name) => screen.queryByRole('button', { name })).find((b) => b !== null) ?? null;
 const successViews = () =>
-  screen.queryAllByRole('heading', { level: 2, name: "You're booked" }).length;
+  screen.queryAllByRole('heading', { level: 2, name: 'Booking confirmed!' }).length;
 const pause = (ms = 25) => new Promise((r) => setTimeout(r, ms));
 
 describe('booking invariant (Req 13.3)', () => {

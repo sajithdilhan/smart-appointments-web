@@ -65,7 +65,7 @@ const protectedPaths: Record<string, Role> = {
 
 describe('route table', () => {
   it.each([
-    ['/', 'Book your next appointment in minutes.'],
+    ['/', 'Book your next appointment in just a few clicks.'],
     ['/login', 'Welcome back'],
     ['/register', 'Create your account'],
   ])('renders the public page %s for an anonymous visitor', async (url, heading) => {
@@ -75,7 +75,7 @@ describe('route table', () => {
   it.each(ROLES)('keeps / open for a signed-in %s', async (role) => {
     expect(await visit(role, '/')).toMatchObject({
       url: '/',
-      heading: 'Book your next appointment in minutes.',
+      heading: 'Book your next appointment in just a few clicks.',
     });
   });
 

@@ -8,8 +8,9 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCopy } from '@ng-icons/lucide';
+import { lucideArrowRight, lucideCopy } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@app/shared/ui/button';
+import { SessionStore } from '../../../../core/auth/session.store';
 import { hhmm } from '../../../../core/time';
 import { ViewportService } from '../../../../core/util/viewport.service';
 import { formatLongDate } from '../clock-text';
@@ -17,11 +18,11 @@ import { StepHeadingDirective } from '../step-heading.directive';
 import { BookingWizardStore } from '../wizard.store';
 import { CalendarButtonComponent } from './calendar-button.component';
 import { ConfettiComponent } from './confetti.component';
-import { ReviewCardComponent } from './review-card.component';
+import { ReviewCardComponent, loadProfileIfIdle, reviewContact } from './review-card.component';
 import { SuccessCheckComponent } from './success-check.component';
 
 /**
- * Step 5 (Req 9): the confirmation. A view over `done=1` plus the booking held in the store,
+ * Step 5 (F3 Req 9, F6 Req 8.3 to 8.5): the confirmation. A view over `done=1` plus the booking held in the store,
  * never a deep link. The heading takes focus, one polite status announces the booking, the
  * check draws itself, and the confetti (its own lazy chunk) is not even loaded under reduced
  * motion. The reference is shown in full and selectable; Copy never throws.
@@ -38,15 +39,40 @@ import { SuccessCheckComponent } from './success-check.component';
     StepHeadingDirective,
     SuccessCheckComponent,
   ],
-  providers: [provideIcons({ lucideCopy })],
+  providers: [provideIcons({ lucideArrowRight, lucideCopy })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'book-step flex flex-col gap-4' },
   template: `
     <p role="status" class="sr-only">{{ announcement() }}</p>
     @if (booked(); as b) {
-      <div class="flex items-center gap-3">
-        <app-success-check />
-        <h2 appStepHeading class="text-xl font-semibold">You're booked</h2>
+      <div class="flex flex-col items-center gap-3 text-center">
+        <span class="flex size-20 items-center justify-center rounded-full bg-success-soft">
+          <app-success-check />
+        </span>
+        <h2 appStepHeading class="text-2xl font-bold">Booking confirmed!</h2>
+        <p class="text-muted-foreground">Your appointment has been successfully booked.</p>
+      </div>
+
+      <div
+        class="mx-auto flex w-full max-w-md flex-col items-center gap-1 rounded-2xl bg-success-soft p-4 text-center text-success-soft-foreground"
+      >
+        <p class="text-sm font-medium">Booking reference</p>
+        <div class="flex items-center justify-center gap-2">
+          <code
+            class="font-mono text-sm font-bold tracking-tight break-all select-all sm:text-base"
+          >
+            {{ b.appointment.id }}
+          </code>
+          <button
+            type="button"
+            aria-label="Copy reference"
+            class="flex size-9 shrink-0 items-center justify-center rounded-md hover:bg-success-soft-foreground/10"
+            (click)="copy()"
+          >
+            <ng-icon name="lucideCopy" size="18" aria-hidden="true" />
+          </button>
+        </div>
+        <span role="status" class="min-h-5 text-sm">{{ copied() }}</span>
       </div>
 
       <app-review-card
@@ -54,26 +80,27 @@ import { SuccessCheckComponent } from './success-check.component';
         [service]="b.service"
         [slot]="b.slot"
         [branchZone]="b.branch.timeZoneId ?? 'UTC'"
+        [contact]="contact()"
       />
 
-      <div class="flex flex-col gap-2 rounded-xl border bg-card p-5">
-        <p class="text-sm text-muted-foreground">Booking reference</p>
-        <div class="flex flex-wrap items-center gap-2">
-          <code class="rounded bg-muted px-2 py-1 text-sm break-all select-all">
-            {{ b.appointment.id }}
-          </code>
-          <button hlmBtn variant="outline" size="sm" type="button" (click)="copy()">
-            <ng-icon name="lucideCopy" aria-hidden="true" />
-            Copy reference
-          </button>
-          <span role="status" class="text-sm text-muted-foreground">{{ copied() }}</span>
-        </div>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-2">
+      <div class="flex flex-wrap items-center justify-center gap-2">
         <app-calendar-button [booked]="b" />
-        <a hlmBtn variant="outline" routerLink="/appointments">View my appointments</a>
-        <button hlmBtn type="button" (click)="store.bookAnother()">Book another</button>
+        <a hlmBtn variant="outline" [routerLink]="['/appointments', b.appointment.id]">
+          View details
+          <ng-icon name="lucideArrowRight" aria-hidden="true" />
+        </a>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-4 text-sm">
+        <button
+          type="button"
+          class="rounded-sm font-medium text-primary underline underline-offset-2"
+          (click)="store.bookAnother()"
+        >
+          Book another
+        </button>
+        <a routerLink="/" class="rounded-sm font-medium text-primary underline underline-offset-2">
+          Back to home
+        </a>
       </div>
 
       @if (!viewport.prefersReducedMotion()) {
@@ -87,7 +114,9 @@ import { SuccessCheckComponent } from './success-check.component';
 export class SuccessStepComponent {
   protected readonly store = inject(BookingWizardStore);
   protected readonly viewport = inject(ViewportService);
+  private readonly session = inject(SessionStore);
   protected readonly booked = this.store.booking;
+  protected readonly contact = computed(() => reviewContact(this.session));
   protected readonly announcement = signal('');
   protected readonly copied = signal('');
 
@@ -98,6 +127,7 @@ export class SuccessStepComponent {
   });
 
   constructor() {
+    loadProfileIfIdle(this.session);
     // Written after the first render so the live region announces a change, once.
     afterNextRender(() => this.announcement.set(this.text()));
   }

@@ -7,7 +7,7 @@ import { mockBackend } from './mock-backend';
 test.use({ bypassCSP: true, reducedMotion: 'reduce' });
 
 const PAGES = [
-  ['/', 'Book your next appointment in minutes.'],
+  ['/', 'Book your next appointment in just a few clicks.'],
   ['/login', 'Welcome back'],
   ['/register', 'Create your account'],
 ] as const;

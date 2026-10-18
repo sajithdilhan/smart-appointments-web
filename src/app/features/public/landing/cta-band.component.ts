@@ -6,7 +6,7 @@ import { CtaButtonsComponent } from './cta-buttons.component';
   imports: [CtaButtonsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section aria-labelledby="cta-band-heading" class="border-t bg-muted/40">
+    <section aria-labelledby="cta-band-heading" class="border-t bg-accent/60">
       <div
         class="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between"
       >

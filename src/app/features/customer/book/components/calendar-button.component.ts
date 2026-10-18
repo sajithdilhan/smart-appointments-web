@@ -21,7 +21,7 @@ export const CALENDAR_ERROR = 'We could not create the calendar file.';
   providers: [provideIcons({ lucideCalendarPlus })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <button hlmBtn variant="outline" type="button" (click)="add()">
+    <button hlmBtn type="button" (click)="add()">
       <ng-icon name="lucideCalendarPlus" aria-hidden="true" />
       Add to calendar
       <span class="sr-only">download .ics file</span>

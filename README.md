@@ -4,7 +4,7 @@
 
 The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), a .NET microservices portfolio project: a smart appointment and queue management system. The backend owns the business rules; this repository is the single-page app that customers, staff and administrators will use, and it talks to the backend only through its API gateway.
 
-> **Status: F0 scaffold, F1 core, F2 public pages, the F3 booking wizard, the F4 my-appointments and profile screens and the F5 admin console are built.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register), the five-step booking wizard at `/book` and the admin console under `/admin` (see "What F3 provides" and "What F5 provides"), the customer's appointments list, detail with cancel and profile (see "What F4 provides"), with a placeholder page behind the staff route. The roadmap below is the plan.
+> **Status: F0 scaffold, F1 core, F2 public pages, the F3 booking wizard, the F4 my-appointments and profile screens and the F5 admin console and the F6 redesign are built.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register), the five-step booking wizard at `/book` and the admin console under `/admin` (see "What F3 provides" and "What F5 provides"), the customer's appointments list, detail with cancel and profile (see "What F4 provides"), with a placeholder page behind the staff route. The roadmap below is the plan.
 
 ## What it will do
 
@@ -25,7 +25,7 @@ The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/S
 | F3    | Booking wizard, success page, calendar export                                                      | Implemented (live check partly run)      |
 | F4    | My appointments, detail, cancel, profile                                                           | Implemented                              |
 | F5    | Admin console                                                                                      | Implemented                              |
-| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Planned                                  |
+| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Implemented                              |
 | F7    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                              |
 
 Specs for every phase live in [`docs/specs/`](docs/specs/README.md).
@@ -178,6 +178,18 @@ The admin API has no appointments, staff or reports endpoints, so none of those 
 - **Bundle.** The admin area is one lazy group; `pnpm size:admin` reports it (limit `MAX_GZIP_KB_ADMIN`, default 120) and CI runs it after `pnpm size`.
 - **Tests.** Vitest with a stateful MSW model of the admin endpoints; Playwright (`e2e/admin.spec.ts`, `e2e/admin.a11y.spec.ts`) against `e2e/support/mock-admin-api.ts`, with axe checks in both themes.
 
+## What F6 provides
+
+The visual redesign, with no change to routes, URL state, API calls or accessible names.
+
+- **Theme.** An Indigo + Lavender palette in light and dark replaces the teal/zinc one (`src/styles.css`): a `brand-*` indigo ramp, a `lavender-*` ramp and the same semantic tokens, with 1 rem card and 0.75 rem control radii. The contrast spec checks every pair in both themes. The theme toggle is a compact system/light/dark control and the logo (`BrandMark`) is an indigo tile with a calendar icon; below the `sm` breakpoint the public and staff headers show the tile alone (the name stays as screen-reader text).
+- **Landing (`/`).** A hero with a pill, the headline, two calls to action and a flat inline SVG clinic illustration with a decorative booking preview, then four feature tiles, the how-it-works steps and a closing call to action. One load-time reveal (off under reduced motion), no images or external requests.
+- **Login and register.** A shared auth layout: the form first, with a tagline aside from 1024 px up; the fields, validation and error handling are unchanged.
+- **Booking wizard.** Circle step indicator (completed state; all four steps complete on the success view), branch cards with a search field and an Open now/Closed badge, a month calendar for the 14 bookable days (keyboard grid: arrows, Home, End, Enter, Space; the date strip is gone), a review card with per-row Edit buttons and a Contact row, and a success view with a mint reference card (monospace, selectable, Copy), the check animation, confetti and the summary.
+- **Deviations.** The list of places where the build differs from the design is at the end of `docs/specs/f6-redesign/design.md`.
+- **Size.** Measured gzipped: public 32.9 kB (budget 50), admin 93.8 kB (120), booking wizard 39.3 kB (60), appointments 20.0 kB (40).
+- **Manual check** (needs the Compose stack; task 15 of the F6 tasks): landing, register, book to success, my appointments and the admin console at 1280 and 390 px, light and dark, plus a keyboard pass of the calendar.
+
 ## Docker
 
 ```bash
@@ -203,7 +215,7 @@ There are no secrets in the SPA; do not put any in `config.json`.
 
 ## Theming
 
-Design tokens live in `src/styles.css` as CSS custom properties exposed through Tailwind's `@theme`: a zinc neutral scale, one teal brand accent, and radius and shadow tokens. Light values are on `:root`, dark values under `.dark` on `<html>`. The theme follows the system setting by default and can be forced to light or dark with the toggle; the choice is stored in `localStorage` and applied before first paint by `/theme-init.js`. A unit test checks the text and control colour pairs against WCAG 2.2 AA contrast in both themes.
+Design tokens live in `src/styles.css` as CSS custom properties exposed through Tailwind's `@theme`: an indigo brand ramp and a lavender ramp (light: lavender-tinted near-white page and white cards; dark: deep indigo-navy surfaces), the semantic tokens built on them, and radius and shadow tokens. Light values are on `:root`, dark values under `.dark` on `<html>`. The theme follows the system setting by default and can be forced to light or dark with the toggle; the choice is stored in `localStorage` and applied before first paint by `/theme-init.js`. A unit test checks the text and control colour pairs against WCAG 2.2 AA contrast in both themes.
 
 ## Quality gates
 

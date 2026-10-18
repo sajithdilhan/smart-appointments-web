@@ -1,14 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideCalendarCheck,
-  lucideCalendarSearch,
-  lucideCalendarX,
-  lucideGlobe,
-} from '@ng-icons/lucide';
+import { lucideCalendarCheck, lucideMapPin, lucideShieldCheck, lucideZap } from '@ng-icons/lucide';
 
 interface ValueProp {
   readonly icon: string;
+  readonly tile: string;
   readonly title: string;
   readonly text: string;
 }
@@ -16,23 +12,23 @@ interface ValueProp {
 @Component({
   selector: 'app-value-props',
   imports: [NgIcon],
-  providers: [
-    provideIcons({ lucideCalendarSearch, lucideCalendarCheck, lucideGlobe, lucideCalendarX }),
-  ],
+  providers: [provideIcons({ lucideZap, lucideCalendarCheck, lucideMapPin, lucideShieldCheck })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section
       aria-labelledby="value-props-heading"
       class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6"
     >
-      <h2 id="value-props-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">
-        Booking, without the back and forth
+      <h2 id="value-props-heading" class="text-2xl font-bold tracking-tight sm:text-3xl">
+        Why choose us?
       </h2>
       <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         @for (item of items; track item.title) {
-          <li class="rounded-xl border bg-card p-5 text-card-foreground shadow-soft">
-            <ng-icon [name]="item.icon" size="24" class="text-primary" aria-hidden="true" />
-            <h3 class="mt-3 text-base font-semibold">{{ item.title }}</h3>
+          <li class="rounded-2xl border bg-card p-5 text-card-foreground shadow-soft">
+            <span class="flex size-11 items-center justify-center rounded-xl" [class]="item.tile">
+              <ng-icon [name]="item.icon" size="22" aria-hidden="true" />
+            </span>
+            <h3 class="mt-4 text-base font-semibold">{{ item.title }}</h3>
             <p class="mt-1 text-sm text-muted-foreground">{{ item.text }}</p>
           </li>
         }
@@ -43,24 +39,28 @@ interface ValueProp {
 export class ValuePropsComponent {
   protected readonly items: readonly ValueProp[] = [
     {
-      icon: 'lucideCalendarSearch',
-      title: 'See real availability',
-      text: 'Only open times are shown, so what you pick is what you get.',
+      icon: 'lucideZap',
+      tile: 'bg-tile-lavender text-tile-lavender-foreground',
+      title: 'Fast & easy booking',
+      text: 'Book in seconds, anytime.',
     },
     {
       icon: 'lucideCalendarCheck',
-      title: 'Confirmed straight away',
-      text: 'Your appointment is booked the moment you confirm it.',
+      tile: 'bg-tile-blue text-tile-blue-foreground',
+      title: 'Instant confirmation',
+      text: 'Get your booking details immediately.',
     },
     {
-      icon: 'lucideGlobe',
-      title: 'Times that make sense',
-      text: "Shown in the branch's own time zone.",
+      icon: 'lucideMapPin',
+      tile: 'bg-tile-mint text-tile-mint-foreground',
+      title: 'Multiple branches',
+      text: 'Find a branch near you.',
     },
     {
-      icon: 'lucideCalendarX',
-      title: 'Cancel when plans change',
-      text: 'Free up your slot any time before it starts.',
+      icon: 'lucideShieldCheck',
+      tile: 'bg-tile-peach text-tile-peach-foreground',
+      title: 'Flexible cancellation',
+      text: 'Cancel online anytime, hassle-free.',
     },
   ];
 }

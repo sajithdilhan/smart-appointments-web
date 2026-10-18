@@ -22,12 +22,15 @@ describe('LandingPage', () => {
     const { container } = await renderLanding();
     expect(container.querySelectorAll('h1')).toHaveLength(1);
     expect(
-      screen.getByRole('heading', { level: 1, name: 'Book your next appointment in minutes.' }),
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Book your next appointment in just a few clicks.',
+      }),
     ).toBeTruthy();
     const headings = [...container.querySelectorAll('h1, h2')].map((h) => h.textContent?.trim());
     expect(headings).toEqual([
-      'Book your next appointment in minutes.',
-      'Booking, without the back and forth',
+      'Book your next appointment in just a few clicks.',
+      'Why choose us?',
       'How it works',
       'Ready to book?',
     ]);
@@ -35,6 +38,36 @@ describe('LandingPage', () => {
     expect(regions).toHaveLength(4);
     for (const region of regions) expect(region.getAttribute('aria-labelledby')).toBeTruthy();
     expect(regions.map((r) => r.querySelector('h1, h2')?.textContent?.trim())).toEqual(headings);
+  });
+
+  it('shows the pill, the two-line headline and the supporting sentence in order', async () => {
+    const { container } = await renderLanding();
+    const hero = container.querySelector('.hero')!;
+    const texts = [...hero.querySelectorAll('p, h1')].map((e) =>
+      e.textContent?.replace(/\s+/g, ' ').trim(),
+    );
+    expect(texts[0]).toBe('Fast \u2022 Secure \u2022 Hassle-free');
+    const h1 = hero.querySelector('h1')!;
+    expect(h1.firstChild?.textContent?.trim()).toBe('Book your next appointment');
+    const second = h1.querySelector('span')!;
+    expect(second.textContent?.trim()).toBe('in just a few clicks.');
+    expect(second.classList.contains('block')).toBe(true);
+    expect(second.classList.contains('text-primary')).toBe(true);
+    expect(texts[2]).toMatch(/^Choose a branch, pick a service/);
+  });
+
+  it('keeps the scene and the confirmation card out of the accessibility tree', async () => {
+    const { container } = await renderLanding();
+    const scene = container.querySelector('app-hero-scene svg')!;
+    expect(scene.getAttribute('aria-hidden')).toBe('true');
+    expect(scene.getAttribute('focusable')).toBe('false');
+    const card = container.querySelector('app-hero-preview [aria-hidden="true"]')!;
+    expect(card.hasAttribute('inert')).toBe(true);
+    expect(card.textContent).toContain('Appointment Confirmed!');
+    expect(card.textContent).toContain('10:00 AM');
+    expect(
+      container.querySelector('.hero a svg, .hero a ng-icon')!.getAttribute('aria-hidden'),
+    ).toBe('true');
   });
 
   it('offers sign-up and log-in to a visitor, in the hero and in the closing band', async () => {

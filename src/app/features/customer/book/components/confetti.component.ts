@@ -12,8 +12,8 @@ import {
 export const MAX_PARTICLES = 60;
 export const CONFETTI_MS = 2_000;
 const GRAVITY = 900; // px per second squared
-const FALLBACK_COLOURS = ['#0f766e', '#14b8a6', '#f59e0b', '#ef4444', '#6366f1'];
-const THEME_VARIABLES = ['--primary', '--brand-500', '--brand-300', '--destructive', '--ring'];
+export const FALLBACK_COLOURS = ['#6366f1', '#a78bfa', '#34d399', '#c7d2fe'];
+export const THEME_VARIABLES = ['--color-brand-500', '--color-lavender-400', '--color-success'];
 
 export interface Particle {
   x: number;

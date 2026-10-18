@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCheck, lucideCircle } from '@ng-icons/lucide';
+import { lucideCircle, lucideCircleCheck } from '@ng-icons/lucide';
 
 /** The checklist only ever sees booleans and labels, never the password. */
 export interface PasswordChecklistItem {
@@ -16,7 +16,7 @@ export interface PasswordChecklistItem {
 @Component({
   selector: 'app-password-checklist',
   imports: [NgIcon],
-  providers: [provideIcons({ lucideCheck, lucideCircle })],
+  providers: [provideIcons({ lucideCircle, lucideCircleCheck })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ul [id]="id()" class="flex flex-col gap-1 text-sm">
@@ -26,7 +26,7 @@ export interface PasswordChecklistItem {
           [class]="item.met ? 'text-foreground' : 'text-muted-foreground'"
         >
           <ng-icon
-            [name]="item.met ? 'lucideCheck' : 'lucideCircle'"
+            [name]="item.met ? 'lucideCircleCheck' : 'lucideCircle'"
             size="16"
             class="mt-0.5 shrink-0"
             [class]="item.met ? 'text-success' : 'text-muted-foreground'"

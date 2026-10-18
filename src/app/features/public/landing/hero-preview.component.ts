@@ -1,38 +1,41 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCalendar, lucideCircleCheck, lucideMapPin } from '@ng-icons/lucide';
 
-/** A decorative mock of the booking summary. Hidden from assistive tech and not focusable. */
+/** A decorative "Appointment Confirmed!" card. Hidden from assistive tech and not focusable. */
 @Component({
   selector: 'app-hero-preview',
+  imports: [NgIcon],
+  providers: [provideIcons({ lucideCircleCheck, lucideMapPin, lucideCalendar })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
       aria-hidden="true"
       inert
-      class="w-full max-w-sm rounded-xl border bg-card p-5 text-card-foreground shadow-soft"
+      class="w-full max-w-xs rounded-2xl border bg-card p-5 text-card-foreground shadow-lifted"
     >
-      <p class="text-sm font-semibold">Downtown Branch</p>
-      <p class="text-sm text-muted-foreground">General consultation, 30 min</p>
-      <div class="mt-4 grid grid-cols-3 gap-2 text-sm">
-        <span class="rounded-md border px-2 py-1.5 text-center">09:30</span>
-        <span
-          class="rounded-md border border-primary bg-primary px-2 py-1.5 text-center text-primary-foreground"
-          >10:00</span
-        >
-        <span class="rounded-md border px-2 py-1.5 text-center">10:30</span>
+      <p class="flex items-center gap-2.5 text-base font-bold">
+        <ng-icon name="lucideCircleCheck" size="26" class="shrink-0 text-success" />
+        Appointment Confirmed!
+      </p>
+      <div class="mt-4 flex items-start gap-3">
+        <ng-icon name="lucideMapPin" size="18" class="mt-0.5 shrink-0 text-primary" />
+        <div>
+          <p class="text-sm font-semibold">Downtown Branch</p>
+          <p class="text-sm text-muted-foreground">General consultation</p>
+        </div>
       </div>
-      <p class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-success">
-        <svg
-          viewBox="0 0 16 16"
-          class="size-4"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          focusable="false"
+      <div class="mt-3 flex items-center gap-3">
+        <ng-icon name="lucideCalendar" size="18" class="shrink-0 text-primary" />
+        <p class="text-sm font-semibold">12 Oct 2026</p>
+        <span
+          class="ms-auto rounded-full bg-success-soft px-2.5 py-0.5 text-xs font-semibold text-success-soft-foreground"
+          >10:00 AM</span
         >
-          <path d="M3 8.5l3 3 7-7" />
-        </svg>
+      </div>
+      <hr class="my-4 border-border" />
+      <p class="inline-flex items-center gap-1.5 text-sm font-semibold text-success">
+        <ng-icon name="lucideCircleCheck" size="16" />
         Confirmed
       </p>
     </div>

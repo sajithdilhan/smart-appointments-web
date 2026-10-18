@@ -45,6 +45,15 @@ describe('PublicShell', () => {
     expect(screen.getByRole('contentinfo')).toBeTruthy();
   });
 
+  it('styles Sign in as outline and Create account as filled', async () => {
+    await renderShell(null);
+    const outline = screen.getByRole('link', { name: 'Sign in' }).className;
+    const filled = screen.getByRole('link', { name: 'Create account' }).className;
+    expect(outline).toContain('border');
+    expect(filled).toContain('bg-primary');
+    expect(outline).not.toContain('bg-primary ');
+  });
+
   it('offers Sign in and Create account to an anonymous visitor', async () => {
     await renderShell(null);
     expect(screen.getByRole('link', { name: 'Sign in' }).getAttribute('href')).toBe('/login');

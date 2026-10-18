@@ -8,6 +8,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideSearch, lucideX } from '@ng-icons/lucide';
 import { EmptyState } from '@app/shared/ui/empty-state';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { InlineAlert } from '@app/shared/ui/inline-alert';
@@ -48,6 +50,7 @@ export function isOutageError(e: AppError): boolean {
   selector: 'app-branch-step',
   imports: [
     BranchCardComponent,
+    NgIcon,
     EmptyState,
     HlmButtonImports,
     HlmInputImports,
@@ -58,6 +61,7 @@ export function isOutageError(e: AppError): boolean {
     RovingRadioGroupDirective,
     StepHeadingDirective,
   ],
+  providers: [provideIcons({ lucideSearch, lucideX })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'book-step flex flex-col gap-4' },
   template: `
@@ -89,14 +93,35 @@ export function isOutageError(e: AppError): boolean {
     } @else {
       <div class="flex max-w-md flex-col gap-1.5">
         <label hlmLabel for="branch-search">Search branches</label>
-        <input
-          hlmInput
-          id="branch-search"
-          type="search"
-          autocomplete="off"
-          [value]="store.searchText()"
-          (input)="onSearch($event)"
-        />
+        <div class="relative">
+          <ng-icon
+            name="lucideSearch"
+            size="16"
+            class="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <input
+            hlmInput
+            id="branch-search"
+            type="search"
+            autocomplete="off"
+            placeholder="Search branches..."
+            class="ps-9 [&::-webkit-search-cancel-button]:hidden"
+            [class.pe-10]="showClear()"
+            [value]="store.searchText()"
+            (input)="onSearch($event)"
+          />
+          @if (showClear()) {
+            <button
+              type="button"
+              aria-label="Clear search"
+              class="absolute end-1 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              (click)="clearSearch()"
+            >
+              <ng-icon name="lucideX" size="16" aria-hidden="true" />
+            </button>
+          }
+        </div>
       </div>
       <p role="status" class="sr-only">{{ countText() }}</p>
 
@@ -149,6 +174,14 @@ export class BranchStepComponent {
       [b.name, b.code, b.address].some((field) => normaliseText(field).includes(q)),
     );
   });
+
+  /**
+   * The inline clear button is for a non-empty search with results; with no match the empty
+   * state offers its own "Clear search", so the name stays unique.
+   */
+  protected readonly showClear = computed(
+    () => this.store.searchText() !== '' && this.filtered().length > 0,
+  );
 
   protected readonly countText = computed(() => {
     if (!this.query()) return '';

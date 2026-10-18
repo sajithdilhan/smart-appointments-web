@@ -62,6 +62,26 @@ describe('CustomerShell', () => {
     expect(screen.getByRole('main').className).not.toContain('pb-[calc');
   });
 
+  it.each([500, 1024])('names the brand link "Smart Appointments" at %i px', async (width) => {
+    await renderShell(width);
+    expect(screen.getByRole('link', { name: 'Smart Appointments' }).getAttribute('href')).toBe(
+      '/book',
+    );
+  });
+
+  it('draws the indigo underline on the active desktop link only', async () => {
+    await renderShell(1024);
+    await TestBed.inject(Router).navigateByUrl('/appointments');
+    await vi.waitFor(() =>
+      expect(screen.getByRole('link', { name: 'My appointments' }).className).toContain(
+        'after:bg-primary',
+      ),
+    );
+    expect(screen.getByRole('link', { name: 'Book' }).className).not.toMatch(
+      /(^| )after:bg-primary/,
+    );
+  });
+
   it.each([500, 1024])('marks the active link with aria-current="page" at %i px', async (width) => {
     await renderShell(width);
     await TestBed.inject(Router).navigateByUrl('/appointments/7');
