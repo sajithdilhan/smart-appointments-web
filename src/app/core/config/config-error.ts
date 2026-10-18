@@ -15,8 +15,8 @@ export function renderConfigError(reason: string): void {
     fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif',
     fontSize: '1.125rem',
     lineHeight: '1.6',
-    color: '#18181b',
-    background: '#ffffff',
+    color: '#1e1b4b',
+    background: '#f8f7fe',
   });
 
   const heading = document.createElement('h1');
@@ -31,7 +31,7 @@ export function renderConfigError(reason: string): void {
   detail.textContent = reason;
   Object.assign(detail.style, {
     fontFamily: 'ui-monospace, Consolas, monospace',
-    background: '#f4f4f5',
+    background: '#f1effb',
     padding: '0.5rem 0.75rem',
     borderRadius: '0.375rem',
   });
@@ -42,7 +42,7 @@ export function renderConfigError(reason: string): void {
   Object.assign(button.style, {
     font: 'inherit',
     color: '#ffffff',
-    background: '#0f766e',
+    background: '#4f46e5',
     border: '0',
     borderRadius: '0.5rem',
     padding: '0.6rem 1.2rem',
@@ -52,6 +52,6 @@ export function renderConfigError(reason: string): void {
 
   container.append(heading, explanation, detail, button);
   document.body.replaceChildren(container);
-  Object.assign(document.body.style, { background: '#ffffff', margin: '0' });
+  Object.assign(document.body.style, { background: '#f8f7fe', margin: '0' });
   button.focus();
 }

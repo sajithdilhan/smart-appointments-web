@@ -10,18 +10,31 @@
 @theme {
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand ramp: teal. Only 700 (light) and 400 (dark) carry text or filled buttons. */
-  --color-brand-50: #f0fdfa;
-  --color-brand-100: #ccfbf1;
-  --color-brand-200: #99f6e4;
-  --color-brand-300: #5eead4;
-  --color-brand-400: #2dd4bf;
-  --color-brand-500: #14b8a6;
-  --color-brand-600: #0d9488;
-  --color-brand-700: #0f766e;
-  --color-brand-800: #115e59;
-  --color-brand-900: #134e4a;
-  --color-brand-950: #042f2e;
+  /* Brand ramp: indigo. Only 600 (light) and 300 (dark) carry text or filled buttons. */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+  --color-brand-950: #1e1b4b;
+
+  /* Lavender ramp: violet, for gradients and illustration. */
+  --color-lavender-50: #f5f3ff;
+  --color-lavender-100: #ede9fe;
+  --color-lavender-200: #ddd6fe;
+  --color-lavender-300: #c4b5fd;
+  --color-lavender-400: #a78bfa;
+  --color-lavender-500: #8b5cf6;
+  --color-lavender-600: #7c3aed;
+  --color-lavender-700: #6d28d9;
+  --color-lavender-800: #5b21b6;
+  --color-lavender-900: #4c1d95;
+  --color-lavender-950: #2e1065;
 
   /* Semantic tokens: values switch with the theme (see :root and .dark below). */
   --color-background: var(--background);
@@ -47,67 +60,96 @@
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-success-soft-foreground: var(--success-soft-foreground);
+  --color-tile-lavender: var(--tile-lavender);
+  --color-tile-lavender-foreground: var(--tile-lavender-foreground);
+  --color-tile-blue: var(--tile-blue);
+  --color-tile-blue-foreground: var(--tile-blue-foreground);
+  --color-tile-mint: var(--tile-mint);
+  --color-tile-mint-foreground: var(--tile-mint-foreground);
+  --color-tile-peach: var(--tile-peach);
+  --color-tile-peach-foreground: var(--tile-peach-foreground);
 
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
-  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.05), 0 4px 12px rgb(0 0 0 / 0.06);
-  --shadow-lifted: 0 2px 4px rgb(0 0 0 / 0.06), 0 12px 32px rgb(0 0 0 / 0.12);
+  --shadow-soft: 0 1px 2px rgb(30 27 75 / 0.04), 0 6px 16px rgb(79 70 229 / 0.06);
+  --shadow-lifted: 0 2px 4px rgb(30 27 75 / 0.06), 0 16px 40px rgb(79 70 229 / 0.12);
 }
 
 :root {
-  /* light */
   --radius: 0.75rem;
-  --background: #ffffff;
-  --foreground: #09090b; /* zinc-950 */
+  --background: #f8f7fe;
+  --foreground: #1e1b4b;
   --card: #ffffff;
-  --card-foreground: #09090b;
+  --card-foreground: #1e1b4b;
   --popover: #ffffff;
-  --popover-foreground: #09090b;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  --muted-foreground: #52525b; /* zinc-100 / zinc-600 */
-  --border: #e4e4e7;
-  --input: #71717a; /* zinc-200 / zinc-500 */
-  --ring: #0d9488; /* teal-600 */
-  --primary: #0f766e;
-  --primary-foreground: #ffffff; /* teal-700 */
-  --accent: #f0fdfa;
-  --accent-foreground: #115e59; /* teal-50 / teal-800 */
+  --popover-foreground: #1e1b4b;
+  --secondary: #eeecfb;
+  --secondary-foreground: #312e81;
+  --muted: #f1effb;
+  --muted-foreground: #5b5876;
+  --border: #e4e1f7;
+  --input: #7c78a8;
+  --ring: #6366f1;
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --accent: #ede9fe;
+  --accent-foreground: #3730a3;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --success: #15803d;
+  --success: #047857;
   --success-foreground: #ffffff;
+  --success-soft: #d1fae5;
+  --success-soft-foreground: #065f46;
   --warning: #b45309;
   --warning-foreground: #ffffff;
+  --tile-lavender: #ede9fe;
+  --tile-lavender-foreground: #6d28d9;
+  --tile-blue: #dbeafe;
+  --tile-blue-foreground: #1d4ed8;
+  --tile-mint: #d1fae5;
+  --tile-mint-foreground: #047857;
+  --tile-peach: #ffedd5;
+  --tile-peach-foreground: #c2410c;
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #18181b;
-  --card-foreground: #fafafa; /* zinc-900 */
-  --popover: #18181b;
-  --popover-foreground: #fafafa;
-  --secondary: #27272a;
-  --secondary-foreground: #fafafa;
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa; /* zinc-800 / zinc-400 */
-  --border: #27272a;
-  --input: #71717a;
-  --ring: #2dd4bf; /* teal-400 */
-  --primary: #2dd4bf;
-  --primary-foreground: #09090b;
-  --accent: #134e4a;
-  --accent-foreground: #99f6e4;
+  --background: #0f0d24;
+  --foreground: #eeecff;
+  --card: #17153a;
+  --card-foreground: #eeecff;
+  --popover: #17153a;
+  --popover-foreground: #eeecff;
+  --secondary: #24214f;
+  --secondary-foreground: #eeecff;
+  --muted: #24214f;
+  --muted-foreground: #b4b0d9;
+  --border: #2e2a5e;
+  --input: #7a76ad;
+  --ring: #a5b4fc;
+  --primary: #a5b4fc;
+  --primary-foreground: #1e1b4b;
+  --accent: #2e2763;
+  --accent-foreground: #ddd6fe;
   --destructive: #f87171;
-  --destructive-foreground: #09090b;
-  --success: #4ade80;
-  --success-foreground: #09090b;
+  --destructive-foreground: #0f0d24;
+  --success: #6ee7b7;
+  --success-foreground: #022c22;
+  --success-soft: #063b2c;
+  --success-soft-foreground: #a7f3d0;
   --warning: #fbbf24;
-  --warning-foreground: #09090b;
+  --warning-foreground: #0f0d24;
+  --tile-lavender: #2e2763;
+  --tile-lavender-foreground: #c4b5fd;
+  --tile-blue: #172554;
+  --tile-blue-foreground: #93c5fd;
+  --tile-mint: #063b2c;
+  --tile-mint-foreground: #6ee7b7;
+  --tile-peach: #431407;
+  --tile-peach-foreground: #fdba74;
 }
 
 @layer base {

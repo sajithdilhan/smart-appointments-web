@@ -28,7 +28,7 @@ import { AuthIllustrationComponent, AuthIllustrationVariant } from './auth-illus
       </div>
       <aside
         aria-hidden="true"
-        class="grain relative hidden items-center justify-center overflow-hidden bg-linear-to-br from-brand-900 to-brand-950 p-12 lg:flex"
+        class="grain relative hidden items-center justify-center overflow-hidden bg-linear-to-br from-brand-800 to-brand-950 p-12 lg:flex"
       >
         <app-auth-illustration [variant]="illustration()" class="relative w-full" />
       </aside>

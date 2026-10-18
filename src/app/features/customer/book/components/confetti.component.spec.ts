@@ -2,7 +2,9 @@ import { render } from '@testing-library/angular';
 import {
   CONFETTI_MS,
   ConfettiComponent,
+  FALLBACK_COLOURS,
   MAX_PARTICLES,
+  THEME_VARIABLES,
   createParticles,
   stepParticle,
 } from './confetti.component';
@@ -34,6 +36,17 @@ describe('createParticles and stepParticle', () => {
     const vy = a.vy;
     stepParticle(a, 0.1);
     expect(a.vy).toBeGreaterThan(vy);
+  });
+});
+
+describe('confetti colours', () => {
+  it('reads the new palette variables and falls back to the indigo set', () => {
+    expect(THEME_VARIABLES).toEqual([
+      '--color-brand-500',
+      '--color-lavender-400',
+      '--color-success',
+    ]);
+    expect(FALLBACK_COLOURS).toEqual(['#6366f1', '#a78bfa', '#34d399', '#c7d2fe']);
   });
 });
 

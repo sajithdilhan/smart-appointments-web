@@ -12,7 +12,8 @@ Rules (from the template):
 
 **Chunks for parallel agents** (non-overlapping files, all after task 1): A = tasks 2 and 3 (shared and shells), B = tasks 4 and 5 (landing), C = task 6 (auth), D = tasks 7 to 11 (booking wizard), E = task 12 (other screens). Task 13 onwards runs after all chunks are merged into the branch.
 
-- [ ] 1. Palette and tokens
+- [x] 1. Palette and tokens
+  - _Done: 18/10/2026 4:13pm_
   - Replace the ramps and semantic tokens in `src/styles.css` with the design's values (indigo `brand`, `lavender`, light and dark tables, `success-soft`, the four `tile-*` pairs, radius and lavender-tinted shadows); add `shadow-soft` to the helm card's default classes.
   - Swap the hard-coded colours: `core/config/config-error.ts`, the `theme-color` meta in `src/index.html` if present, and the confetti fallback array plus its variable names (`--color-brand-500`, `--color-lavender-400`, `--color-success`).
   - Interim fix for the four `brand-*` users so they still render (the hero gradient, auth aside and illustration keep working with the new ramp; their redesign is in tasks 4 to 6).
