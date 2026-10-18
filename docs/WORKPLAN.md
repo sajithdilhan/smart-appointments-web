@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 18/10/2026 3:45pm
+Last updated: 18/10/2026 3:58pm
 
 ## How to resume
 
@@ -34,9 +34,9 @@ Last updated: 18/10/2026 3:45pm
 | --------------- | -------------------------------------------- | ---------------- | ----------- | ----------- |
 | F2 Public       | `f2-public` / `saw-wt/f2-public`             | `main` (F1)      | 1st         | #4 merged   |
 | F3 Booking      | `f3-booking` / `saw-wt/f3-booking`           | `main` (F1)      | 2nd         | #6 merged   |
-| F4 Appointments | `f4-appointments` / `saw-wt/f4-appointments` | `main` merged in | after F3    | raised      |
+| F4 Appointments | `f4-appointments` / `saw-wt/f4-appointments` | `main` merged in | after F3    | #7 merged   |
 | F5 Admin        | `f5-admin` / `saw-wt/f5-admin`               | `main` merged in | after F2    | #5 merged   |
-| F6 Redesign     | not created                                  | `main` after F4  | after F4    | not specced |
+| F6 Redesign     | `f6-redesign` / `saw-wt/f6-redesign`         | `main` after F4  | after F4    | not raised  |
 | F7 Polish       | not created                                  | —                | after F6    | not specced |
 
 The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; keep them until their phase is merged, then delete.
@@ -107,6 +107,29 @@ Tasks 1 to 13 and 17 done before this plan.
 | F5-T25 | Manual verification against the gateway | done 18/10/2026 10:24am | user  | by you against the Compose gateway (web on :4200); API checks: `TimeOnly` as `HH:mm:ss`, `PUT` returns the branch body, duplicate code `409` |
 | F5-PR  | Raise the F5 pull request               | in progress             | main  | `main` merged in (`4f1b487`); admin size walker fixed (`5a0725e`, 90.03 kB)                                                                  |
 
+## F6 Redesign (`f6-redesign`)
+
+Spec approved 18/10/2026 (requirements `b7e1669`, design `e29294e`, tasks). Task 1 first, then chunks A (T2, T3), B (T4, T5), C (T6), D (T7 to T11) and E (T12) in parallel, each in its own worktree `saw-wt/f6-<chunk>` branched from `f6-redesign` and merged back; then T13 to T15.
+
+| ID     | Task                                    | Status      | Owner |
+| ------ | --------------------------------------- | ----------- | ----- |
+| F6-T1  | Palette and tokens                      | in progress | agent |
+| F6-T2  | Brand mark, theme toggle, badges        | todo        | agent |
+| F6-T3  | Shell headers                           | todo        | agent |
+| F6-T4  | Landing hero and scene                  | todo        | agent |
+| F6-T5  | Landing sections                        | todo        | agent |
+| F6-T6  | Login and register                      | todo        | agent |
+| F6-T7  | Stepper                                 | todo        | agent |
+| F6-T8  | Branch and service cards, action bar    | todo        | agent |
+| F6-T9  | Month grid model                        | todo        | agent |
+| F6-T10 | Month calendar and time grid            | todo        | agent |
+| F6-T11 | Review and success                      | todo        | agent |
+| F6-T12 | Other screens                           | todo        | agent |
+| F6-T13 | Full gate, budgets and e2e              | todo        | main  |
+| F6-T14 | Documentation                           | todo        | agent |
+| F6-T15 | Manual verification against the gateway | todo        | main  |
+| F6-PR  | Raise the F6 pull request               | todo        | main  |
+
 ## Next up
 
 F2, F3 and F5 are merged (PRs #4, #6, #5; the Nx workspace is #3). F4 is complete and its PR is raised.
@@ -148,6 +171,8 @@ F2, F3 and F5 are merged (PRs #4, #6, #5; the Nx workspace is #3). F4 is complet
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 18/10/2026 3:58pm: F4 PR #7 merged. F6 spec approved (requirements, design, tasks); F6-T1 started.
 
 - 18/10/2026 3:45pm: `main` (F2, F3, F5, Nx) merged into `f4-appointments` (`4f62c9b`, `570fd63`). Two e2e specs fixed after the merge (`945273f`): the login heading is now "Welcome back", and the booking axe check waits for the entrance animations. Gate, every size group and 95/95 e2e pass. F4-T14 done: a live pass against the Compose gateway, every step passed. F4 PR raised. F6 is now the Indigo + Lavender redesign; Polish moves to F7.
 
