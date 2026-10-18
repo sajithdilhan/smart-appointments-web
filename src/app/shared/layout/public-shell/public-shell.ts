@@ -23,7 +23,7 @@ import { SkipLink } from '../skip-link';
         <div
           class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3"
         >
-          <a routerLink="/" class="text-lg"><app-brand-mark /></a>
+          <a routerLink="/" class="text-lg"><app-brand-mark [collapseOnPhone]="true" /></a>
           <div class="flex flex-wrap items-center gap-3">
             <app-theme-toggle />
             <nav aria-label="Account" class="flex items-center gap-2">

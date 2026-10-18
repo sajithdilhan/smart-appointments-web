@@ -19,11 +19,21 @@ import { lucideCalendarCheck } from '@ng-icons/lucide';
     >
       <ng-icon name="lucideCalendarCheck" size="18" aria-hidden="true" />
     </span>
-    <span [class]="compact() ? 'sr-only' : 'truncate font-bold tracking-tight'">
+    <span
+      [class]="
+        compact()
+          ? 'sr-only'
+          : collapseOnPhone()
+            ? 'truncate font-bold tracking-tight max-sm:sr-only'
+            : 'truncate font-bold tracking-tight'
+      "
+    >
       Smart Appointments
     </span>
   `,
 })
 export class BrandMark {
   readonly compact = input(false);
+  /** Icon only below the `sm` breakpoint; the wordmark stays as screen-reader text. */
+  readonly collapseOnPhone = input(false);
 }

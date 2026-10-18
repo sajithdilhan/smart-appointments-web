@@ -12,4 +12,9 @@ describe('BrandMark', () => {
     await render(BrandMark, { inputs: { compact: true } });
     expect(screen.getByText('Smart Appointments').className).toContain('sr-only');
   });
+
+  it('hides the wordmark visually below sm but keeps it readable with collapseOnPhone', async () => {
+    await render(BrandMark, { inputs: { collapseOnPhone: true } });
+    expect(screen.getByText('Smart Appointments').className).toContain('max-sm:sr-only');
+  });
 });

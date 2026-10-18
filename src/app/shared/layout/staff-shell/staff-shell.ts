@@ -20,7 +20,7 @@ import { SkipLink } from '../skip-link';
     <div class="flex min-h-dvh flex-col bg-background text-foreground">
       <header class="border-b border-border">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-          <a routerLink="/staff" class="text-lg"><app-brand-mark /></a>
+          <a routerLink="/staff" class="text-lg"><app-brand-mark [collapseOnPhone]="true" /></a>
           <div class="flex items-center gap-3">
             <span class="hidden text-sm text-muted-foreground sm:inline">
               {{ session.displayName() }}

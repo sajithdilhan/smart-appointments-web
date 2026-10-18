@@ -58,7 +58,9 @@ import { SuccessCheckComponent } from './success-check.component';
       >
         <p class="text-sm font-medium">Booking reference</p>
         <div class="flex items-center justify-center gap-2">
-          <code class="font-mono text-lg font-bold break-all select-all">
+          <code
+            class="font-mono text-sm font-bold tracking-tight break-all select-all sm:text-base"
+          >
             {{ b.appointment.id }}
           </code>
           <button

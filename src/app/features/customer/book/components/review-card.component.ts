@@ -156,7 +156,7 @@ export function loadProfileIfIdle(session: Session): void {
         </div>
       }
     </div>
-    <p class="text-sm text-muted-foreground">
+    <p class="pt-3 text-sm text-muted-foreground">
       You can cancel this appointment from My appointments.
     </p>
 
