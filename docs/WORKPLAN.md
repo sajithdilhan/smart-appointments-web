@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 17/10/2026 5:12pm
+Last updated: 18/10/2026 9:56am
 
 ## How to resume
 
@@ -44,12 +44,12 @@ The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; 
 
 Tasks 1 to 14 done before this plan.
 
-| ID     | Task                                    | Status                 | Owner | Notes                                                                                                                      |
-| ------ | --------------------------------------- | ---------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
-| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am | main  | `2f5c841`; public group 26.47 kB gzip of 50                                                                                |
-| F2-T16 | Documentation                           | done 10/10/2026 9:51am | agent | `822fe0f`; README gains "What F2 provides" and "Known gaps (F2)"                                                           |
-| F2-T17 | Manual verification against the gateway | in progress            | user  | automated live pass 11/11 + API contract OK; left: Admin login (no seed), screen reader, register keyboard and visual pass |
-| F2-PR  | Raise the F2 pull request               | todo                   | user  | after T16; T17 result in the description                                                                                   |
+| ID     | Task                                    | Status                 | Owner | Notes                                                                                                                    |
+| ------ | --------------------------------------- | ---------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------ |
+| F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am | main  | `2f5c841`; public group 26.47 kB gzip of 50                                                                              |
+| F2-T16 | Documentation                           | done 10/10/2026 9:51am | agent | `822fe0f`; README gains "What F2 provides" and "Known gaps (F2)"                                                         |
+| F2-T17 | Manual verification against the gateway | done 18/10/2026 9:56am | user  | automated live pass 11/11 + API contract OK (17/10); Admin login, screen reader, keyboard and visual pass by you (18/10) |
+| F2-PR  | Raise the F2 pull request               | in progress            | main  | `main` (Nx workspace) merged into `f2-public` first (`5ef0b3b`, `404be46`)                                               |
 
 ## F3 Booking (`f3-booking`)
 
@@ -121,6 +121,10 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 
 ## Watch list
 
+- Nx daemon (since the Nx workspace, PR #3): the first `nx` command starts a background daemon that inherits the caller's stdout, so a script that captures `pnpm test` output with `$(...)` or a pipe never returns. Run gates with `NX_DAEMON=false` or write output to a file. Nx also caches task results; pass `--skip-nx-cache` when a fresh run is needed.
+- Manual-check environment (18/10/2026): Windows reserved TCP 8071 to 8170 (Hyper-V/WinNAT, changes per reboot), so the web container could not bind 8081; it ran with `WEB_PORT=4200`. The backend Compose `Cors__AllowedOrigins__0: ${WEB_ORIGIN}` replaces the development list's 4200 entry, so the backend `.env` needed `WEB_ORIGIN=http://localhost:4200` (backend quirk to fix). The Compose database already held `admin@example.com` with an unknown password, so the seeder skipped; a QA admin `qa-admin@example.com` was registered and promoted to `Role=3` instead.
+- When rebasing or merging F3 to F5 onto `main`: `angular.json` is gone, and any edit to it (for example F3's `statsJson`) moves to `project.json`.
+
 - Backend OpenAPI gap: `pnpm gen:api` on 17/10/2026 matched the committed types exactly, because the Availability and Booking operations (and Auth `register`/`me`) declare no response bodies. The temporary types in `core/api/models.ts` (including F4's `MyAppointmentsPage`) stay until the backend adds response metadata (`Produces<T>` or typed results); then regenerate and delete them.
 - Commit hooks broke on 17/10/2026: a `pnpm install` in `C:\Users\sajit` (an old `package.json` depending on the npm `node` package) left a broken `node.cmd` shim that lint-staged's tinyexec found on its `node_modules/.bin` walk ("The system cannot find the path specified"). Moved to `C:\Users\sajit\node-leftovers-backup-20261017`; delete that folder once nothing misses it.
 
@@ -141,6 +145,8 @@ All agent-owned tasks for F2 to F5 are done (no agent is running). What remains 
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 18/10/2026 9:56am: F2-T17 done (manual check by you against the Compose gateway, web on :4200). `main` with the Nx workspace merged into `f2-public`; gate passes (lint, format, typecheck, test with coverage, build, size, size:public, test:scripts). F2 PR next.
 
 - 17/10/2026 5:12pm: F2-T17 in progress: live API contract checks and an 11-step Playwright pass against the gateway all passed (web container on :8081). Left for you: seed an Admin and check `/admin`, a screen-reader pass, and the register keyboard and visual check. Results drafted for the PR description.
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold) and F1 (core) are built; there is no feature screen yet, only placeholder pages behind the routes.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F1 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F2 to F6 specs are added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core) and F2 (public pages: landing, login, register) are built; the customer, admin and staff routes still show placeholder pages.** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything after F2 is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F3 to F6 specs are added one phase at a time.
 
 What exists today:
 
@@ -17,10 +17,11 @@ What exists today:
   - `auth`: `SessionStore` (`@ngrx/signals`), `TokenStorage`, JWT decode, `RefreshCoordinator` (single flight inside a Web Lock), `RefreshScheduler`, `CrossTabSync` and `SessionSync`, `SessionEnder`, `authGuard`/`guestGuard`/`roleGuard`, `landingRouteFor`, `safeReturnUrl`, `resolvePostLoginTarget`, `landingCtas`, `provideAuth()` (the restore initializer).
   - `notify` (`ToastService`), `routing` (`AppTitleStrategy`), `time` (all UTC parsing, zone formatting, calendar, `localToUtc` and branch-hours maths), `util` (`CLOCK`, `localSafe`/`sessionSafe`, `ViewportService`), `ui` (`PaletteLauncher`).
 - **Layout (F1)** under `src/app/shared/layout/`: public, customer, admin and staff shells, user menu, skip link, route progress and announcer, breadcrumb trail, outage banner, not-found page. App primitives in `shared/ui/`: `theme-toggle`, `rate-limit-notice`.
-- **Routes**: all lazy; public (`/`, `/login`, `/register`), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page, each rendering a `PlaceholderPage` (or the staff placeholder) until F2 to F5.
+- **Public pages (F2)** under `src/app/features/public/`: `landing/` (hero, value props, how it works, call-to-action band), `login/`, `register/` (with the password checklist), `auth/` (auth layout, illustration, password field), `validation/` (password rules and messages), `public.routes.ts`, `titles.ts`. Form primitives live in `src/app/shared/forms/` (field view, form field, field a11y directive, form alert, validators, phone normaliser, first-invalid focus) and the heading focus directive in `src/app/shared/a11y/`. `/` renders for signed-in users too; `/login` and `/register` use `guestGuard`. Query parameters on `/login`: `returnUrl` (through `safeReturnUrl`), `reason=session-expired` (set by `SessionEnder` and `SessionSync`) and `reason=registered` with `email` (set by register when the automatic login fails; a successful registration lands on `/book`). Spec: `docs/specs/f2-public/`.
+- **Routes**: all lazy; public (`/`, `/login`, `/register`, built in F2), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**`, `/staff`, and a `**` 404 page; all but the public ones render a `PlaceholderPage` (or the staff placeholder) until F3 to F5.
 - **Quality and delivery**: ESLint (angular-eslint, flat config, date and layering rules), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW (with a stateful mock of the auth endpoints), Playwright with mocked routes, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
 
-Not present yet (do not assume): any feature screen (login and register forms, booking, appointments, admin pages), the Availability and Booking API methods, i18n, the command palette (only the `PaletteLauncher` seam exists).
+Not present yet (do not assume): the customer and admin feature screens (booking, appointments, profile, admin pages), the Availability and Booking API methods, i18n, the command palette (only the `PaletteLauncher` seam exists).
 
 ## Commands
 
@@ -34,6 +35,7 @@ pnpm lint                          # eslint . --max-warnings 0
 pnpm format                        # prettier --write . ; pnpm format:check to verify
 pnpm typecheck                     # tsc on tsconfig.app.json and tsconfig.spec.json
 pnpm size                          # gzip size of the initial files in dist; fails above 250 kB
+pnpm size:public                   # gzip size of the public feature chunks (after pnpm build); fails above 50 kB
 pnpm test:scripts                  # node --test of scripts/ (gen-api, the date lint rules)
 pnpm gen:api                       # regenerate core/api/generated from a running Development gateway (GATEWAY_URL overrides)
 pnpm e2e                           # Playwright (routes mocked); starts pnpm start unless E2E_BASE_URL is set

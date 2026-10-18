@@ -5,7 +5,7 @@ test('an anonymous visit to /book redirects to /login with the return URL', asyn
   const backend = await mockBackend(page);
   await page.goto('/book');
   await expect(page).toHaveURL(/\/login\?returnUrl=%2Fbook$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Sign in' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Welcome back' })).toBeVisible();
   expect(backend.refreshCalls()).toBe(0);
 });
 
@@ -42,7 +42,7 @@ test('a 401 from the refresh endpoint clears the session and shows the login rou
   await seedRefreshToken(page, 'rt_stale');
   await page.goto('/book');
   await expect(page).toHaveURL(/\/login\?returnUrl=%2Fbook$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Sign in' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Welcome back' })).toBeVisible();
   expect(backend.refreshCalls()).toBe(1);
   expect(await page.evaluate((key) => localStorage.getItem(key), REFRESH_KEY)).toBeNull();
 });
