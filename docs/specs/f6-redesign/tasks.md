@@ -90,11 +90,13 @@ Rules (from the template):
   - Specs: `review-step.component.spec` (Edit per step, Contact with and without profile, no error UI on profile failure), `success-step.component.spec` (heading, reference card, links).
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 12. Other screens
+- [x] 12. Other screens
   - Appointment status badge: Booked default, Cancelled `muted`; admin status badge: Active `success`, Inactive `muted`.
   - Visual pass of `/appointments`, the detail sheet and page, `/profile`, `/staff`, the 404 page and every admin screen in both themes at 1280 and 390 px (screenshots from the mocked e2e build); fix token-level issues, and list any layout issue under Known gaps instead of fixing it.
   - Specs: badge specs for the variants; the appointments and admin axe suites in both themes.
+  - Known gaps (visual pass, light and dark, 1280 and 390 px; no hard-coded colours or token clashes found in these screens): the staff placeholder header wraps the brand to two lines at 390 px (shell layout, task 3); the admin breadcrumb wraps "Slot generation" onto two lines at 390 px; the profile theme radios are widely spaced.
   - _Requirements: 9.1, 9.2, 9.3_
+  - _Done: 18/10/2026 4:46pm_
 
 - [ ] 13. Full gate, budgets and e2e
   - `pnpm lint`, `format:check`, `typecheck`, `test`, `build`, every `size:*` group within its budget, `test:scripts`, and `pnpm e2e` (all flows and axe suites, both themes) on the merged branch; fix what fails.

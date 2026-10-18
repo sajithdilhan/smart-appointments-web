@@ -24,23 +24,24 @@ const view = (start: string, over: { tab?: 'upcoming' | 'past'; zone?: string | 
 describe('AppointmentStatusBadge', () => {
   it('shows Booked and Cancelled as text', async () => {
     await render(AppointmentStatusBadge, { inputs: { status: 'Booked' } });
-    expect(screen.getByText('Booked')).toBeTruthy();
+    expect(screen.getByText('Booked').getAttribute('data-variant')).toBe('default');
   });
 
   it('a past Booked keeps "Booked" with hidden "(past)" and never "Completed"', async () => {
     await render(AppointmentStatusBadge, { inputs: { status: 'Booked', isPast: true } });
     expect(screen.getByText('Booked', { exact: false }).textContent).toContain('(past)');
     expect(screen.queryByText(/completed/i)).toBeNull();
+    expect(screen.getByText('Booked', { exact: false }).getAttribute('data-variant')).toBe('muted');
   });
 
   it('Cancelled is neutral text', async () => {
     await render(AppointmentStatusBadge, { inputs: { status: 'Cancelled' } });
-    expect(screen.getByText('Cancelled').getAttribute('data-variant')).toBe('secondary');
+    expect(screen.getByText('Cancelled').getAttribute('data-variant')).toBe('muted');
   });
 
   it('an unknown status renders its own text, neutral', async () => {
     await render(AppointmentStatusBadge, { inputs: { status: 'NoShow' } });
-    expect(screen.getByText('NoShow').getAttribute('data-variant')).toBe('secondary');
+    expect(screen.getByText('NoShow').getAttribute('data-variant')).toBe('muted');
   });
 
   it('the cancelling state reads "Cancelling…" and the spinner is motion-safe', async () => {

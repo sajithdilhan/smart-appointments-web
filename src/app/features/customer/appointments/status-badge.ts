@@ -13,7 +13,7 @@ import { HlmBadgeImports } from '@app/shared/ui/badge';
   providers: [provideIcons({ lucideBan, lucideCalendarCheck, lucideLoaderCircle })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <span hlmBadge [variant]="variant()" [class.text-muted-foreground]="mutedPast()">
+    <span hlmBadge [variant]="variant()">
       @switch (kind()) {
         @case ('cancelling') {
           <ng-icon name="lucideLoaderCircle" aria-hidden="true" class="motion-safe:animate-spin" />
@@ -46,6 +46,8 @@ export class AppointmentStatusBadge {
     return 'unknown';
   });
   protected readonly text = computed(() => (this.cancelling() ? 'Cancelling…' : this.status()));
-  protected readonly variant = computed(() => (this.kind() === 'booked' ? 'default' : 'secondary'));
+  protected readonly variant = computed(() =>
+    this.kind() === 'booked' && !this.isPast() ? 'default' : 'muted',
+  );
   protected readonly mutedPast = computed(() => this.isPast() && this.kind() === 'booked');
 }

@@ -293,6 +293,7 @@ describe('StatusBadge', () => {
     vi.useRealTimers();
     await render(StatusBadge, { inputs: { active } });
     expect(screen.getByText(text)).toBeInTheDocument();
+    expect(screen.getByText(text).getAttribute('data-variant')).toBe(active ? 'success' : 'muted');
   });
 });
 

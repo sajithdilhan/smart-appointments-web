@@ -10,7 +10,7 @@ import { HlmBadge } from '@app/shared/ui/badge';
   providers: [provideIcons({ lucideCircleCheck, lucideCircleOff })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <span hlmBadge [variant]="active() ? 'default' : 'outline'">
+    <span hlmBadge [variant]="active() ? 'success' : 'muted'">
       <ng-icon [name]="active() ? 'lucideCircleCheck' : 'lucideCircleOff'" aria-hidden="true" />
       {{ active() ? 'Active' : 'Inactive' }}
     </span>
