@@ -75,6 +75,21 @@ describe('BranchStepComponent', () => {
     });
   });
 
+  it('uses the success badge for Open now and the muted badge for Closed', async () => {
+    await renderBook({ nowMs: utc('2026-10-05T08:00:00Z') });
+    const open = within(await screen.findByRole('radio', { name: 'London' })).getByText('Open now');
+    expect(open).toHaveAttribute('data-variant', 'success');
+    const closed = within(card('Auckland')).getByText('Closed');
+    expect(closed).toHaveAttribute('data-variant', 'muted');
+  });
+
+  it('keeps a decorative radio dot on every card', async () => {
+    await renderBook();
+    const cards = await screen.findAllByRole('radio');
+    for (const c of cards)
+      expect(c.querySelector('[aria-hidden="true"].rounded-full')).not.toBeNull();
+  });
+
   it('refreshes the badge once a minute', async () => {
     const view = await renderBook({ nowMs: utc('2026-10-05T15:59:30Z') });
     expect(
@@ -185,6 +200,42 @@ describe('BranchStepComponent', () => {
       screen.getByRole('button', { name: 'Clear search' }).click();
       view.harness.fixture.detectChanges();
       expect(screen.getAllByRole('radio')).toHaveLength(4);
+    });
+
+    it('shows a Clear search button only for a non-empty search; it empties the field and refocuses it', async () => {
+      const view = await renderBook();
+      await screen.findByRole('radio', { name: 'London' });
+      expect(screen.queryByRole('button', { name: 'Clear search' })).toBeNull();
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      const input = screen.getByRole('searchbox', { name: 'Search branches' });
+      fireEvent.input(input, { target: { value: 'lon' } });
+      vi.advanceTimersByTime(150);
+      view.harness.fixture.detectChanges();
+      expect(screen.getAllByRole('radio')).toHaveLength(1);
+      screen.getByRole('button', { name: 'Clear search' }).click();
+      view.harness.fixture.detectChanges();
+      expect(input).toHaveValue('');
+      expect(input).toHaveFocus();
+      expect(screen.getAllByRole('radio')).toHaveLength(4);
+      expect(screen.queryByRole('button', { name: 'Clear search' })).toBeNull();
+    });
+
+    it('has one Clear search button when nothing matches (the empty state offers it)', async () => {
+      const view = await renderBook();
+      await screen.findByRole('radio', { name: 'London' });
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      fireEvent.input(screen.getByRole('searchbox', { name: 'Search branches' }), {
+        target: { value: 'zzz' },
+      });
+      vi.advanceTimersByTime(150);
+      view.harness.fixture.detectChanges();
+      expect(screen.getAllByRole('button', { name: 'Clear search' })).toHaveLength(1);
+    });
+
+    it('draws a decorative search icon in the field', async () => {
+      await renderBook();
+      const input = await screen.findByRole('searchbox', { name: 'Search branches' });
+      expect(input.parentElement?.querySelector('ng-icon[aria-hidden="true"]')).not.toBeNull();
     });
   });
 

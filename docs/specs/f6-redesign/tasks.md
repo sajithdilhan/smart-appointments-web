@@ -64,7 +64,8 @@ Rules (from the template):
   - Specs: `step-indicator.component.spec` rewritten for each step, the success state, `disabled`, and the small-screen line.
   - _Requirements: 6.1_
 
-- [ ] 8. Branch and service cards, action bar
+- [x] 8. Branch and service cards, action bar
+  - _Done: 18/10/2026 5:02pm_
   - Branch search gets a leading search icon and a "Clear search" button when non-empty (existing debounce and no-match state kept).
   - Branch card: "Open now"/"Closed" on the `success`/`muted` badge variants; selected card styling and the leading radio dot, also on service cards.
   - Action bar buttons with arrow icons (position classes unchanged).

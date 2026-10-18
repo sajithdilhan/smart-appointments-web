@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideArrowLeft, lucideArrowRight } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { fromEpochMs, zoneDiffersFromBrowser } from '../../../../core/time';
 import { StepHeadingDirective } from '../step-heading.directive';
@@ -22,9 +24,11 @@ export function zoneCity(zoneId: string): string {
     ActionBarComponent,
     DateStripComponent,
     HlmButtonImports,
+    NgIcon,
     SlotsStatusComponent,
     StepHeadingDirective,
   ],
+  providers: [provideIcons({ lucideArrowLeft, lucideArrowRight })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'book-step flex flex-col gap-4' },
   template: `
@@ -35,7 +39,10 @@ export function zoneCity(zoneId: string): string {
     }
     <app-slots-status />
     <app-action-bar>
-      <button hlmBtn variant="outline" type="button" (click)="store.goTo('service')">Back</button>
+      <button hlmBtn variant="outline" type="button" (click)="store.goTo('service')">
+        <ng-icon name="lucideArrowLeft" aria-hidden="true" />
+        Back
+      </button>
       <button
         hlmBtn
         type="button"
@@ -43,6 +50,7 @@ export function zoneCity(zoneId: string): string {
         (click)="store.continueToReview()"
       >
         Continue to review
+        <ng-icon name="lucideArrowRight" aria-hidden="true" />
       </button>
     </app-action-bar>
   `,

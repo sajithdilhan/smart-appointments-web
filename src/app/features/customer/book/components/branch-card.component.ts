@@ -28,43 +28,46 @@ import { formatClock } from '../clock-text';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class:
-      'flex min-h-11 cursor-pointer flex-col gap-2 rounded-xl border border-input bg-card p-4 text-start text-card-foreground hover:bg-accent aria-checked:border-primary aria-checked:ring-2 aria-checked:ring-ring aria-disabled:cursor-not-allowed aria-disabled:opacity-60 aria-disabled:hover:bg-card',
+      'group flex min-h-11 cursor-pointer items-start gap-3 rounded-2xl border border-input bg-card p-4 text-start text-card-foreground hover:bg-accent aria-checked:border-primary aria-checked:bg-accent/50 aria-checked:ring-1 aria-checked:ring-primary aria-disabled:cursor-not-allowed aria-disabled:opacity-60 aria-disabled:hover:bg-card',
     '[attr.aria-labelledby]': 'nameId()',
     '[attr.aria-describedby]': 'describedBy()',
   },
   template: `
-    <span [id]="nameId()" class="text-base font-semibold">{{ branch().name }}</span>
-    <span [id]="addressId()" class="flex items-start gap-1.5 text-sm text-muted-foreground">
-      <ng-icon name="lucideMapPin" size="16" class="mt-0.5 shrink-0" aria-hidden="true" />
-      {{ branch().address }}
+    <span
+      aria-hidden="true"
+      class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-input group-aria-checked:border-primary"
+    >
+      <span class="size-2 rounded-full group-aria-checked:bg-primary"></span>
     </span>
-    @if (branch().description) {
-      <span class="line-clamp-2 text-sm text-muted-foreground">{{ branch().description }}</span>
-    }
-    <span class="flex items-center gap-1.5 text-sm text-muted-foreground">
-      <ng-icon name="lucidePhone" size="16" class="shrink-0" aria-hidden="true" />
-      {{ branch().phoneNumber }}
-    </span>
-    @if (schedule(); as s) {
-      <span [id]="hoursId()" class="flex flex-wrap items-center gap-2 text-sm">
-        <ng-icon name="lucideClock" size="16" class="shrink-0" aria-hidden="true" />
-        <span>{{ hoursText() }}</span>
-        @if (open()) {
-          <span hlmBadge variant="default">
-            <ng-icon name="lucideCircleCheck" aria-hidden="true" />
-            Open now
-          </span>
-        } @else {
-          <span hlmBadge variant="secondary">
-            <ng-icon name="lucideCircleX" aria-hidden="true" />
-            Closed
-          </span>
-        }
+    <span class="flex min-w-0 flex-1 flex-col gap-2">
+      <span [id]="nameId()" class="text-base font-semibold">{{ branch().name }}</span>
+      <span [id]="addressId()" class="flex items-start gap-1.5 text-sm text-muted-foreground">
+        <ng-icon name="lucideMapPin" size="16" class="mt-0.5 shrink-0" aria-hidden="true" />
+        {{ branch().address }}
       </span>
-    } @else {
-      <span hlmBadge variant="outline">Online booking not available</span>
-      <span [id]="reasonId()" class="sr-only">
-        This branch cannot be booked online yet, so it cannot be selected.
+      @if (branch().description) {
+        <span class="line-clamp-2 text-sm text-muted-foreground">{{ branch().description }}</span>
+      }
+      <span class="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <ng-icon name="lucidePhone" size="16" class="shrink-0" aria-hidden="true" />
+        {{ branch().phoneNumber }}
+      </span>
+      @if (schedule(); as s) {
+        <span [id]="hoursId()" class="flex items-center gap-1.5 text-sm">
+          <ng-icon name="lucideClock" size="16" class="shrink-0" aria-hidden="true" />
+          <span>{{ hoursText() }}</span>
+        </span>
+      } @else {
+        <span hlmBadge variant="outline" class="self-start">Online booking not available</span>
+        <span [id]="reasonId()" class="sr-only">
+          This branch cannot be booked online yet, so it cannot be selected.
+        </span>
+      }
+    </span>
+    @if (schedule()) {
+      <span [id]="statusId()" hlmBadge [variant]="open() ? 'success' : 'muted'" class="shrink-0">
+        <ng-icon [name]="open() ? 'lucideCircleCheck' : 'lucideCircleX'" aria-hidden="true" />
+        {{ open() ? 'Open now' : 'Closed' }}
       </span>
     }
   `,
@@ -93,10 +96,11 @@ export class BranchCardComponent {
   protected readonly nameId = computed(() => `branch-${this.branch().id}-name`);
   protected readonly addressId = computed(() => `branch-${this.branch().id}-address`);
   protected readonly hoursId = computed(() => `branch-${this.branch().id}-hours`);
+  protected readonly statusId = computed(() => `branch-${this.branch().id}-status`);
   protected readonly reasonId = computed(() => `branch-${this.branch().id}-reason`);
   protected readonly describedBy = computed(() =>
     this.schedule()
-      ? `${this.addressId()} ${this.hoursId()}`
+      ? `${this.addressId()} ${this.hoursId()} ${this.statusId()}`
       : `${this.addressId()} ${this.reasonId()}`,
   );
 }

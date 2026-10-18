@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoaderCircle } from '@ng-icons/lucide';
+import { lucideArrowLeft, lucideArrowRight, lucideLoaderCircle } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { InlineAlert } from '@app/shared/ui/inline-alert';
 import { RateLimitNotice } from '@app/shared/ui/rate-limit-notice';
@@ -45,7 +45,7 @@ export const RETRYABLE_MESSAGE =
     RouterLink,
     StepHeadingDirective,
   ],
-  providers: [provideIcons({ lucideLoaderCircle })],
+  providers: [provideIcons({ lucideArrowLeft, lucideArrowRight, lucideLoaderCircle })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'book-step flex flex-col gap-4' },
   template: `
@@ -110,6 +110,7 @@ export const RETRYABLE_MESSAGE =
         [disabled]="busy()"
         (click)="store.goTo('datetime')"
       >
+        <ng-icon name="lucideArrowLeft" aria-hidden="true" />
         Back
       </button>
       @switch (state().s) {
@@ -143,6 +144,9 @@ export const RETRYABLE_MESSAGE =
               />
             }
             Confirm booking
+            @if (!busy()) {
+              <ng-icon name="lucideArrowRight" aria-hidden="true" />
+            }
           </button>
         }
       }
