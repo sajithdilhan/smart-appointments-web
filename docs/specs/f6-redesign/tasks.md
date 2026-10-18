@@ -30,7 +30,8 @@ Rules (from the template):
   - Specs: brand mark renders the wordmark and a hidden icon; theme toggle spec still passes; badge variants' classes.
   - _Requirements: 2.1, 2.3, 6.3, 9.2_
 
-- [ ] 3. Shell headers
+- [x] 3. Shell headers
+  - _Done: 18/10/2026 4:53pm_
   - Public, customer, staff and admin shells use `BrandMark` inside their existing brand link.
   - Public header: "Sign in" outline, "Create account" filled (or "Go to my dashboard").
   - Customer shell: active desktop link with the indigo underline, active tab-bar item in `text-primary`; layout classes unchanged.

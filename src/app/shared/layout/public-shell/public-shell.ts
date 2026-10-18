@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { BrandMark } from '@app/shared/ui/brand-mark';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { ThemeToggle } from '@app/shared/ui/theme-toggle';
 import { landingCtas } from '../../../core/auth/landing-cta';
@@ -13,7 +14,7 @@ import { SkipLink } from '../skip-link';
  */
 @Component({
   selector: 'app-public-shell',
-  imports: [HlmButtonImports, RouterLink, RouterOutlet, SkipLink, ThemeToggle],
+  imports: [BrandMark, HlmButtonImports, RouterLink, RouterOutlet, SkipLink, ThemeToggle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-skip-link />
@@ -22,7 +23,7 @@ import { SkipLink } from '../skip-link';
         <div
           class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3"
         >
-          <a routerLink="/" class="text-lg font-semibold tracking-tight">Smart Appointments</a>
+          <a routerLink="/" class="text-lg"><app-brand-mark /></a>
           <div class="flex flex-wrap items-center gap-3">
             <app-theme-toggle />
             <nav aria-label="Account" class="flex items-center gap-2">

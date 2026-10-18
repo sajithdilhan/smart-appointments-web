@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCalendarDays, lucideCalendarPlus, lucideUser } from '@ng-icons/lucide';
+import { BrandMark } from '@app/shared/ui/brand-mark';
 import { ThemeToggle } from '@app/shared/ui/theme-toggle';
 import { ViewportService } from '../../../core/util/viewport.service';
 import { SkipLink } from '../skip-link';
@@ -21,7 +22,16 @@ interface NavItem {
  */
 @Component({
   selector: 'app-customer-shell',
-  imports: [NgIcon, RouterLink, RouterLinkActive, RouterOutlet, SkipLink, ThemeToggle, UserMenu],
+  imports: [
+    BrandMark,
+    NgIcon,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    SkipLink,
+    ThemeToggle,
+    UserMenu,
+  ],
   providers: [provideIcons({ lucideCalendarDays, lucideCalendarPlus, lucideUser })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -30,16 +40,14 @@ interface NavItem {
       @if (viewport.isMd()) {
         <header class="sticky top-0 z-40 border-b border-border bg-background">
           <div class="mx-auto flex max-w-6xl items-center gap-6 px-4 py-2">
-            <a routerLink="/book" class="text-lg font-semibold tracking-tight">
-              Smart Appointments
-            </a>
+            <a routerLink="/book" class="text-lg"><app-brand-mark /></a>
             <nav aria-label="Main" class="flex flex-1 items-center gap-1">
               @for (item of items; track item.href) {
                 <a
                   [routerLink]="item.href"
-                  routerLinkActive="text-primary bg-muted"
+                  routerLinkActive="text-primary after:bg-primary"
                   ariaCurrentWhenActive="page"
-                  class="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
+                  class="relative rounded-md px-3 py-2 text-sm font-medium after:absolute after:inset-x-3 after:-bottom-2 after:h-0.5 after:rounded-full after:content-[''] hover:bg-muted"
                 >
                   {{ item.label }}
                 </a>
@@ -52,7 +60,7 @@ interface NavItem {
       } @else {
         <header class="sticky top-0 z-40 border-b border-border bg-background">
           <div class="flex items-center justify-between gap-2 px-4 py-2">
-            <a routerLink="/book" class="font-semibold tracking-tight">Smart Appointments</a>
+            <a routerLink="/book" class="flex min-w-0"><app-brand-mark /></a>
             <div class="flex items-center gap-2">
               <app-theme-toggle />
               <app-user-menu />

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { BrandMark } from '@app/shared/ui/brand-mark';
 import { HlmButtonImports } from '@app/shared/ui/button';
 import { ThemeToggle } from '@app/shared/ui/theme-toggle';
 import { SessionStore } from '../../../core/auth/session.store';
@@ -12,16 +13,14 @@ import { SkipLink } from '../skip-link';
  */
 @Component({
   selector: 'app-staff-shell',
-  imports: [HlmButtonImports, RouterLink, RouterOutlet, SkipLink, ThemeToggle],
+  imports: [BrandMark, HlmButtonImports, RouterLink, RouterOutlet, SkipLink, ThemeToggle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-skip-link />
     <div class="flex min-h-dvh flex-col bg-background text-foreground">
       <header class="border-b border-border">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-          <a routerLink="/staff" class="text-lg font-semibold tracking-tight">
-            Smart Appointments
-          </a>
+          <a routerLink="/staff" class="text-lg"><app-brand-mark /></a>
           <div class="flex items-center gap-3">
             <span class="hidden text-sm text-muted-foreground sm:inline">
               {{ session.displayName() }}

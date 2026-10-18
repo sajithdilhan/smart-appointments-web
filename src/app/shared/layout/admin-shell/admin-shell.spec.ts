@@ -71,6 +71,17 @@ describe('AdminShell', () => {
       expect(sidebar().className).toContain('w-60');
     });
 
+    it('keeps the brand link accessible when collapsed', async () => {
+      const { user } = await renderShell(1280);
+      expect(screen.getByRole('link', { name: 'Smart Appointments' }).getAttribute('href')).toBe(
+        '/admin',
+      );
+      await user.click(toggle());
+      expect(
+        screen.getByRole('link', { name: 'Smart Appointments admin' }).getAttribute('href'),
+      ).toBe('/admin');
+    });
+
     it('persists the collapsed state across a re-render', async () => {
       const first = await renderShell(1280);
       await first.user.click(toggle());
