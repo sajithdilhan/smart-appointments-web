@@ -1,3 +1,4 @@
+import { isGuid } from '../util/guid';
 import { ROLES, type Role } from './session.model';
 
 export interface AccessClaims {
@@ -6,10 +7,12 @@ export interface AccessClaims {
   role: Role;
   /** Expiry in seconds since the epoch, exactly as in the token. */
   exp: number;
+  /** The `branch_id` claim when it is a string GUID, else null (only Staff tokens carry one). */
+  branchId: string | null;
 }
 
 /**
- * Reads the four claims the SPA needs from an access token. The signature is NOT verified (the
+ * Reads the claims the SPA needs from an access token. The signature is NOT verified (the
  * server does that), so the result is untrusted display and routing data only. Tolerates a
  * missing base64 padding and non-ASCII characters (UTF-8). Returns null for anything malformed,
  * lacking `sub`, `email` or `exp`, or carrying a role other than Customer, Staff or Admin.
@@ -29,7 +32,9 @@ export function decodeAccessToken(token: string): AccessClaims | null {
       return null;
     }
     if (!(ROLES as readonly unknown[]).includes(role)) return null;
-    return { sub, email, role: role as Role, exp };
+    const branch = payload['branch_id'];
+    const branchId = typeof branch === 'string' && isGuid(branch) ? branch : null;
+    return { sub, email, role: role as Role, exp, branchId };
   } catch {
     return null;
   }

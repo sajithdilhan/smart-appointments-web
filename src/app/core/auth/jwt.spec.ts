@@ -25,6 +25,31 @@ describe('decodeAccessToken', () => {
       email: 'a@b.c',
       role: 'Staff',
       exp: 1060,
+      branchId: null,
+    });
+  });
+
+  describe('branch_id', () => {
+    const BRANCH = '3f2a1c9e-7b4d-4e6a-9c1f-0a2b3c4d5e6f';
+    const base = { sub: 'u', email: 'a@b.c', role: 'Staff', exp: 5 };
+
+    it('reads a GUID branch_id', () => {
+      const token = makeAccessToken({
+        sub: 'u',
+        email: 'a@b.c',
+        role: 'Staff',
+        expiresInSeconds: 60,
+        branchId: BRANCH,
+      });
+      expect(decodeAccessToken(token)?.branchId).toBe(BRANCH);
+    });
+
+    it('is null when absent, empty, not a GUID or not a string', () => {
+      expect(decodeAccessToken(forge(base))?.branchId).toBeNull();
+      expect(decodeAccessToken(forge({ ...base, branch_id: '' }))?.branchId).toBeNull();
+      expect(decodeAccessToken(forge({ ...base, branch_id: 'main' }))?.branchId).toBeNull();
+      expect(decodeAccessToken(forge({ ...base, branch_id: 42 }))?.branchId).toBeNull();
+      expect(decodeAccessToken(forge({ ...base, branch_id: [BRANCH] }))?.branchId).toBeNull();
     });
   });
 
