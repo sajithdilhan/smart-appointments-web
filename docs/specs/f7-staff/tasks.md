@@ -102,17 +102,20 @@ Rules (from the template):
 
 ## Chunk B: the staff workspace (worktree `saw-wt/f7-b`, after A)
 
-- [ ] 13. Staff branch store and shell header
+- [x] 13. Staff branch store and shell header
+  - _Done: 24/10/2026 11:37am_
   - `core/branch/staff-branch.store.ts` (`StaffBranchStore`: ensure once per branch, `not-linked`, `error`, `zone`, `zoneLabel`, reset on sign-out, effect on `branchId` change); `StaffShell` shows "{name} ({code})" when ready.
   - Specs: `staff-branch.store.spec` (single request for repeated `ensure`, new branch loads again, no claim means no request, `404`, network error then recovery, sign-out resets), `staff-shell.spec` (header text, absent while loading).
   - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.6_
 
-- [ ] 14. Staff gate and routes
+- [x] 14. Staff gate and routes
+  - _Done: 24/10/2026 12:23pm_
   - `features/staff/staff-gate.component.ts` (not-linked message with Sign out, error state with Retry and reload on `OutageState.recovered`, content when ready), `staff.routes.ts` rewritten, `titles.ts`; delete `staff-placeholder.ts` and its spec.
   - Specs: `staff-gate.spec` (each of the three states, no appointment request when not linked, Retry, recovery).
   - _Requirements: 1.3, 1.4, 11.2_
 
-- [ ] 15. Staff day page
+- [x] 15. Staff day page
+  - _Done: 24/10/2026 12:27pm_
   - `staff-day.page.ts`: composes `DayNav`, `StatusFilterSelect`, Refresh, `DayList`, `AppointmentSheet`, the announcement region; supplies the branch context from `StaffBranchStore`, the service map from `AvailabilityApiService.services()`; reloads on `OutageState.recovered`; resets the date when the branch changes.
   - Specs: `staff-day.page.spec` against the MSW backends (date defaults to today in the branch zone and the URL is replaced, Previous and Next add history entries, a filter request carries `status`, Refresh reloads, no timed polling, a mark updates the row and the sheet, branch change resets the date, `403` and `503` texts, UTC label for a branch without a zone).
   - _Requirements: 2.1, 2.2, 2.3, 2.8, 1.5, 1.6, 3.3, 4.2_

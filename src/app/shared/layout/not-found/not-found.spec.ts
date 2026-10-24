@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter } from '@angular/router';
@@ -6,6 +7,7 @@ import userEvent from '@testing-library/user-event';
 import { routes } from '../../../app.routes';
 import { createFakeSession, provideFakeSession } from '../../../../testing/fake-session';
 import { stubViewport } from '../../../../testing/stub-viewport';
+import { StaffBranchStore } from '../../../core/branch/staff-branch.store';
 import { AppTitleStrategy } from '../../../core/routing/app-title.strategy';
 import type { Role } from '../../../core/auth/session.model';
 import { App } from '../../../app';
@@ -18,6 +20,8 @@ async function open(role: Role | null, url: string) {
       provideRouter(routes),
       { provide: TitleStrategy, useClass: AppTitleStrategy },
       ...provideFakeSession(session),
+      // the staff shell reads the branch; no API is wired here
+      { provide: StaffBranchStore, useValue: { status: signal('idle'), branch: signal(null) } },
     ],
   });
   await TestBed.inject(Router).navigateByUrl(url);
