@@ -1,13 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient } from './api-client';
+import { toPromise, type RequestOptions } from './to-promise';
 import type {
   LoginRequest,
   LogoutRequest,
+  MoveStaffBody,
+  CreateStaffBody,
   ProfileResponse,
   RefreshRequest,
   RegisterRequest,
   RegisterResponse,
+  StaffAccount,
+  StaffPage,
   TokenResponse,
 } from './models';
 
@@ -39,5 +44,41 @@ export class AuthApiService {
 
   me(): Observable<ProfileResponse> {
     return this.api.get<ProfileResponse>('/api/Auth/me');
+  }
+
+  /** `GET /api/auth/staff`, oldest first; the filters are left out when not given. */
+  listStaff(
+    query: { branchId?: string; isActive?: boolean; page: number; pageSize: number },
+    options: RequestOptions = {},
+  ): Promise<StaffPage> {
+    const params: Record<string, string | number | boolean> = {
+      page: query.page,
+      pageSize: query.pageSize,
+    };
+    if (query.branchId !== undefined) params['branchId'] = query.branchId;
+    if (query.isActive !== undefined) params['isActive'] = query.isActive;
+    return toPromise(this.api.get<StaffPage>('/api/auth/staff', { params }), options.signal);
+  }
+
+  getStaff(id: string): Observable<StaffAccount> {
+    return this.api.get<StaffAccount>(`/api/auth/staff/${encodeURIComponent(id)}`);
+  }
+
+  createStaff(body: CreateStaffBody): Observable<StaffAccount> {
+    return this.api.post<StaffAccount>('/api/auth/staff', body);
+  }
+
+  moveStaff(id: string, branchId: string): Observable<StaffAccount> {
+    const body: MoveStaffBody = { branchId };
+    return this.api.put<StaffAccount>(`/api/auth/staff/${encodeURIComponent(id)}/branch`, body);
+  }
+
+  setStaffActive(id: string, active: boolean): Observable<void> {
+    const action = active ? 'activate' : 'deactivate';
+    return this.api.post<void>(`/api/auth/staff/${encodeURIComponent(id)}/${action}`);
+  }
+
+  deleteStaff(id: string): Observable<void> {
+    return this.api.delete<void>(`/api/auth/staff/${encodeURIComponent(id)}`);
   }
 }

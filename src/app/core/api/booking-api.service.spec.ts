@@ -148,3 +148,113 @@ describe('BookingApiService (appointments)', () => {
     await expect(setup().getAppointment(ID, { signal: controller.signal })).rejects.toBeDefined();
   });
 });
+
+describe('BookingApiService (branch day and marks)', () => {
+  const BRANCH = '9b8c7d6e-1a2b-4c3d-8e4f-5a6b7c8d9e0f';
+  const PAGE = { items: [], page: 1, pageSize: 100, totalCount: 0, customersUnavailable: false };
+
+  function setup() {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), { provide: APP_CONFIG, useValue: { apiBaseUrl: BASE } }],
+    });
+    return TestBed.inject(BookingApiService);
+  }
+
+  function captureDay() {
+    const seen: { url: URL; key: string | null }[] = [];
+    server.use(
+      http.get(`${BASE}/api/appointments/branch/:branchId`, ({ request }) => {
+        seen.push({ url: new URL(request.url), key: request.headers.get('idempotency-key') });
+        return HttpResponse.json(PAGE);
+      }),
+    );
+    return seen;
+  }
+
+  it('listBranchAppointments GETs the branch path with date, status, page and pageSize', async () => {
+    const seen = captureDay();
+    const res = await setup().listBranchAppointments(BRANCH, {
+      date: '2026-10-24',
+      status: 'NoShow',
+      page: 2,
+      pageSize: 100,
+    });
+    expect(res).toEqual(PAGE);
+    expect(seen).toHaveLength(1);
+    expect(seen[0].url.origin + seen[0].url.pathname).toBe(
+      `${BASE}/api/appointments/branch/${BRANCH}`,
+    );
+    expect([...seen[0].url.searchParams.keys()].sort()).toEqual([
+      'date',
+      'page',
+      'pageSize',
+      'status',
+    ]);
+    expect(seen[0].url.searchParams.get('date')).toBe('2026-10-24');
+    expect(seen[0].url.searchParams.get('status')).toBe('NoShow');
+    expect(seen[0].url.searchParams.get('page')).toBe('2');
+    expect(seen[0].url.searchParams.get('pageSize')).toBe('100');
+    expect(seen[0].key).toBeNull();
+  });
+
+  it('omits status for All', async () => {
+    const seen = captureDay();
+    await setup().listBranchAppointments(BRANCH, { date: '2026-10-24', page: 1, pageSize: 100 });
+    expect([...seen[0].url.searchParams.keys()].sort()).toEqual(['date', 'page', 'pageSize']);
+  });
+
+  it('aborting the signal cancels the day request', async () => {
+    let arrived = false;
+    server.use(
+      http.get(`${BASE}/api/appointments/branch/:branchId`, async () => {
+        arrived = true;
+        await delay(300);
+        return HttpResponse.json(PAGE);
+      }),
+    );
+    const controller = new AbortController();
+    const pending = setup().listBranchAppointments(
+      BRANCH,
+      { date: '2026-10-24', page: 1, pageSize: 100 },
+      { signal: controller.signal },
+    );
+    await vi.waitFor(() => expect(arrived).toBe(true));
+    controller.abort(new DOMException('stop', 'AbortError'));
+    await expect(pending).rejects.toMatchObject({ name: 'AbortError' });
+  });
+
+  it.each([
+    ['completeAppointment', 'complete'],
+    ['markNoShow', 'no-show'],
+  ] as const)('%s POSTs with no body and no Idempotency-Key', async (method, segment) => {
+    const seen: { method: string; url: string; key: string | null; type: string | null }[] = [];
+    server.use(
+      http.post(`${BASE}/api/appointments/:id/${segment}`, ({ request }) => {
+        seen.push({
+          method: request.method,
+          url: request.url,
+          key: request.headers.get('idempotency-key'),
+          type: request.headers.get('content-type'),
+        });
+        return HttpResponse.json({ id: ID, status: 'Completed' });
+      }),
+    );
+    const res = await setup()[method](ID);
+    expect(res).toMatchObject({ id: ID });
+    expect(seen).toHaveLength(1);
+    expect(seen[0]).toMatchObject({
+      method: 'POST',
+      url: `${BASE}/api/appointments/${ID}/${segment}`,
+      key: null,
+    });
+    expect(seen[0].type ?? '').not.toContain('application/json');
+  });
+
+  it('a mark with an aborted signal rejects', async () => {
+    const controller = new AbortController();
+    controller.abort();
+    await expect(
+      setup().completeAppointment(ID, { signal: controller.signal }),
+    ).rejects.toBeDefined();
+  });
+});

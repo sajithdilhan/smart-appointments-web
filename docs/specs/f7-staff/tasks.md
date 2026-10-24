@@ -22,7 +22,8 @@ Rules (from the template):
   - Specs: `jwt.spec` (valid GUID, absent, not a GUID, empty string, Customer and Admin tokens with the claim ignored), `session.store.spec` (Staff user carries `branchId`; refresh with another `branch_id` updates it; Customer has none), `guid.spec`.
   - _Requirements: 1.1, 1.5_
 
-- [ ] 2. Generated types, models and API methods
+- [x] 2. Generated types, models and API methods
+  - _Done: 24/10/2026 10:11am_
   - With the Compose stack running in Development on `:5290` from `master`, run `pnpm gen:api` and commit the three `.d.ts` files. If the gateway is unreachable, stop and report (Open question 2).
   - `core/api/models.ts`: `AppointmentStatus` gains `Completed` and `NoShow`; `AppointmentResponse` gains `completedAtUtc?` and `noShowAtUtc?`; add `BranchAppointment`, `BranchAppointmentsPage`, `StaffAccount`, `StaffPage`, `CreateStaffBody` as "Temporary extensions (Req 11.1)", each deleted at once if the regenerated file now declares the body.
   - `BookingApiService`: `listBranchAppointments`, `completeAppointment`, `markNoShow` (promise plus `AbortSignal`, the existing pattern); `MyAppointmentsQuery.status` becomes `'Booked' | 'Cancelled' | 'Completed' | 'NoShow'`.
