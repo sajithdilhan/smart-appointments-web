@@ -114,7 +114,8 @@ Rules (from the template):
   - Specs: `staff-gate.spec` (each of the three states, no appointment request when not linked, Retry, recovery).
   - _Requirements: 1.3, 1.4, 11.2_
 
-- [ ] 15. Staff day page
+- [x] 15. Staff day page
+  - _Done: 24/10/2026 12:27pm_
   - `staff-day.page.ts`: composes `DayNav`, `StatusFilterSelect`, Refresh, `DayList`, `AppointmentSheet`, the announcement region; supplies the branch context from `StaffBranchStore`, the service map from `AvailabilityApiService.services()`; reloads on `OutageState.recovered`; resets the date when the branch changes.
   - Specs: `staff-day.page.spec` against the MSW backends (date defaults to today in the branch zone and the URL is replaced, Previous and Next add history entries, a filter request carries `status`, Refresh reloads, no timed polling, a mark updates the row and the sheet, branch change resets the date, `403` and `503` texts, UTC label for a branch without a zone).
   - _Requirements: 2.1, 2.2, 2.3, 2.8, 1.5, 1.6, 3.3, 4.2_
