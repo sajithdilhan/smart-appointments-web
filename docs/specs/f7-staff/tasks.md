@@ -94,7 +94,8 @@ Rules (from the template):
   - Specs: `row-actions.spec` (hidden for non-Booked, disabled with hint before start, enabled when `ManualClock` passes the start, busy and double activation sends one request), `no-show-confirm.spec` (wording with name and time, initial focus on Keep as booked, Escape and Keep send nothing, Mark sends and closes), `marks.spec` (Complete without confirmation, toasts, announcement text, `409` and `404` toasts with reload).
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
-- [ ] 12. Appointment sheet
+- [x] 12. Appointment sheet
+  - _Done: 24/10/2026 11:21am_
   - `appointment-sheet.component.ts`: helm sheet, fields, duration from start and end, times in the zone, copyable id, embedded `RowActions`, shows the status after a mark, focus return to the opener.
   - Specs: `appointment-sheet.spec` (all fields for Booked, Cancelled, Completed and NoShow rows, missing customer, copy message, Escape and Close, focus returns to the opener, actions work and the badge updates, full-width class below `isLg`).
   - _Requirements: 4.1, 4.2, 4.3_
