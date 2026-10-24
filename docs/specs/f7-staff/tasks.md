@@ -46,7 +46,8 @@ Rules (from the template):
   - Specs: `time-hm.spec` (Europe/London summer and winter, a DST-change day, a zone ahead of and behind UTC, invalid zone, `longDateLabel` identical under two browser zones), `now-signal.spec` with `ManualClock` (flips exactly at the deadline, re-arms for the next, no timer when no future deadline, cancelled on destroy).
   - _Requirements: 2.2, 2.4, 3.2_
 
-- [ ] 5. MSW backends
+- [x] 5. MSW backends
+  - _Done: 24/10/2026 10:28am_
   - `testing/branch-day-backend.ts`: stateful model of `GET /api/appointments/branch/{id}` (date in the branch zone, status filter, paging with default 20 and max 100, soonest first, `customer` objects, `customersUnavailable` switch, `403` for a Staff token of another branch, `400`, `503` switch) and of `POST .../complete` and `.../no-show` (`409` before start or from another status, repeat is `200`, `404`, `403` for a Customer), driven by a controllable clock; plus `GET /api/branches/{id}` and `GET /api/services` for the staff.
   - `testing/staff-accounts-backend.ts`: `GET/POST /api/auth/staff`, `GET /api/auth/staff/{id}`, `PUT .../branch`, `POST .../activate|deactivate`, `DELETE`, with the real rules (oldest first, deleted excluded, `isActive` and `branchId` filters, `400` "Email is already registered." and "Invalid request data. Errors: …", `422` unknown or inactive branch, `503` switch, `404`, Admin only).
   - Specs: `branch-day-backend.spec`, `staff-accounts-backend.spec`, each asserting the rules above so the chunks can rely on them.
