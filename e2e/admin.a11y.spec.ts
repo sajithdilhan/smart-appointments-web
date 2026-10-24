@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import { seedRefreshToken } from './mock-backend';
 import { mockAdminApi } from './support/mock-admin-api';
+import { mockAdminAppointments } from './support/admin-appointments';
 
 const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map((dayOfWeek) => ({
   dayOfWeek,
@@ -92,6 +93,31 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
       await page.keyboard.press('Control+k');
       await expect(page.getByRole('dialog', { name: 'Command palette' })).toBeVisible();
+      await expectNoSeriousViolations(page);
+    });
+
+    test('the appointments page with a branch chosen', async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+      const api = await mockAdminAppointments(page);
+      await seedRefreshToken(page, 'rt_1');
+      await page.addInitScript((value) => localStorage.setItem('sa.theme', value), theme);
+      const branch = api.seedBranch({ code: 'COL', name: 'Colombo Central' });
+      api.staff.seedCustomer('c-ann', { firstName: 'Ann', lastName: 'Silva' });
+      api.staff.seedAppointment({
+        branchId: branch.id,
+        serviceTypeId: api.staff.state.services[0].id,
+        customerId: 'c-ann',
+        startUtc: '2026-03-10T09:00:00Z',
+      });
+      await page.goto(`/admin/appointments?branch=${branch.id}&date=2026-03-10`);
+      await expect(page.getByRole('row', { name: /Ann Silva/ })).toBeVisible();
+      await expectNoSeriousViolations(page);
+    });
+
+    test('the appointments page before a branch is chosen', async ({ page }) => {
+      await setup(page, theme);
+      await page.goto('/admin/appointments');
+      await expect(page.getByText('Choose a branch to see its appointments.')).toBeVisible();
       await expectNoSeriousViolations(page);
     });
   });

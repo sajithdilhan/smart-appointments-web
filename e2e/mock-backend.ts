@@ -31,6 +31,12 @@ export interface MockOptions {
   branchId?: string;
   /** When set, the refresh endpoint answers with this status and a problem body. */
   refreshStatus?: number;
+  /**
+   * For stacking this backend on top of another mock (e.g. `mockStaffApi` after `mockAdminApi`):
+   * a request this backend does not know goes on to the mock registered before it instead of
+   * answering `404`.
+   */
+  fallthrough?: boolean;
 }
 
 export const CORS = {
@@ -86,6 +92,7 @@ export async function mockBackend(page: Page, options: MockOptions = {}): Promis
         phoneNumber: null,
       });
     }
+    if (options.fallthrough) return route.fallback();
     return json(route, 404, { status: 404, detail: 'Not mocked.' });
   });
 

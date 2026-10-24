@@ -182,7 +182,8 @@ Rules (from the template):
 
 ## Integration (on the merged `f7-staff`, in order)
 
-- [ ] 25. Playwright: staff day list and admin appointments
+- [x] 25. Playwright: staff day list and admin appointments
+  - _Done: 24/10/2026 12:39pm_
   - `e2e/staff.spec.ts`: Staff login, day list with the branch name in the header, a Complete (no dialog) and a No-show (dialog, Keep then Mark), Previous day and browser Back, the not-linked state, a `409` showing the server text; `e2e/admin-appointments.spec.ts`: choose a branch, mark, change branch.
   - `e2e/staff.a11y.spec.ts`: axe in light and dark on `/staff`, with the sheet open and with the no-show dialog open; extend `admin.a11y.spec.ts` for `/admin/appointments`; check 320 px reflow.
   - Run with port lane 4307.
