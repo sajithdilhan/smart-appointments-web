@@ -152,10 +152,11 @@ Rules (from the template):
   - _Requirements: 10.1, 10.2, 10.4_
   - _Done: 24/10/2026 10:43am_
 
-- [ ] 23. Past-tab status filter
+- [x] 23. Past-tab status filter
   - `tab-params.ts`: `?pstatus=` (All, Completed, NoShow, Cancelled, Booked; unknown to All; honoured on Past only), `toListQuery` sends `status` on Past; `appointments.store.ts` filter and `sameFilter`; `appointments-page.ts` select on the Past tab, URL sync, announcement; Upcoming unchanged.
   - Specs: `tab-params.spec`, `appointments.store.spec` (request carries `status`, switching tabs drops it), `appointments-page.spec` against `appointments-backend` (select appears on Past only, URL and request, Upcoming request unchanged).
   - _Requirements: 10.3_
+  - _Done: 24/10/2026 10:53am_
 
 ## Chunk E: admin appointments page (worktree `saw-wt/f7-e`, after A)
 

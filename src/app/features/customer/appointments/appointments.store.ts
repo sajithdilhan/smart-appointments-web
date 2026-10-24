@@ -39,7 +39,7 @@ export interface ListState {
 }
 
 const initialState: ListState = {
-  filter: { tab: 'upcoming', showCancelled: false },
+  filter: { tab: 'upcoming', showCancelled: false, pastStatus: 'all' },
   items: [],
   page: 0,
   totalCount: null,
@@ -51,7 +51,7 @@ const initialState: ListState = {
 };
 
 function sameFilter(a: TabParams, b: TabParams): boolean {
-  return a.tab === b.tab && a.showCancelled === b.showCancelled;
+  return a.tab === b.tab && a.showCancelled === b.showCancelled && a.pastStatus === b.pastStatus;
 }
 
 function isAbort(e: unknown): boolean {
@@ -107,10 +107,12 @@ export const AppointmentsStore = signalStore(
     async function loadFirst(): Promise<void> {
       const { id, signal } = begin();
       patchState(store, { status: 'loading-first', error: null });
-      const { tab, showCancelled } = store.filter();
+      const { tab, showCancelled, pastStatus } = store.filter();
       try {
         const page = checked(
-          await api.listMyAppointments(toListQuery(tab, showCancelled, 1, PAGE_SIZE), { signal }),
+          await api.listMyAppointments(toListQuery(tab, showCancelled, 1, PAGE_SIZE, pastStatus), {
+            signal,
+          }),
         );
         if (id !== requestId) return;
         patchState(store, {
@@ -128,12 +130,15 @@ export const AppointmentsStore = signalStore(
     async function fetchMore(next: number): Promise<void> {
       const { id, signal } = begin();
       patchState(store, { status: 'loading-more', error: null });
-      const { tab, showCancelled } = store.filter();
+      const { tab, showCancelled, pastStatus } = store.filter();
       try {
         const page = checked(
-          await api.listMyAppointments(toListQuery(tab, showCancelled, next, PAGE_SIZE), {
-            signal,
-          }),
+          await api.listMyAppointments(
+            toListQuery(tab, showCancelled, next, PAGE_SIZE, pastStatus),
+            {
+              signal,
+            },
+          ),
         );
         if (id !== requestId) return;
         const before = store.items().length;
@@ -163,12 +168,14 @@ export const AppointmentsStore = signalStore(
 
       const { id, signal } = begin();
       patchState(store, { status: 'refreshing' });
-      const { tab, showCancelled } = store.filter();
+      const { tab, showCancelled, pastStatus } = store.filter();
       // Up to 100 loaded: one request for exactly that many. Beyond: restart at page 1.
       const pageSize = count > MAX_REFRESH ? PAGE_SIZE : count;
       try {
         const page = checked(
-          await api.listMyAppointments(toListQuery(tab, showCancelled, 1, pageSize), { signal }),
+          await api.listMyAppointments(toListQuery(tab, showCancelled, 1, pageSize, pastStatus), {
+            signal,
+          }),
         );
         if (id !== requestId) return;
         const items = dedupeById(page.items);
