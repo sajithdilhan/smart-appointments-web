@@ -21,10 +21,12 @@ export interface Appt {
   serviceTypeId: string;
   startUtc: string;
   endUtc: string;
-  status: 'Booked' | 'Cancelled';
+  status: 'Booked' | 'Cancelled' | 'Completed' | 'NoShow';
   createdAtUtc: string;
   updatedAtUtc: string;
   cancelledAtUtc: string | null;
+  completedAtUtc: string | null;
+  noShowAtUtc: string | null;
 }
 
 export type CancelMode = 'ok' | 'conflict' | 'unavailable-cancelled' | 'unavailable-booked';
@@ -39,6 +41,8 @@ export interface AppointmentsMock {
 export interface AppointmentsOptions {
   upcoming?: number;
   past?: number;
+  /** The statuses of the past appointments (replaces `past`), newest first. */
+  pastStatuses?: Appt['status'][];
   cancel?: CancelMode;
 }
 
@@ -58,6 +62,8 @@ export function makeAppt(n: number, startMs: number, status: Appt['status'] = 'B
     createdAtUtc: iso(startMs - 10 * DAY),
     updatedAtUtc: iso(startMs - 10 * DAY),
     cancelledAtUtc: status === 'Cancelled' ? iso(startMs - DAY) : null,
+    completedAtUtc: status === 'Completed' ? iso(startMs + HOUR) : null,
+    noShowAtUtc: status === 'NoShow' ? iso(startMs + HOUR) : null,
   };
 }
 
@@ -87,9 +93,10 @@ export async function mockAppointments(
   for (let i = 0; i < (options.upcoming ?? 2); i++) {
     items.push(makeAppt(i, now + (i + 2) * DAY));
   }
-  for (let i = 0; i < (options.past ?? 1); i++) {
-    items.push(makeAppt(500 + i, now - (i + 2) * DAY));
-  }
+  const past = options.pastStatuses ?? Array.from({ length: options.past ?? 1 }, () => 'Booked');
+  past.forEach((status, i) => {
+    items.push(makeAppt(500 + i, now - (i + 2) * DAY, status as Appt['status']));
+  });
   let mode: CancelMode = options.cancel ?? 'ok';
   let cancelCalls = 0;
 

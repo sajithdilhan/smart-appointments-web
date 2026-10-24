@@ -189,7 +189,8 @@ Rules (from the template):
   - Run with port lane 4307.
   - _Requirements: 11.3, 11.4, 2.4_
 
-- [ ] 26. Playwright: staff accounts and customer statuses
+- [x] 26. Playwright: staff accounts and customer statuses
+  - _Done: 24/10/2026 12:47pm_
   - `e2e/admin-staff.spec.ts`: create (including the duplicate email error), move, deactivate, reactivate, delete, keyboard-only create; extend `a11y-appointments.spec` (Past tab with Completed and No-show badges, both themes) and `admin.a11y.spec` (`/admin/staff`, both drawers); extend `e2e/appointments.spec.ts` for the Past filter.
   - _Requirements: 11.3, 11.4, 10.1, 10.3_
 
