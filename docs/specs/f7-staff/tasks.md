@@ -61,7 +61,8 @@ Rules (from the template):
   - Specs: `admin.routes.spec` (new routes resolve, `staff/new` is not taken by `:id`), `command-registry.spec`, `admin-shell.spec` (order and active state of the new links).
   - _Requirements: 5.1, 6.1_
 
-- [ ] 7. E2E mock backends
+- [x] 7. E2E mock backends
+  - _Done: 24/10/2026 10:36am_
   - `e2e/support/mock-staff-api.ts`: Playwright route handlers for the day list, marks, `GET /api/Branches/{id}`, `GET /api/Services`, with a Staff login whose token carries `branch_id`; extends `mockBackend`'s `makeJwt` with an optional `branchId`.
   - `e2e/support/mock-staff-accounts-api.ts`: staff accounts list, create, read, move, activate, deactivate, delete on top of `mock-admin-api.ts`, with the same validation rules as the MSW model.
   - Specs: none of their own (used by tasks 25 and 26); a short self-check in `e2e/smoke.spec.ts` is not added, to keep runs short.
