@@ -39,7 +39,8 @@ Rules (from the template):
   - Specs: moved specs unchanged and green; badge spec for the two new statuses (text, icon hidden from assistive technology, variant), unknown status, past Booked; badge variant class test; `no-teal` spec still green.
   - _Requirements: 10.1, 10.4, 7.1_
 
-- [ ] 4. Time helpers and the "now" signal
+- [x] 4. Time helpers and the "now" signal
+  - _Done: 24/10/2026 10:17am_
   - `core/time/time-hm.ts`: `timeHm(isoOrDate, zone)` (24-hour `HH:mm` via `zonedParts`, UTC for an invalid zone) and `longDateLabel(date)` ("Friday 24 October 2026", UTC on a noon instant, so the browser zone cannot change the day); export from `core/time/index.ts`.
   - `core/util/now-signal.ts`: `createNowSignal(clock = inject(CLOCK))` returning `{ now, watch(deadlines) }`; one timer for the smallest future deadline, re-armed when it fires or the deadlines change; cancelled on destroy.
   - Specs: `time-hm.spec` (Europe/London summer and winter, a DST-change day, a zone ahead of and behind UTC, invalid zone, `longDateLabel` identical under two browser zones), `now-signal.spec` with `ManualClock` (flips exactly at the deadline, re-arms for the next, no timer when no future deadline, cancelled on destroy).
