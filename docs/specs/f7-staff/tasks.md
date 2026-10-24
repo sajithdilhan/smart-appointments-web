@@ -102,7 +102,8 @@ Rules (from the template):
 
 ## Chunk B: the staff workspace (worktree `saw-wt/f7-b`, after A)
 
-- [ ] 13. Staff branch store and shell header
+- [x] 13. Staff branch store and shell header
+  - _Done: 24/10/2026 11:37am_
   - `core/branch/staff-branch.store.ts` (`StaffBranchStore`: ensure once per branch, `not-linked`, `error`, `zone`, `zoneLabel`, reset on sign-out, effect on `branchId` change); `StaffShell` shows "{name} ({code})" when ready.
   - Specs: `staff-branch.store.spec` (single request for repeated `ensure`, new branch loads again, no claim means no request, `404`, network error then recovery, sign-out resets), `staff-shell.spec` (header text, absent while loading).
   - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.6_
