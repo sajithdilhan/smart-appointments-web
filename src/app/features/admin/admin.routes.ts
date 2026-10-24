@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AdminFrame } from './admin-frame.component';
 import { BranchesStore } from './data/branches.store';
-import { branchCrumb, scheduleCrumbs, serviceCrumb } from './data/resolvers';
+import { branchCrumb, scheduleCrumbs, serviceCrumb, staffCrumb } from './data/resolvers';
 import { ServicesStore } from './data/services.store';
 import { SlotActivityStore } from './data/slot-activity.store';
 import { unsavedChangesGuard } from './shared/dirty/unsaved-changes.guard';
@@ -15,6 +15,13 @@ const servicesPage = () => import('./services/services.page').then((m) => m.Serv
 const serviceDrawer = () =>
   import('./services/service-drawer.component').then((m) => m.ServiceDrawer);
 const slots = () => import('./slots/slots.page').then((m) => m.SlotsPage);
+const appointmentsPage = () =>
+  import('./appointments/appointments.page').then((m) => m.AdminAppointmentsPage);
+const staffPage = () => import('./staff/staff.page').then((m) => m.StaffAccountsPage);
+const staffCreateDrawer = () =>
+  import('./staff/staff-create-drawer.component').then((m) => m.StaffCreateDrawer);
+const staffEditDrawer = () =>
+  import('./staff/staff-edit-drawer.component').then((m) => m.StaffEditDrawer);
 
 /**
  * Children of the F1 admin shell. Role guarding is F1's (`roleGuard('Admin')` on the parent); this
@@ -86,11 +93,40 @@ export const ADMIN_ROUTES: Routes = [
         ],
       },
       {
+        path: 'staff',
+        loadComponent: staffPage,
+        title: TITLES.staff,
+        data: { breadcrumb: 'Staff' },
+        children: [
+          // Before `:id`, so `staff/new` is never taken for an id.
+          {
+            path: 'new',
+            loadComponent: staffCreateDrawer,
+            title: TITLES.newStaff,
+            data: { breadcrumb: 'New staff member' },
+            canDeactivate: [unsavedChangesGuard],
+          },
+          {
+            path: ':id',
+            loadComponent: staffEditDrawer,
+            title: TITLES.editStaff,
+            resolve: { breadcrumb: staffCrumb },
+            canDeactivate: [unsavedChangesGuard],
+          },
+        ],
+      },
+      {
         path: 'slots',
         loadComponent: slots,
         title: TITLES.slots,
         data: { breadcrumb: 'Slot generation' },
         canDeactivate: [unsavedChangesGuard],
+      },
+      {
+        path: 'appointments',
+        loadComponent: appointmentsPage,
+        title: TITLES.appointments,
+        data: { breadcrumb: 'Appointments' },
       },
     ],
   },

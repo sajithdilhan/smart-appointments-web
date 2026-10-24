@@ -39,6 +39,8 @@ describe('admin route table', () => {
     ['/admin/branches', 'Branches', 'Branches | Smart Appointments'],
     ['/admin/services', 'Services', 'Services | Smart Appointments'],
     ['/admin/slots', 'Slot generation', 'Generate slots | Smart Appointments'],
+    ['/admin/staff', 'Staff', 'Staff | Smart Appointments'],
+    ['/admin/appointments', 'Appointments', 'Appointments | Smart Appointments'],
   ])('%s resolves with its heading and title', async (url, heading, title) => {
     const result = await open(url);
     expect(result.router.url).toBe(url);
@@ -72,6 +74,47 @@ describe('admin route table', () => {
       { label: 'Colombo Central', url: `/admin/branches/${branch.id}` },
       { label: 'Schedule', url: `/admin/branches/${branch.id}/schedule` },
     ]);
+  });
+
+  it('staff/new is the create drawer, not the edit drawer taking "new" for an id', async () => {
+    const { router, title } = await open('/admin/staff/new');
+    expect(screen.getByRole('heading', { level: 1, name: 'Staff' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'New staff member' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Edit staff member' })).not.toBeInTheDocument();
+    expect(title).toBe('New staff member | Smart Appointments');
+    expect(crumbsOf(router.routerState.snapshot.root).map((c) => c.label)).toEqual([
+      'Admin',
+      'Staff',
+      'New staff member',
+    ]);
+  });
+
+  it('staff/:id is the edit drawer, with the "Staff member" crumb and no request', async () => {
+    const { router, title } = await open(`/admin/staff/${GHOST}`);
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Edit staff member' }),
+    ).toBeInTheDocument();
+    expect(title).toBe('Edit staff member | Smart Appointments');
+    expect(crumbsOf(router.routerState.snapshot.root)).toEqual([
+      { label: 'Admin', url: '/admin' },
+      { label: 'Staff', url: '/admin/staff' },
+      { label: 'Staff member', url: `/admin/staff/${GHOST}` },
+    ]);
+    expect(state.requests).toEqual([]);
+  });
+
+  it('the staff drawers leave a pristine form without asking (unsavedChangesGuard)', async () => {
+    const { harness, router } = await open('/admin/staff/new');
+    await harness.navigateByUrl('/admin/staff');
+    expect(router.url).toBe('/admin/staff');
+  });
+
+  it('sends a Staff member and a Customer away from /admin/staff and /admin/appointments', async () => {
+    const staff = await open('/admin/appointments', 'Staff');
+    expect(staff.router.url).not.toBe('/admin/appointments');
+    TestBed.resetTestingModule();
+    const customer = await open('/admin/staff', 'Customer');
+    expect(customer.router.url).toBe('/book');
   });
 
   it('the resolver supplies the record name as the breadcrumb', async () => {

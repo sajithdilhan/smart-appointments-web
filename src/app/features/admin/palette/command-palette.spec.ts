@@ -109,9 +109,12 @@ describe('command palette', () => {
       'Go to Dashboard',
       'Go to Branches',
       'Go to Services',
+      'Go to staff',
       'Go to Slot generation',
+      'Go to appointments',
       'New branch',
       'New service',
+      'New staff member',
       'Generate slots',
       'Toggle theme',
       'Sign out',
@@ -149,7 +152,7 @@ describe('command palette', () => {
     await chord('Control');
     await palette();
     await userEvent.type(input(), 'new');
-    await waitFor(() => expect(screen.getByText('2 results')).toBeInTheDocument(), {
+    await waitFor(() => expect(screen.getByText('3 results')).toBeInTheDocument(), {
       timeout: 2000,
     });
   });
@@ -162,11 +165,11 @@ describe('command palette', () => {
     await userEvent.keyboard('{ArrowDown}{ArrowDown}');
     expect(active()).toBe(2);
     await userEvent.keyboard('{End}');
-    expect(active()).toBe(8);
+    expect(active()).toBe(11);
     await userEvent.keyboard('{ArrowDown}');
     expect(active()).toBe(0);
     await userEvent.keyboard('{ArrowUp}');
-    expect(active()).toBe(8);
+    expect(active()).toBe(11);
     await userEvent.keyboard('{Home}');
     expect(active()).toBe(0);
     expect(input()).toHaveFocus();

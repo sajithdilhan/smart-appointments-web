@@ -33,6 +33,9 @@ export const serviceCrumb: ResolveFn<string> = async (route) => {
   }
 };
 
+/** Breadcrumb of `staff/:id`; the id is not looked up (the drawer shows the name). */
+export const staffCrumb: ResolveFn<string> = () => 'Staff member';
+
 /**
  * Breadcrumbs of `branches/:id/schedule`, one route spanning three levels: Branches, the branch's
  * name (its edit drawer) and Schedule. The shell's trail renders a list stored under `breadcrumb`.

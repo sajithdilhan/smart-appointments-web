@@ -36,9 +36,12 @@ describe('buildCommands', () => {
       'Go to Dashboard',
       'Go to Branches',
       'Go to Services',
+      'Go to staff',
       'Go to Slot generation',
+      'Go to appointments',
       'New branch',
       'New service',
+      'New staff member',
       'Generate slots',
       'Toggle theme',
       'Sign out',
@@ -50,6 +53,23 @@ describe('buildCommands', () => {
     expect(all.find((c) => c.label === 'Toggle theme')?.run).toEqual({ kind: 'theme' });
     expect(all.find((c) => c.label === 'Sign out')?.run).toEqual({ kind: 'signOut' });
     expect(new Set(all.map((c) => c.id)).size).toBe(all.length);
+  });
+
+  it('has the staff and appointments commands, each navigating to its admin page', () => {
+    const all = buildCommands({ branches: [], services: [] });
+    const entry = (label: string) => all.find((c) => c.label === label);
+    expect(entry('Go to appointments')).toMatchObject({
+      group: 'Navigate',
+      run: { kind: 'navigate', url: '/admin/appointments' },
+    });
+    expect(entry('Go to staff')).toMatchObject({
+      group: 'Navigate',
+      run: { kind: 'navigate', url: '/admin/staff' },
+    });
+    expect(entry('New staff member')).toMatchObject({
+      group: 'Create',
+      run: { kind: 'navigate', url: '/admin/staff/new' },
+    });
   });
 
   it('adds edit entries for loaded branches and services', () => {
@@ -77,7 +97,9 @@ describe('filterCommands', () => {
       'Go to Dashboard',
       'Go to Branches',
       'Go to Services',
+      'Go to staff',
       'Go to Slot generation',
+      'Go to appointments',
     ]);
     expect(r.groups[2].items[0].label).toBe('Edit branch: Kandy');
   });
@@ -131,11 +153,11 @@ describe('filterCommands', () => {
     const r = filterCommands(many, '');
     const records = r.groups.find((g) => g.group === 'Records')!.items;
     expect(records).toHaveLength(RECORD_LIMIT);
-    expect(r.count).toBe(9 + RECORD_LIMIT);
+    expect(r.count).toBe(12 + RECORD_LIMIT);
     expect(
       filterCommands(many, '', 5).groups.find((g) => g.group === 'Records')!.items,
     ).toHaveLength(5);
-    expect(filterCommands(many, 'go to').count).toBe(4); // statics untouched by the cap
+    expect(filterCommands(many, 'go to').count).toBe(6); // statics untouched by the cap
   });
 
   it('group headings are group names, never commands', () => {

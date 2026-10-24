@@ -57,12 +57,28 @@ const STATIC_COMMANDS: readonly Command[] = [
     'scissors',
   ),
   go(
+    'go-staff',
+    'Go to staff',
+    '/admin/staff',
+    'Navigate',
+    ['staff members', 'users', 'accounts'],
+    'users',
+  ),
+  go(
     'go-slots',
     'Go to Slot generation',
     '/admin/slots',
     'Navigate',
     ['slots', 'calendar'],
     'calendar-plus',
+  ),
+  go(
+    'go-appointments',
+    'Go to appointments',
+    '/admin/appointments',
+    'Navigate',
+    ['bookings', 'schedule', 'day'],
+    'calendar-check',
   ),
   go(
     'new-branch',
@@ -78,6 +94,14 @@ const STATIC_COMMANDS: readonly Command[] = [
     '/admin/services/new',
     'Create',
     ['add', 'create', 'service type'],
+    'plus',
+  ),
+  go(
+    'new-staff',
+    'New staff member',
+    '/admin/staff/new',
+    'Create',
+    ['add', 'create', 'staff', 'user', 'account'],
     'plus',
   ),
   go(

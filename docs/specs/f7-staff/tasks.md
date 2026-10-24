@@ -53,7 +53,8 @@ Rules (from the template):
   - Specs: `branch-day-backend.spec`, `staff-accounts-backend.spec`, each asserting the rules above so the chunks can rely on them.
   - _Requirements: 2.3, 3.5, 6.2, 7.3, 8.4, 9.2_
 
-- [ ] 6. Admin wiring with stub pages
+- [x] 6. Admin wiring with stub pages
+  - _Done: 24/10/2026 10:32am_
   - `admin.routes.ts`: `appointments` (title "Appointments", breadcrumb) and `staff` with children `new` and `:id` (both `unsavedChangesGuard`; titles "Staff", "New staff member", "Edit staff member"; `:id` resolves a breadcrumb "Staff member"), each loading a stub component that renders only its `<h1>`; `titles.ts` entries.
   - `AdminShell` sidebar order: Dashboard, Branches, Services, Staff, Slot generation, Appointments (icons `lucideUsers`, `lucideCalendarCheck`).
   - `command-registry.ts`: static commands "Go to appointments", "Go to staff", "New staff member".
