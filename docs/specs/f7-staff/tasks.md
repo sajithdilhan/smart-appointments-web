@@ -82,7 +82,8 @@ Rules (from the template):
   - Specs: `day-nav.spec` (each control emits the right date, Today disabled, accessible names, the UTC label), `status-filter.spec`.
   - _Requirements: 1.6, 2.2, 2.5_
 
-- [ ] 10. Day list
+- [x] 10. Day list
+  - _Done: 24/10/2026 11:06am_
   - `day-list.component.ts`: table at 640 px and wider, cards below (stubbed `ViewportService`); skeleton with `aria-busy`; count line; empty text with the filter; customers notice and per-row "Name unavailable"; `tel:` link; Load more; inline error with Retry (`dayErrorText`); open event from the time or name button.
   - Specs: `day-list.spec` covering each state and both layouts, the notice with and without one null customer, `tel:` href, Load more visibility and busy state, error texts by status, 320 px content (no fixed widths asserted by class).
   - _Requirements: 2.4, 2.6, 2.7, 2.9, 2.10, 4.1_
