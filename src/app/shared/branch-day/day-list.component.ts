@@ -9,6 +9,8 @@ import { BranchDayStore } from './branch-day.store';
 import { dayErrorText } from './day-errors';
 import { emptyDayText } from './day-params';
 import { NAME_UNAVAILABLE } from './day-row';
+import { createRowMarks } from './marks';
+import { RowActions } from './row-actions.component';
 
 /** What the list tells the host when a row's time or name is activated (Req 4.1). */
 export interface OpenRowEvent {
@@ -26,7 +28,7 @@ const SKELETON_ROWS = [1, 2, 3, 4, 5];
  */
 @Component({
   selector: 'app-day-list',
-  imports: [AppointmentStatusBadge, HlmButton, HlmSkeleton, HlmTableImports],
+  imports: [AppointmentStatusBadge, HlmButton, HlmSkeleton, HlmTableImports, RowActions],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex flex-col gap-4">
@@ -83,6 +85,7 @@ const SKELETON_ROWS = [1, 2, 3, 4, 5];
                       <th hlmTh scope="col">Phone</th>
                       <th hlmTh scope="col">Service</th>
                       <th hlmTh scope="col">Status</th>
+                      <th hlmTh scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody hlmTBody>
@@ -121,6 +124,16 @@ const SKELETON_ROWS = [1, 2, 3, 4, 5];
                         <td hlmTd>
                           <app-appointment-status-badge [status]="row.status" />
                         </td>
+                        <td hlmTd>
+                          <app-row-actions
+                            [row]="row"
+                            [marking]="store.marking()[row.id] ?? null"
+                            [nowMs]="store.nowMs()"
+                            [zone]="store.context.zone()"
+                            (complete)="marks.complete(row)"
+                            (noShow)="marks.noShow(row)"
+                          />
+                        </td>
                       </tr>
                     }
                   </tbody>
@@ -152,6 +165,14 @@ const SKELETON_ROWS = [1, 2, 3, 4, 5];
                       }}</a>
                     }
                     <p class="text-sm break-words text-muted-foreground">{{ row.serviceName }}</p>
+                    <app-row-actions
+                      [row]="row"
+                      [marking]="store.marking()[row.id] ?? null"
+                      [nowMs]="store.nowMs()"
+                      [zone]="store.context.zone()"
+                      (complete)="marks.complete(row)"
+                      (noShow)="marks.noShow(row)"
+                    />
                   </li>
                 }
               </ul>
@@ -196,6 +217,7 @@ const SKELETON_ROWS = [1, 2, 3, 4, 5];
 export class DayList {
   protected readonly store = inject(BranchDayStore);
   protected readonly viewport = inject(ViewportService);
+  protected readonly marks = createRowMarks();
 
   /** A row's time or name was activated. */
   readonly open = output<OpenRowEvent>();

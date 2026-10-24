@@ -72,7 +72,7 @@ describe('DayList', () => {
         within(table)
           .getAllByRole('columnheader')
           .map((h) => h.textContent?.trim()),
-      ).toEqual(['Time', 'Customer', 'Phone', 'Service', 'Status']);
+      ).toEqual(['Time', 'Customer', 'Phone', 'Service', 'Status', 'Actions']);
       const rows = within(table).getAllByRole('row').slice(1);
       expect(rows).toHaveLength(2);
       const first = within(rows[0]);
@@ -152,7 +152,7 @@ describe('DayList', () => {
       await open();
       const opened: string[] = [];
       view.fixture.componentInstance.open.subscribe((e) => opened.push(e.id));
-      await userEvent.click(screen.getByRole('button', { name: /Ana Perera/ }));
+      await userEvent.click(screen.getByRole('button', { name: /^10:30 to 11:00/ }));
       expect(opened).toEqual([backend.state.appointments[0].id]);
     });
   });

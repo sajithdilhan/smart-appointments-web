@@ -88,7 +88,8 @@ Rules (from the template):
   - Specs: `day-list.spec` covering each state and both layouts, the notice with and without one null customer, `tel:` href, Load more visibility and busy state, error texts by status, 320 px content (no fixed widths asserted by class).
   - _Requirements: 2.4, 2.6, 2.7, 2.9, 2.10, 4.1_
 
-- [ ] 11. Row actions, marks and the no-show dialog
+- [x] 11. Row actions, marks and the no-show dialog
+  - _Done: 24/10/2026 11:12am_
   - `row-actions.component.ts` (hint, `aria-describedby`, busy, disabled until start via `createNowSignal`, future-day hint text), `no-show-confirm.ts` (`ConfirmService`), the polite announcement region component, wiring of `store.mark` to toast and announcement.
   - Specs: `row-actions.spec` (hidden for non-Booked, disabled with hint before start, enabled when `ManualClock` passes the start, busy and double activation sends one request), `no-show-confirm.spec` (wording with name and time, initial focus on Keep as booked, Escape and Keep send nothing, Mark sends and closes), `marks.spec` (Complete without confirmation, toasts, announcement text, `409` and `404` toasts with reload).
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
