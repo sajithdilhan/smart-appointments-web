@@ -4,7 +4,7 @@ import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from 
 import { RouterTestingHarness } from '@angular/router/testing';
 import { screen } from '@testing-library/angular';
 import { createFakeSession, provideFakeSession } from '../../../testing/fake-session';
-import { provideAdminApi, useAdminBackend } from '../../../testing/admin-test-setup';
+import { provideStaffApi, staffBackend, useStaffBackends } from '../../../testing/staff-test-setup';
 import { seedBranch, seedService, state } from '../../../testing/availability-admin-backend';
 import { routes } from '../../app.routes';
 import { crumbsOf } from '../../shared/layout/breadcrumb-trail';
@@ -12,9 +12,10 @@ import type { Role } from '../../core/auth/session.model';
 import { AppTitleStrategy } from '../../core/routing/app-title.strategy';
 import { PaletteLauncher } from '../../core/ui/palette-launcher';
 import { BranchesStore } from './data/branches.store';
+import { StaffAccountsStore } from './data/staff-accounts.store';
 import { AdminFrame } from './admin-frame.component';
 
-beforeEach(useAdminBackend);
+beforeEach(useStaffBackends);
 
 async function open(url: string, role: Role = 'Admin') {
   TestBed.configureTestingModule({
@@ -22,7 +23,7 @@ async function open(url: string, role: Role = 'Admin') {
       provideRouter(routes, withComponentInputBinding()),
       { provide: TitleStrategy, useClass: AppTitleStrategy },
       ...provideFakeSession(createFakeSession('authenticated', role)),
-      ...provideAdminApi(role),
+      ...provideStaffApi(role),
     ],
   });
   const harness = await RouterTestingHarness.create();
@@ -100,7 +101,8 @@ describe('admin route table', () => {
       { label: 'Staff', url: '/admin/staff' },
       { label: 'Staff member', url: `/admin/staff/${GHOST}` },
     ]);
-    expect(state.requests).toEqual([]);
+    // Only the branch list the staff page loads for itself: the crumb resolver asks for nothing.
+    expect(state.requests.filter((r) => !/\/Branches$/i.test(r.path))).toEqual([]);
   });
 
   it('the staff drawers leave a pristine form without asking (unsavedChangesGuard)', async () => {
@@ -157,8 +159,13 @@ describe('AdminFrame', () => {
     const store = frame.injector.get(BranchesStore);
     store.upsert(seedBranch());
     expect(store.items()).toHaveLength(1);
+    staffBackend.addStaff();
+    const staff = frame.injector.get(StaffAccountsStore);
+    await staff.load();
+    expect(staff.items()).toHaveLength(1);
     await TestBed.inject(Router).navigateByUrl('/');
     expect(launcher.available()).toBe(false);
     expect(store.items()).toEqual([]);
+    expect(staff.items()).toEqual([]);
   });
 });

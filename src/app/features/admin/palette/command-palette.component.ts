@@ -18,6 +18,7 @@ import { ThemeService } from '../../../core/theme/theme.service';
 import { HlmInput } from '@app/shared/ui/input';
 import { BranchesStore } from '../data/branches.store';
 import { ServicesStore } from '../data/services.store';
+import { StaffAccountsStore } from '../data/staff-accounts.store';
 import { createListbox } from '../shared/listbox/create-listbox';
 import { optionId } from '../shared/listbox/listbox-aria';
 import { buildCommands, filterCommands, type Command } from './command-registry';
@@ -114,13 +115,18 @@ export class CommandPalette {
   private readonly session = inject(SessionStore);
   private readonly branches = inject(BranchesStore);
   private readonly services = inject(ServicesStore);
+  private readonly staff = inject(StaffAccountsStore);
 
   readonly open = model(false);
   protected readonly listId = LIST_ID;
 
   protected readonly query = signal('');
   private readonly commands = computed(() =>
-    buildCommands({ branches: this.branches.items(), services: this.services.items() }),
+    buildCommands({
+      branches: this.branches.items(),
+      services: this.services.items(),
+      staff: this.staff.items(),
+    }),
   );
   private readonly results = computed(() => filterCommands(this.commands(), this.query()));
   protected readonly count = computed(() => this.results().count);
