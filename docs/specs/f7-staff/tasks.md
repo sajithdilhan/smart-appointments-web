@@ -165,10 +165,11 @@ Rules (from the template):
 
 ## Chunk E: admin appointments page (worktree `saw-wt/f7-e`, after A)
 
-- [ ] 24. Admin appointments page
+- [x] 24. Admin appointments page
   - Replace the stub `appointments/appointments.page.ts`: branch select (all branches, inactive marked) in `?branch=`, "Choose a branch to see its appointments.", the shared composition with the chosen branch's zone and `ServicesStore` names, branch change resets the date.
   - Specs: `appointments.page.spec` (picker options and "(inactive)", no request without a branch, invalid `?branch=` treated as none, date and status in the URL, branch change resets the date to today in the new zone, a mark from the page, Load more).
   - _Requirements: 5.2, 5.3, 5.4, 3.1_
+  - _Done: 24/10/2026 11:35am_
 
 ## Integration (on the merged `f7-staff`, in order)
 
