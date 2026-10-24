@@ -70,27 +70,32 @@ Rules (from the template):
 
 ## Chunk A: the day-list engine (`shared/branch-day`; worktree `saw-wt/f7-a`)
 
-- [ ] 8. Day parameters, row model and store
+- [x] 8. Day parameters, row model and store
+  - _Done: 24/10/2026 10:56am_
   - `day-params.ts` (`parseDayParams`, `STATUS_FILTERS`, `toQuery`), `day-row.ts` (`toRow`), `day-errors.ts`, `mark-error.ts`, `branch-day.store.ts` (`open`, `loadMore`, `refresh`, `mark`, computed `rows`, `countLabel`, announcements; stale-response and double-send guards), `day-url-state.ts`.
   - Specs: `day-params.spec` (absent, malformed, impossible date, unknown status), `day-row.spec` (names, null customer, service fallback, `canMark`), `mark-error.spec`, `branch-day.store.spec` against `branch-day-backend` (query, Load more, dedupe, stale drop, refresh keeps rows, mark success and `409`/`404` reload, repeat ignored while in flight, `customersUnavailable`), `day-url-state.spec` (normalising `replaceUrl`, history entries, `resetDate`).
   - _Requirements: 2.1, 2.3, 2.5, 2.7, 2.8, 2.9, 3.3, 3.5, 3.6_
 
-- [ ] 9. Date controls and status filter
+- [x] 9. Date controls and status filter
+  - _Done: 24/10/2026 11:00am_
   - `day-nav.component.ts` (heading text, long date, Previous, Next, Today disabled on today, date input, zone label) and `status-filter.component.ts`.
   - Specs: `day-nav.spec` (each control emits the right date, Today disabled, accessible names, the UTC label), `status-filter.spec`.
   - _Requirements: 1.6, 2.2, 2.5_
 
-- [ ] 10. Day list
+- [x] 10. Day list
+  - _Done: 24/10/2026 11:06am_
   - `day-list.component.ts`: table at 640 px and wider, cards below (stubbed `ViewportService`); skeleton with `aria-busy`; count line; empty text with the filter; customers notice and per-row "Name unavailable"; `tel:` link; Load more; inline error with Retry (`dayErrorText`); open event from the time or name button.
   - Specs: `day-list.spec` covering each state and both layouts, the notice with and without one null customer, `tel:` href, Load more visibility and busy state, error texts by status, 320 px content (no fixed widths asserted by class).
   - _Requirements: 2.4, 2.6, 2.7, 2.9, 2.10, 4.1_
 
-- [ ] 11. Row actions, marks and the no-show dialog
+- [x] 11. Row actions, marks and the no-show dialog
+  - _Done: 24/10/2026 11:12am_
   - `row-actions.component.ts` (hint, `aria-describedby`, busy, disabled until start via `createNowSignal`, future-day hint text), `no-show-confirm.ts` (`ConfirmService`), the polite announcement region component, wiring of `store.mark` to toast and announcement.
   - Specs: `row-actions.spec` (hidden for non-Booked, disabled with hint before start, enabled when `ManualClock` passes the start, busy and double activation sends one request), `no-show-confirm.spec` (wording with name and time, initial focus on Keep as booked, Escape and Keep send nothing, Mark sends and closes), `marks.spec` (Complete without confirmation, toasts, announcement text, `409` and `404` toasts with reload).
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
-- [ ] 12. Appointment sheet
+- [x] 12. Appointment sheet
+  - _Done: 24/10/2026 11:21am_
   - `appointment-sheet.component.ts`: helm sheet, fields, duration from start and end, times in the zone, copyable id, embedded `RowActions`, shows the status after a mark, focus return to the opener.
   - Specs: `appointment-sheet.spec` (all fields for Booked, Cancelled, Completed and NoShow rows, missing customer, copy message, Escape and Close, focus returns to the opener, actions work and the badge updates, full-width class below `isLg`).
   - _Requirements: 4.1, 4.2, 4.3_
