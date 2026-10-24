@@ -49,6 +49,7 @@ jobs:
       - run: pnpm size:admin
       - run: pnpm size:book
       - run: pnpm size:appointments
+      - run: pnpm size:staff
       - name: No environment-specific API URL in the bundle
         run: "! grep -r 'localhost:5290' dist --exclude=config.json"
       - name: No test doubles (MSW) in the bundle

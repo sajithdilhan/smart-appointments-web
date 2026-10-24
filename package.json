@@ -22,6 +22,7 @@
     "size:admin": "node scripts/size.mjs --group admin",
     "size:book": "node scripts/size.mjs --group book",
     "size:appointments": "node scripts/size.mjs --group appointments",
+    "size:staff": "node scripts/size.mjs --group staff",
     "e2e": "playwright test",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
