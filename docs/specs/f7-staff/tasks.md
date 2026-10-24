@@ -76,7 +76,8 @@ Rules (from the template):
   - Specs: `day-params.spec` (absent, malformed, impossible date, unknown status), `day-row.spec` (names, null customer, service fallback, `canMark`), `mark-error.spec`, `branch-day.store.spec` against `branch-day-backend` (query, Load more, dedupe, stale drop, refresh keeps rows, mark success and `409`/`404` reload, repeat ignored while in flight, `customersUnavailable`), `day-url-state.spec` (normalising `replaceUrl`, history entries, `resetDate`).
   - _Requirements: 2.1, 2.3, 2.5, 2.7, 2.8, 2.9, 3.3, 3.5, 3.6_
 
-- [ ] 9. Date controls and status filter
+- [x] 9. Date controls and status filter
+  - _Done: 24/10/2026 11:00am_
   - `day-nav.component.ts` (heading text, long date, Previous, Next, Today disabled on today, date input, zone label) and `status-filter.component.ts`.
   - Specs: `day-nav.spec` (each control emits the right date, Today disabled, accessible names, the UTC label), `status-filter.spec`.
   - _Requirements: 1.6, 2.2, 2.5_

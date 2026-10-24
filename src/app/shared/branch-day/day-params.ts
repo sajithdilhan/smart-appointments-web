@@ -23,6 +23,11 @@ export function isCalendarDate(value: string): boolean {
   return /^\d{4}-\d{2}-\d{2}$/.test(value) && addDays(value, 0) === value;
 }
 
+/** A known status, else All (Req 2.5). */
+export function parseStatusFilter(raw: string | null | undefined): StatusFilter {
+  return STATUS_FILTERS.find((f) => f.value !== 'all' && f.value === raw)?.value ?? 'all';
+}
+
 /**
  * The URL state `?date=yyyy-MM-dd&status=`. A missing or malformed date is `today` (Req 2.1) and
  * an unknown status is All (Req 2.5). Pure; `today` is the caller's "today in the branch zone".
@@ -32,9 +37,11 @@ export function parseDayParams(
   today: string,
 ): DayParams {
   const valid = typeof raw.date === 'string' && isCalendarDate(raw.date);
-  const status =
-    STATUS_FILTERS.find((f) => f.value !== 'all' && f.value === raw.status)?.value ?? 'all';
-  return { date: valid ? (raw.date as string) : today, status, dateWasInvalid: !valid };
+  return {
+    date: valid ? (raw.date as string) : today,
+    status: parseStatusFilter(raw.status),
+    dateWasInvalid: !valid,
+  };
 }
 
 /** The request parameters of a day: `status` is left out for All (Req 2.3). */
