@@ -16,23 +16,23 @@ F7 consumes F1 (`ApiClient`, `AppError`, `ToastService`, `OutageState`, `Session
 
 Dependency direction as before: `features → shared, core`; `shared → core`; `core` imports neither.
 
-| Area | Contents |
-| --- | --- |
-| `src/app/core/auth/` | `jwt.ts` (`branchId` claim), `session.model.ts` (`SessionUser.branchId?`), `session.store.ts` (`establish` copies it) (Req 1.1) |
-| `src/app/core/util/` | `guid.ts` (`isGuid`), `now-signal.ts` (`createNowSignal`: a `nowMs` signal that ticks only when a deadline passes, built on `CLOCK`) (Req 3.2) |
-| `src/app/core/branch/` | `staff-branch.store.ts` (`StaffBranchStore`, root) (Req 1.2 to 1.6) |
-| `src/app/core/time/` | new `time-hm.ts`: `timeHm(iso, zone)` (24-hour `HH:mm`, via `zonedParts`) and `longDateLabel(date)` ("Friday 24 October 2026", UTC on a noon instant); exported from `index.ts` (Req 2.2, 2.4, 3.2) |
-| `src/app/core/api/` | `generated/*.d.ts` regenerated; `models.ts` (new types, below); `auth-api.service.ts` (staff methods); `booking-api.service.ts` (day list and marks) (Req 11.1) |
-| `src/app/shared/forms/` | receives `password-rules.ts`, `password-validator.ts`, `password-field.component.ts`, `password-checklist.component.ts` from `features/public/` (path change only; `public` imports them from the new place) (Req 7.1) |
-| `src/app/shared/appointments/` | `appointment-status-badge.ts` moved from `features/customer/appointments/status-badge.ts`, with Completed and NoShow (Req 10.1, 10.4) |
-| `src/app/shared/branch-day/` | the day-list engine (below) |
-| `src/app/shared/ui/badge` | new `warning` variant (Req 10.1) |
-| `src/app/shared/layout/staff-shell/` | header shows branch name and code (Req 1.2) |
-| `src/app/features/staff/` | `staff.routes.ts`, `staff-gate.component.ts`, `staff-day.page.ts`, `titles.ts`; the placeholder is deleted |
-| `src/app/features/admin/` | `appointments/` (page, branch picker), `staff/` (page, drawers, error mapping, row actions), `data/staff-accounts.store.ts`, routes, titles, palette entries |
-| `src/app/features/customer/appointments/` | detail "Completed on / Marked as no-show on", Past-tab status filter, `tab-params` (Req 10) |
-| `src/testing/`, `e2e/` | `branch-day-backend.ts`, `staff-accounts-backend.ts`, `make-access-token.ts` (+ `branchId`), `e2e/support/mock-staff-api.ts`, `mock-staff-accounts-api.ts` |
-| `scripts/` | `size.mjs` gains `--group staff` (Chunk budget) |
+| Area                                      | Contents                                                                                                                                                                                                               |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/core/auth/`                      | `jwt.ts` (`branchId` claim), `session.model.ts` (`SessionUser.branchId?`), `session.store.ts` (`establish` copies it) (Req 1.1)                                                                                        |
+| `src/app/core/util/`                      | `guid.ts` (`isGuid`), `now-signal.ts` (`createNowSignal`: a `nowMs` signal that ticks only when a deadline passes, built on `CLOCK`) (Req 3.2)                                                                         |
+| `src/app/core/branch/`                    | `staff-branch.store.ts` (`StaffBranchStore`, root) (Req 1.2 to 1.6)                                                                                                                                                    |
+| `src/app/core/time/`                      | new `time-hm.ts`: `timeHm(iso, zone)` (24-hour `HH:mm`, via `zonedParts`) and `longDateLabel(date)` ("Friday 24 October 2026", UTC on a noon instant); exported from `index.ts` (Req 2.2, 2.4, 3.2)                    |
+| `src/app/core/api/`                       | `generated/*.d.ts` regenerated; `models.ts` (new types, below); `auth-api.service.ts` (staff methods); `booking-api.service.ts` (day list and marks) (Req 11.1)                                                        |
+| `src/app/shared/forms/`                   | receives `password-rules.ts`, `password-validator.ts`, `password-field.component.ts`, `password-checklist.component.ts` from `features/public/` (path change only; `public` imports them from the new place) (Req 7.1) |
+| `src/app/shared/appointments/`            | `appointment-status-badge.ts` moved from `features/customer/appointments/status-badge.ts`, with Completed and NoShow (Req 10.1, 10.4)                                                                                  |
+| `src/app/shared/branch-day/`              | the day-list engine (below)                                                                                                                                                                                            |
+| `src/app/shared/ui/badge`                 | new `warning` variant (Req 10.1)                                                                                                                                                                                       |
+| `src/app/shared/layout/staff-shell/`      | header shows branch name and code (Req 1.2)                                                                                                                                                                            |
+| `src/app/features/staff/`                 | `staff.routes.ts`, `staff-gate.component.ts`, `staff-day.page.ts`, `titles.ts`; the placeholder is deleted                                                                                                             |
+| `src/app/features/admin/`                 | `appointments/` (page, branch picker), `staff/` (page, drawers, error mapping, row actions), `data/staff-accounts.store.ts`, routes, titles, palette entries                                                           |
+| `src/app/features/customer/appointments/` | detail "Completed on / Marked as no-show on", Past-tab status filter, `tab-params` (Req 10)                                                                                                                            |
+| `src/testing/`, `e2e/`                    | `branch-day-backend.ts`, `staff-accounts-backend.ts`, `make-access-token.ts` (+ `branchId`), `e2e/support/mock-staff-api.ts`, `mock-staff-accounts-api.ts`                                                             |
+| `scripts/`                                | `size.mjs` gains `--group staff` (Chunk budget)                                                                                                                                                                        |
 
 ```
 src/app/shared/branch-day/
@@ -54,13 +54,13 @@ src/app/shared/branch-day/
 
 ### Routes
 
-| Path | Component | Guard | Notes |
-| --- | --- | --- | --- |
-| `/staff` | `StaffGate` → `StaffDayPage` | `authGuard`, `roleGuard('Staff')` (F1, unchanged) | `?date=&status=`; title "Appointments" (Req 2) |
-| `/admin/appointments` | `AdminAppointmentsPage` | admin guards (F1) | `?branch=&date=&status=` (Req 5) |
-| `/admin/staff` | `StaffAccountsPage` | admin guards | `?branch=&status=` (Req 6) |
-| `/admin/staff/new` | `StaffCreateDrawer` (child) | `unsavedChangesGuard` | Req 7 |
-| `/admin/staff/:id` | `StaffEditDrawer` (child) | `unsavedChangesGuard` | GUID check before any request, as F5 (Req 8) |
+| Path                  | Component                    | Guard                                             | Notes                                          |
+| --------------------- | ---------------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| `/staff`              | `StaffGate` → `StaffDayPage` | `authGuard`, `roleGuard('Staff')` (F1, unchanged) | `?date=&status=`; title "Appointments" (Req 2) |
+| `/admin/appointments` | `AdminAppointmentsPage`      | admin guards (F1)                                 | `?branch=&date=&status=` (Req 5)               |
+| `/admin/staff`        | `StaffAccountsPage`          | admin guards                                      | `?branch=&status=` (Req 6)                     |
+| `/admin/staff/new`    | `StaffCreateDrawer` (child)  | `unsavedChangesGuard`                             | Req 7                                          |
+| `/admin/staff/:id`    | `StaffEditDrawer` (child)    | `unsavedChangesGuard`                             | GUID check before any request, as F5 (Req 8)   |
 
 `ADMIN_ROUTES` gains `appointments` and `staff` (with its two children) inside `AdminFrame`; `StaffAccountsStore` joins that route's `providers` and is reset by `AdminFrame` on destroy with the other stores. `features/staff/staff.routes.ts` becomes one route, `''` → `StaffGate` with `StaffDayPage` as its content. Sidebar order: Dashboard, Branches, Services, **Staff**, Slot generation, **Appointments** (Req 5.1, 6.1). Palette static commands: "Go to appointments" (Navigate), "Go to staff" (Navigate), "New staff member" (Create), and `staff-{id}` record entries "Edit {name}" from `StaffAccountsStore.items()` when loaded (Req 6.1).
 
@@ -75,13 +75,15 @@ src/app/shared/branch-day/
 
 ```ts
 export type StatusFilter = 'all' | 'Booked' | 'Completed' | 'NoShow' | 'Cancelled';
-export function parseDayParams(raw: { date?: string|null; status?: string|null }, today: string):
-  { date: string; status: StatusFilter; dateWasInvalid: boolean };   // malformed date -> today (Req 2.1); unknown status -> 'all' (Req 2.5)
+export function parseDayParams(
+  raw: { date?: string | null; status?: string | null },
+  today: string,
+): { date: string; status: StatusFilter; dateWasInvalid: boolean }; // malformed date -> today (Req 2.1); unknown status -> 'all' (Req 2.5)
 
 export interface BranchDayContext {
   branchId: Signal<string | null>;
-  zone: Signal<string>;                 // 'UTC' when the branch has none
-  services: Signal<ReadonlyMap<string, { name: string }>>;  // host-supplied (Req 2.4)
+  zone: Signal<string>; // 'UTC' when the branch has none
+  services: Signal<ReadonlyMap<string, { name: string }>>; // host-supplied (Req 2.4)
 }
 ```
 
@@ -142,17 +144,17 @@ Client rules mirror the backend (`staff-booking` validators), reusing F2/F5 piec
 
 ## State and data model
 
-| State | Owner | Lifetime |
-| --- | --- | --- |
-| `SessionUser.branchId` | `SessionStore` | session |
-| Staff branch `{status, branch}` | `StaffBranchStore` (root) | session; reset on sign-out |
-| `date`, `status`, `branch` | URL query params | navigation |
-| Rows, paging, `marking`, announcement | `BranchDayStore` | the page |
-| `openId` (detail sheet) | page signal | the page |
-| `nowMs` | `createNowSignal` | the page |
-| Staff accounts, filters | `StaffAccountsStore` | the admin frame; reset on destroy |
-| Form values (not password after submit) | drawer `FormGroup` | the drawer |
-| Persisted storage | none new | — |
+| State                                   | Owner                     | Lifetime                          |
+| --------------------------------------- | ------------------------- | --------------------------------- |
+| `SessionUser.branchId`                  | `SessionStore`            | session                           |
+| Staff branch `{status, branch}`         | `StaffBranchStore` (root) | session; reset on sign-out        |
+| `date`, `status`, `branch`              | URL query params          | navigation                        |
+| Rows, paging, `marking`, announcement   | `BranchDayStore`          | the page                          |
+| `openId` (detail sheet)                 | page signal               | the page                          |
+| `nowMs`                                 | `createNowSignal`         | the page                          |
+| Staff accounts, filters                 | `StaffAccountsStore`      | the admin frame; reset on destroy |
+| Form values (not password after submit) | drawer `FormGroup`        | the drawer                        |
+| Persisted storage                       | none new                  | —                                 |
 
 `BranchDayRow` and `StaffAccount` are as above. No store keeps the password.
 
@@ -160,25 +162,25 @@ Client rules mirror the backend (`staff-booking` validators), reusing F2/F5 piec
 
 All failures arrive as `AppError` from the F1 pipeline (`{status, message, kind}`); mapping modules switch on `status` first and on the exact backend `detail` only where one status carries several meanings. Known texts are constants in the mapping module, never inline.
 
-| Condition | `AppError` | UI result |
-| --- | --- | --- |
-| Day list `403` / `503` / other | 403 / 503 / any | inline error text per Req 2.10, Retry; date controls stay usable |
-| Day list network, timeout | `network`, `timeout` | inline error with the F1 text and Retry; F1 banner covers outages; reload on recovery (Req 2.8) |
-| Mark `409` | 409 | error toast with the server's `detail`; reload (Req 3.5) |
-| Mark `404` | 404 | toast "This appointment is no longer available."; reload |
-| Mark `403`/other | any | `ToastService.handleError`; no reload |
-| Branch `404` or no claim | 404 | `not-linked` full-page message (Req 1.3) |
-| Branch network/`5xx` | other | F1 error state + Retry; retry on recovery (Req 1.4) |
-| Staff list failure | any | inline error + Retry (Req 6.6) |
-| Create `400` "Email is already registered." | 400 | error on Email field (Req 7.3) |
-| Create/move `400` "Invalid request data. Errors: a,b" | 400 | split on `, ` / `,` like F5's `splitValidationDetail`; known messages to fields, the rest to the form alert |
-| Create/move `422` | 422 | Branch field: "This branch is not active any more. Choose another."; `BranchesStore.load({force:true})` (Req 7.3, 8.4) |
-| Create/move `503` | 503 | form alert "The branch could not be checked right now. Try again shortly."; values kept (Req 7.3, 8.4) |
-| Edit read / move / activate / deactivate / delete `404` | 404 | edit drawer: "This staff account no longer exists." and list reload; actions: toast + reload (Req 8.1, 9.4) |
-| Activate `422` | 422 | banner "{Name}'s branch is not active. Move them to an active branch first." + Edit link (Req 9.2) |
-| Activate/move `503` (not create) | 503 | `ToastService.handleError` (F1 outage text) (Req 9.2) |
-| `429` | rate-limited | `RateLimitNotice` on forms; toast on actions |
-| Any `403` on staff endpoints | 403 | `handleError`: "You do not have permission to do that." (Req 11.2) |
+| Condition                                               | `AppError`           | UI result                                                                                                              |
+| ------------------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Day list `403` / `503` / other                          | 403 / 503 / any      | inline error text per Req 2.10, Retry; date controls stay usable                                                       |
+| Day list network, timeout                               | `network`, `timeout` | inline error with the F1 text and Retry; F1 banner covers outages; reload on recovery (Req 2.8)                        |
+| Mark `409`                                              | 409                  | error toast with the server's `detail`; reload (Req 3.5)                                                               |
+| Mark `404`                                              | 404                  | toast "This appointment is no longer available."; reload                                                               |
+| Mark `403`/other                                        | any                  | `ToastService.handleError`; no reload                                                                                  |
+| Branch `404` or no claim                                | 404                  | `not-linked` full-page message (Req 1.3)                                                                               |
+| Branch network/`5xx`                                    | other                | F1 error state + Retry; retry on recovery (Req 1.4)                                                                    |
+| Staff list failure                                      | any                  | inline error + Retry (Req 6.6)                                                                                         |
+| Create `400` "Email is already registered."             | 400                  | error on Email field (Req 7.3)                                                                                         |
+| Create/move `400` "Invalid request data. Errors: a,b"   | 400                  | split on `, ` / `,` like F5's `splitValidationDetail`; known messages to fields, the rest to the form alert            |
+| Create/move `422`                                       | 422                  | Branch field: "This branch is not active any more. Choose another."; `BranchesStore.load({force:true})` (Req 7.3, 8.4) |
+| Create/move `503`                                       | 503                  | form alert "The branch could not be checked right now. Try again shortly."; values kept (Req 7.3, 8.4)                 |
+| Edit read / move / activate / deactivate / delete `404` | 404                  | edit drawer: "This staff account no longer exists." and list reload; actions: toast + reload (Req 8.1, 9.4)            |
+| Activate `422`                                          | 422                  | banner "{Name}'s branch is not active. Move them to an active branch first." + Edit link (Req 9.2)                     |
+| Activate/move `503` (not create)                        | 503                  | `ToastService.handleError` (F1 outage text) (Req 9.2)                                                                  |
+| `429`                                                   | rate-limited         | `RateLimitNotice` on forms; toast on actions                                                                           |
+| Any `403` on staff endpoints                            | 403                  | `handleError`: "You do not have permission to do that." (Req 11.2)                                                     |
 
 `staff-error.ts` exports `mapStaffSaveError(err, mode: 'create'|'move'): StaffOutcome` (`{ kind: 'field', field, message } | { kind: 'alert', message } | { kind: 'not-found' } | { kind: 'rate-limited', … } | { kind: 'generic' }`) and `mapStaffActionError(err, action)`; the day list has `mapMarkError` and `dayErrorText`. Each is pure and table-tested.
 
@@ -196,23 +198,24 @@ All failures arrive as `AppError` from the F1 pipeline (`{status, message, kind}
 
 Vitest + Angular Testing Library (queries by role and label), MSW, `ManualClock` for time, `vi.useFakeTimers()` as F1 configures, no `fakeAsync`. Two new stateful MSW backends in `src/testing/` follow `appointments-backend.ts`: `branch-day-backend.ts` (branches' appointments, customer lookup, marks with the real rules: `409` before start or wrong status, idempotent repeat, `404` other branch for a Staff token, `403` customer, `customersUnavailable` switch, paging) and `staff-accounts-backend.ts` (list with filters and paging, create with the duplicate-email `400` and inactive-branch `422`, move, activate/deactivate, soft delete, `503` switch). `make-access-token` gains `branchId`.
 
-| Kind | Covers | Spec files |
-| --- | --- | --- |
-| Pure | `branch_id` decode (valid, absent, not a GUID, Customer/Admin) (1.1); `parseDayParams` (2.1, 2.5); `toRow` (2.4, 2.7); `timeHm`, `longDateLabel` for DST days and no-zone (1.6, 2.2); `createNowSignal` with `ManualClock` (3.2); mapping modules (2.10, 3.5, 7.3, 8.4, 9.x); `splitValidationDetail` reuse | `jwt.spec`, `day-params.spec`, `day-row.spec`, `time-hm.spec`, `now-signal.spec`, `mark-error.spec`, `staff-error.spec` |
-| Store | `BranchDayStore`: query by date and status, `pageSize=100`, Load more append and dedupe, stale response dropped, refresh keeps rows, mark success reload, `409`/`404` reload, double send ignored, announcements (2.3, 2.8, 2.9, 3.3 to 3.7); `StaffBranchStore`: once per branch, `not-linked`, error, recovery, branch change (1.2 to 1.5); `StaffAccountsStore`: filters, paging, reload of loaded pages (6.2, 6.4) | `branch-day.store.spec`, `staff-branch.store.spec`, `staff-accounts.store.spec` |
-| Component: shared | day nav (buttons, Today disabled, input; navigation adds history), filter, list (table vs cards via stubbed viewport, skeleton, empty text with filter, notice, per-row null customer, tel link, Load more, inline error and Retry), row actions (hint, `aria-describedby`, busy, becomes enabled when the clock passes start), no-show dialog (wording, initial focus Keep as booked, Escape sends nothing, confirm sends), sheet (fields, copy, actions, focus return, close) | `day-nav`, `status-filter`, `day-list`, `row-actions`, `no-show-confirm`, `appointment-sheet` specs |
-| Component: hosts | staff gate (not-linked, error + Retry, ready), shell header, staff page (URL normalised with `replace`, branch change resets date, unknown filter → All, recovery reload), admin appointments page (picker incl. inactive, no branch message, branch change resets date, zone of the chosen branch) | `staff-gate`, `staff-day.page`, `staff-shell`, `appointments.page` specs |
-| Component: staff accounts | table/cards, filters in URL, empty states, Load more, row menu; create drawer (fields, normalised phone, password checklist, every error mapping, double submit, password cleared, guard prompt); edit drawer (read-only fields, same-branch disabled, notice, `404`, `422`, `503`); actions (wording, focus on Cancel, busy, `404`, reactivate `422` action) | `staff.page`, `staff-create-drawer`, `staff-edit-drawer`, `staff-actions` specs |
-| Component: customer | badge Completed/NoShow/unknown (10.1, 10.4); detail "Completed on"/"Marked as no-show on", no cancel (10.2); Past filter in URL and request, Upcoming unchanged (10.3) | `status-badge`, `appointment-detail`, `appointments-page`, `tab-params` specs |
-| Routing/palette | admin routes resolve incl. `staff/new` vs `:id`; sidebar order; palette commands and staff records (5.1, 6.1, 11.2) | `admin.routes.spec`, `command-registry.spec`, `admin-shell.spec` |
-| API services | URLs, params (`status` omitted for All), bodies, `Idempotency-Key` absent | `auth-api.service.spec`, `booking-api.service.spec` |
-| Playwright (mocked) | staff day list with a Complete and a No-show, branch day change by Back; admin appointments page; staff create, move, deactivate, reactivate, delete (11.4) | `staff.spec`, `admin-appointments.spec`, `admin-staff.spec` |
-| axe (light and dark) | `/staff`, with the sheet and the no-show dialog open; `/admin/appointments`; `/admin/staff`; create and edit drawers; customer Past tab with the new badges (11.3) | `staff.a11y.spec`, `admin.a11y.spec` (extended), `a11y-appointments.spec` (extended) |
-| Manual | Req 1 to 10 against the Compose gateway | task F7-T30 |
+| Kind                      | Covers                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Spec files                                                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Pure                      | `branch_id` decode (valid, absent, not a GUID, Customer/Admin) (1.1); `parseDayParams` (2.1, 2.5); `toRow` (2.4, 2.7); `timeHm`, `longDateLabel` for DST days and no-zone (1.6, 2.2); `createNowSignal` with `ManualClock` (3.2); mapping modules (2.10, 3.5, 7.3, 8.4, 9.x); `splitValidationDetail` reuse                                                                                                                                                                     | `jwt.spec`, `day-params.spec`, `day-row.spec`, `time-hm.spec`, `now-signal.spec`, `mark-error.spec`, `staff-error.spec` |
+| Store                     | `BranchDayStore`: query by date and status, `pageSize=100`, Load more append and dedupe, stale response dropped, refresh keeps rows, mark success reload, `409`/`404` reload, double send ignored, announcements (2.3, 2.8, 2.9, 3.3 to 3.7); `StaffBranchStore`: once per branch, `not-linked`, error, recovery, branch change (1.2 to 1.5); `StaffAccountsStore`: filters, paging, reload of loaded pages (6.2, 6.4)                                                          | `branch-day.store.spec`, `staff-branch.store.spec`, `staff-accounts.store.spec`                                         |
+| Component: shared         | day nav (buttons, Today disabled, input; navigation adds history), filter, list (table vs cards via stubbed viewport, skeleton, empty text with filter, notice, per-row null customer, tel link, Load more, inline error and Retry), row actions (hint, `aria-describedby`, busy, becomes enabled when the clock passes start), no-show dialog (wording, initial focus Keep as booked, Escape sends nothing, confirm sends), sheet (fields, copy, actions, focus return, close) | `day-nav`, `status-filter`, `day-list`, `row-actions`, `no-show-confirm`, `appointment-sheet` specs                     |
+| Component: hosts          | staff gate (not-linked, error + Retry, ready), shell header, staff page (URL normalised with `replace`, branch change resets date, unknown filter → All, recovery reload), admin appointments page (picker incl. inactive, no branch message, branch change resets date, zone of the chosen branch)                                                                                                                                                                             | `staff-gate`, `staff-day.page`, `staff-shell`, `appointments.page` specs                                                |
+| Component: staff accounts | table/cards, filters in URL, empty states, Load more, row menu; create drawer (fields, normalised phone, password checklist, every error mapping, double submit, password cleared, guard prompt); edit drawer (read-only fields, same-branch disabled, notice, `404`, `422`, `503`); actions (wording, focus on Cancel, busy, `404`, reactivate `422` action)                                                                                                                   | `staff.page`, `staff-create-drawer`, `staff-edit-drawer`, `staff-actions` specs                                         |
+| Component: customer       | badge Completed/NoShow/unknown (10.1, 10.4); detail "Completed on"/"Marked as no-show on", no cancel (10.2); Past filter in URL and request, Upcoming unchanged (10.3)                                                                                                                                                                                                                                                                                                          | `status-badge`, `appointment-detail`, `appointments-page`, `tab-params` specs                                           |
+| Routing/palette           | admin routes resolve incl. `staff/new` vs `:id`; sidebar order; palette commands and staff records (5.1, 6.1, 11.2)                                                                                                                                                                                                                                                                                                                                                             | `admin.routes.spec`, `command-registry.spec`, `admin-shell.spec`                                                        |
+| API services              | URLs, params (`status` omitted for All), bodies, `Idempotency-Key` absent                                                                                                                                                                                                                                                                                                                                                                                                       | `auth-api.service.spec`, `booking-api.service.spec`                                                                     |
+| Playwright (mocked)       | staff day list with a Complete and a No-show, branch day change by Back; admin appointments page; staff create, move, deactivate, reactivate, delete (11.4)                                                                                                                                                                                                                                                                                                                     | `staff.spec`, `admin-appointments.spec`, `admin-staff.spec`                                                             |
+| axe (light and dark)      | `/staff`, with the sheet and the no-show dialog open; `/admin/appointments`; `/admin/staff`; create and edit drawers; customer Past tab with the new badges (11.3)                                                                                                                                                                                                                                                                                                              | `staff.a11y.spec`, `admin.a11y.spec` (extended), `a11y-appointments.spec` (extended)                                    |
+| Manual                    | Req 1 to 10 against the Compose gateway                                                                                                                                                                                                                                                                                                                                                                                                                                         | task F7-T30                                                                                                             |
 
 ## Chunk budget (Req 11.5)
 
 Measured by `pnpm size:*` on the F6 build (before F7): initial 165.94 of 250 kB, public 32.86 of 50, book 39.31 of 60, appointments 19.98 of 40, admin 93.81 of 120 kB (gzip). F7 adds:
+
 - **Staff group** (new `--group staff`: the chunks whose entry is under `features/staff/` plus what they import statically, shared chunks counted once). Estimate: `shared/branch-day` (list, actions, sheet, store) about 14 kB, helm sheet and alert-dialog shared with other groups (counted once, perhaps 8 kB if first in this group), gate and page 3 kB, icons 2 kB: about 27 kB. **Proposed budget: 40 kB gzip** (`MAX_GZIP_KB_STAFF`, default added to `GROUP_DEFAULTS`).
 - **Admin group.** Adds the appointments page (small, the engine is shared), the staff page, two drawers, the error module, the password pieces (shared chunk, may already be counted in public) and ~8 icons: estimated +18 to +24 kB, giving about 112 to 118 kB, **near the 120 kB limit**. Proposed new admin budget: **140 kB** (about +20 percent), recorded for approval; if the measurement leaves headroom the limit stays at 120 (task F7-T27).
 - **Appointments group** (customer): +1 kB (two icons and two branches), stays under 40.
@@ -239,5 +242,5 @@ Measured by `pnpm size:*` on the F6 build (before F7): initial 165.94 of 250 kB,
 
 ## Open questions
 
-1. **Admin budget.** The design proposes 140 kB for the admin group if the measured total exceeds 120 kB (see Chunk budget). Needs the user's approval at task F7-T27 if the measurement requires it.
+1. **Admin budget.** Resolved 24/10/2026: after chunk C the admin group measured 120.39 kB gzip, so the user approved raising its limit to **140 kB** (applied in F7-T27).
 2. **Regenerating types** needs the Compose stack running in Development on `:5290` with the `master` backend; the task stops and reports if the gateway is unreachable rather than hand-writing request types.
