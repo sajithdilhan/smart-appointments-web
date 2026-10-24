@@ -146,10 +146,11 @@ Rules (from the template):
 
 ## Chunk D: customer screens (worktree `saw-wt/f7-d`)
 
-- [ ] 22. Completed and no-show in the customer views
+- [x] 22. Completed and no-show in the customer views
   - `appointment-view.ts`: status labels "Completed" and "No-show", `canCancel` false for them, `a11yName` with the label; `appointment-detail.ts`: "Completed on {date, time}" and "Marked as no-show on {date, time}" next to "Cancelled on"; no cancel action.
   - Specs: `appointment-view.spec` and `appointment-detail.spec` for Completed, NoShow and an unknown status (neutral text of its own value), the detail rows and the absence of a Cancel button; `list-components.spec` for the card badge.
   - _Requirements: 10.1, 10.2, 10.4_
+  - _Done: 24/10/2026 10:43am_
 
 - [ ] 23. Past-tab status filter
   - `tab-params.ts`: `?pstatus=` (All, Completed, NoShow, Cancelled, Booked; unknown to All; honoured on Past only), `toListQuery` sends `status` on Past; `appointments.store.ts` filter and `sameFilter`; `appointments-page.ts` select on the Past tab, URL sync, announcement; Upcoming unchanged.

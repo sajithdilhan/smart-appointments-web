@@ -52,7 +52,7 @@ export function toViewModel(a: AppointmentResponse, ctx: ViewContext): Appointme
   const timeIn = (z: string, d: Date) => formatInZone(d, z, { ...options, style: 'time' });
   const timeRange = `${timeIn(inZone, start)} to ${timeIn(inZone, end)}`;
   const dateLabel = formatInZone(start, inZone, { ...options, style: 'date' });
-  const statusLabel = a.status;
+  const statusLabel = a.status === 'NoShow' ? 'No-show' : a.status;
   const isPast = ctx.tab === 'past';
   const offerable = a.status === 'Booked' && start.getTime() > ctx.now.getTime();
   const serviceName = ctx.service?.name ?? UNAVAILABLE_SERVICE;
