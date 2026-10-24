@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { AppointmentView } from './appointment.model';
-import { AppointmentStatusBadge } from './status-badge';
+import { AppointmentStatusBadge } from '../../../shared/appointments/appointment-status-badge';
 
 /** The whole card is one link (a single focus stop); it nests no other interactive element. */
 @Component({

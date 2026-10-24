@@ -62,6 +62,8 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-success-soft: var(--success-soft);
   --color-success-soft-foreground: var(--success-soft-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-soft-foreground: var(--warning-soft-foreground);
   --color-tile-lavender: var(--tile-lavender);
   --color-tile-lavender-foreground: var(--tile-lavender-foreground);
   --color-tile-blue: var(--tile-blue);
@@ -106,6 +108,8 @@
   --success-soft-foreground: #065f46;
   --warning: #b45309;
   --warning-foreground: #ffffff;
+  --warning-soft: #fef3c7;
+  --warning-soft-foreground: #92400e;
   --tile-lavender: #ede9fe;
   --tile-lavender-foreground: #6d28d9;
   --tile-blue: #dbeafe;
@@ -142,6 +146,8 @@
   --success-soft-foreground: #a7f3d0;
   --warning: #fbbf24;
   --warning-foreground: #0f0d24;
+  --warning-soft: #3d2a05;
+  --warning-soft-foreground: #fde68a;
   --tile-lavender: #2e2763;
   --tile-lavender-foreground: #c4b5fd;
   --tile-blue: #172554;

@@ -32,7 +32,7 @@ import { FormFieldComponent } from '../../../shared/forms/form-field.component';
 import { RateLimitNotice } from '../../../shared/ui/rate-limit-notice';
 import { AuthLayoutComponent } from '../auth/auth-layout.component';
 import { Outcome, toAppError } from '../auth/outcome';
-import { PasswordFieldComponent } from '../auth/password-field.component';
+import { PasswordFieldComponent } from '../../../shared/forms/password-field.component';
 import { createLoginForm, LOGIN_MESSAGES } from './login.form';
 import { mapLoginError } from './login-error';
 

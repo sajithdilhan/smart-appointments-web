@@ -40,6 +40,8 @@ const pairs: [string, string, number][] = [
   ['destructive-foreground', 'destructive', 4.5],
   ['success-foreground', 'success', 4.5],
   ['warning-foreground', 'warning', 4.5],
+  ['success-soft-foreground', 'success-soft', 4.5],
+  ['warning-soft-foreground', 'warning-soft', 4.5],
   ['primary', 'background', 4.5], // text links
   ['ring', 'background', 3],
   ['input', 'background', 3], // control boundaries

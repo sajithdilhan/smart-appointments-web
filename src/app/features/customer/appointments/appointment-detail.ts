@@ -29,7 +29,7 @@ import { AppointmentDetailStore } from './appointment-detail.store';
 import { CancelDialog } from './cancel-dialog';
 import { DetailHost } from './detail-host';
 import { InlineError } from './inline-error';
-import { AppointmentStatusBadge } from './status-badge';
+import { AppointmentStatusBadge } from '../../../shared/appointments/appointment-status-badge';
 
 const RETRYABLE_MESSAGE =
   'We could not cancel right now. Nothing was changed. Try again in a moment.';

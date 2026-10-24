@@ -31,7 +31,8 @@ Rules (from the template):
   - Specs: `booking-api.service.spec` (URL, `date`, `status` omitted for All, `page`, `pageSize`, abort, no `Idempotency-Key`), `auth-api.service.spec` (each method's verb, URL, body and query).
   - _Requirements: 11.1, 10.3, 10.4_
 
-- [ ] 3. Shared moves, badge variant and tokens
+- [x] 3. Shared moves, badge variant and tokens
+  - _Done: 24/10/2026 10:14am_
   - Move `public/validation/password-rules.ts`, `password-validator.ts`, `public/auth/password-field.component.ts` and `public/register/password-checklist.component.ts` (with their specs) to `shared/forms/`; update the imports in `public`; the password wording constants they need move with them.
   - Move `customer/appointments/status-badge.ts` (and its spec, if any) to `shared/appointments/appointment-status-badge.ts`; update imports.
   - Badge: `Completed` (icon `lucideCircleCheck`, variant `success`, text "Completed") and `NoShow` (icon `lucideUserX`, variant `warning`, text "No-show"); unknown values keep neutral text of their own value. Add the helm badge `warning` variant and `--warning-soft` / `--warning-soft-foreground` tokens to `styles.css` (light and dark, AA contrast), plus the Tailwind colour aliases.
