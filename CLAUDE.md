@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core), F2 (public pages: landing, login, register), F3 (the booking wizard), F4 (my appointments, detail and cancel, profile), F5 (the admin console) and F6 (the Indigo + Lavender redesign: landing, auth and booking layouts, month calendar) are built (the F4 manual live-gateway check is pending).** `docs/specs/README.md` lists the phases F0 to F6 (core, public pages, booking, my appointments, admin, polish); everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; the F6 spec is added one phase at a time.
+This is the Angular web client of the SmartAppointments backend (`https://github.com/sajithdilhan/SmartAppointments`, a .NET microservices portfolio project). **F0 (scaffold), F1 (core), F2 (public pages: landing, login, register), F3 (the booking wizard), F4 (my appointments, detail and cancel, profile), F5 (the admin console), F6 (the Indigo + Lavender redesign: landing, auth and booking layouts, month calendar) and F7 (the staff workspace: staff day list and marks, admin appointments, staff accounts, customer status badges) are built (the F4 and F7 manual live-gateway checks are pending).** `docs/specs/README.md` lists the phases F0 to F7 (core, public pages, booking, my appointments, admin, redesign, staff workspace); F8 (polish) is not specced, and everything not built is aspirational until its spec is written, approved and implemented. The specs in `docs/specs/<feature>/` drive all work; each spec is added one phase at a time.
 
 What exists today:
 
@@ -18,14 +18,15 @@ What exists today:
   - `notify` (`ToastService`), `routing` (`AppTitleStrategy`), `time` (all UTC parsing, zone formatting, calendar, `localToUtc` and branch-hours maths), `util` (`CLOCK`, `localSafe`/`sessionSafe`, `ViewportService`), `ui` (`PaletteLauncher`).
 - **Layout (F1)** under `src/app/shared/layout/`: public, customer, admin and staff shells, user menu, skip link, route progress and announcer, breadcrumb trail, outage banner, not-found page. App primitives in `shared/ui/`: `theme-toggle`, `rate-limit-notice`.
 - **Public pages (F2)** under `src/app/features/public/`: `landing/` (hero, value props, how it works, call-to-action band), `login/`, `register/` (with the password checklist), `auth/` (auth layout, illustration, password field), `validation/` (password rules and messages), `public.routes.ts`, `titles.ts`. Form primitives live in `src/app/shared/forms/` (field view, form field, field a11y directive, form alert, validators, phone normaliser, first-invalid focus) and the heading focus directive in `src/app/shared/a11y/`. `/` renders for signed-in users too; `/login` and `/register` use `guestGuard`. Query parameters on `/login`: `returnUrl` (through `safeReturnUrl`), `reason=session-expired` (set by `SessionEnder` and `SessionSync`) and `reason=registered` with `email` (set by register when the automatic login fails; a successful registration lands on `/book`). Spec: `docs/specs/f2-public/`.
-- **Routes**: all lazy; public (`/`, `/login`, `/register`, built in F2), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**` (the F5 console), `/staff`, and a `**` 404 page. `/book` is the booking wizard (F3); the other customer routes and the staff route render a `PlaceholderPage` (or the staff placeholder) until F4.
+- **Routes**: all lazy; public (`/`, `/login`, `/register`, built in F2), customer (`/book`, `/appointments`, `/appointments/:id`, `/profile`), `/admin/**` (the F5 console, plus `/admin/appointments` and `/admin/staff` from F7), `/staff` (the F7 staff day list), and a `**` 404 page. `/book` is the booking wizard (F3); the other customer routes are F4.
 - **Booking wizard (F3)** at `/book`, under `src/app/features/customer/book/` (the page, `BookingWizardStore`, `SlotSearchService`, the confirm state machine in `confirm.machine.ts`, the idempotency-key store, the pure modules `wizard-params`, `conflict-map`, `confirm-outcome`, `slot-cache`, `request-budget`, `day-parts`) and `features/customer/shared/` (`ReferenceDataStore` for branches and services, `ics/build-ics.ts` and `ics-download.ts`, shared with F4). The selections are URL query parameters: `branch`, `service`, `date`, `slot`, and `done=1` for the success view (never deep-linkable). Session-storage keys: `sa.idem.<slotId>` (one `Idempotency-Key` per slot, reused on retry and reload) and `sa.book.justBooked` (10 minute marker). Also `shared/a11y` (`appRadioGroup` and `appRadioItem`, a roving-tabindex radio group), helm `skeleton` and `badge`, and `ViewportService.prefersReducedMotion`.
 - **Admin (F5)** under `src/app/features/admin/`, mounted as children of the admin shell: `admin.routes.ts` and `AdminFrame` (stores, command palette, Ctrl/Cmd+K), `dashboard/`, `branches/` and `services/` (list page plus a drawer that is a child route over the still-mounted list), `schedule/` (time-zone combobox, weekly grid), `slots/` (generation form, local estimate, result card), `palette/` (pure command registry), `data/` (`BranchesStore`, `ServicesStore`, `SlotActivityStore`: the whole lists, reset when the frame is destroyed), `validation/` (pure rules, one messages file, the `400` splitter and field tables) and `shared/` (list view, drawer frame, status confirm, dirty-form guard, listbox engine). It reuses `shared/forms` (`form-field`, `field-a11y`, `field-view`, `form-alert`, `focus-first-invalid`) and `shared/ui/confirm-dialog`. Every way out of a dirty form is a router navigation, so one `unsavedChangesGuard` decides.
 - **Contract fixture convention**: backend validation messages, regexes and error texts are copied once into `src/testing/fixtures/availability-contract.json` (with the C# file and rule); client messages that mirror the backend, the server-message tables and the MSW admin backend (`src/testing/availability-admin-backend.ts`) are tested against it. A backend wording change is one fixture edit and a failing test. `slot-planner-vectors.json` is generated manually (see `src/testing/fixtures/README.md`).
-- **No admin API exists** for appointments, staff or reports, or for deleting a branch or service (deactivation is the only removal); do not build screens for them.
+- **Staff workspace (F7)**, built from `docs/specs/f7-staff/`: `shared/branch-day/` is the day-list engine (`BranchDayStore`, `createDayUrlState`, `DayNav`, `DayList`, `RowActions`, `AppointmentSheet`, `confirmNoShow`) used by `features/staff/` (`StaffGate`, `StaffDayPage`) and `features/admin/appointments/`; `core/branch/StaffBranchStore` resolves the Staff token's `branch_id` claim into the branch (`SessionUser.branchId`); `features/admin/staff/` and `data/staff-accounts.store.ts` are the staff accounts screens (server-paged list, create and edit drawers, `staff-actions.ts` for Deactivate, Reactivate and Delete, `staff-error.ts` for every backend text); `shared/appointments/` holds the status badge (Completed and No-show included), `shared/forms/` the password field, checklist and rules (moved from `features/public/`), `core/util/now-signal.ts` (`createNowSignal`, one timer for the next start) and `guid.ts`, `core/time/time-hm.ts` (`timeHm`, `longDateLabel`). The customer Past tab has a `?pstatus=` filter.
+- **No API exists** for reports, or for deleting a branch or service (deactivation is the only removal); do not build screens for them.
 - **Quality and delivery**: ESLint (angular-eslint, flat config, date and layering rules), Prettier, Husky, lint-staged, commitlint, Vitest + Angular Testing Library + MSW (with a stateful mock of the auth endpoints), Playwright with mocked routes, bundle budgets plus `pnpm size`, a Dockerfile (nginx-unprivileged), `docker-compose.yml` and a GitHub Actions workflow.
 
-Not present yet (do not assume): profile editing (the profile page is read-only), i18n, the command palette outside admin (only the `PaletteLauncher` seam exists).
+Not present yet (do not assume): profile editing (the profile page is read-only), i18n, the command palette outside admin (only the `PaletteLauncher` seam exists), appointment search or a range wider than one day for staff.
 
 ## Commands
 
@@ -40,9 +41,10 @@ pnpm format                        # prettier --write . ; pnpm format:check to v
 pnpm typecheck                     # tsc on tsconfig.app.json and tsconfig.spec.json
 pnpm size                          # gzip size of the initial files in dist; fails above 250 kB
 pnpm size:public                   # gzip size of the public feature chunks (after pnpm build); fails above 50 kB
-pnpm size:admin                    # gzip size of the admin lazy group; fails above MAX_GZIP_KB_ADMIN (120)
+pnpm size:admin                    # gzip size of the admin lazy group; fails above MAX_GZIP_KB_ADMIN (140)
 pnpm size:book                     # gzip size of the booking wizard's lazy chunks; fails above MAX_GZIP_KB_BOOK (60)
 pnpm size:appointments             # gzip size of the F4 lazy chunks (appointments, profile); fails above MAX_GZIP_KB_APPOINTMENTS (40)
+pnpm size:staff                    # gzip size of the F7 staff feature chunks (shared chunks counted once); fails above MAX_GZIP_KB_STAFF (55)
 pnpm test:scripts                  # node --test of scripts/ (gen-api, the date lint rules)
 pnpm gen:api                       # regenerate core/api/generated from a running Development gateway (GATEWAY_URL overrides)
 pnpm e2e                           # Playwright (routes mocked); starts pnpm start unless E2E_BASE_URL is set
@@ -124,6 +126,16 @@ Angular rules:
 - The generated helm `sheet` and `alert-dialog` carry `motion-safe:` on their animation classes; regenerating them restores the bare classes, so re-apply. The destructive action buttons are solid (`bg-destructive text-destructive-foreground`) because the tinted helm variant fails contrast.
 - `pnpm size:appointments` checks the F4 lazy chunks (40 kB gzipped, `MAX_GZIP_KB_APPOINTMENTS`; CI runs it after the build; plain `pnpm size` is the initial bundle only). `e2e/appointments-mock.ts` mocks the appointment endpoints for Playwright; `e2e/a11y-appointments.spec.ts` runs axe (the open-sheet test exempts `aria-hidden-focus`, a CDK modal artefact).
 
+### Staff workspace conventions (F7)
+
+- **One engine, two hosts.** Do not copy the day list: `StaffDayPage` and `AdminAppointmentsPage` provide `BranchDayStore` and `BRANCH_DAY_CONTEXT` (branch id, zone, service names) and compose the shared components. The URL owns the view (`?date=`, `?status=`, plus `?branch=` for admins); parse it only through `parseDayParams` / `createDayUrlState`.
+- **Reload, never patch.** After a mark the store re-reads the list; `409` shows the server's own text, `404` the fixed "This appointment is no longer available.". Never write another mark flow.
+- **A staff member's branch is the token's `branch_id`.** `SessionUser.branchId` is set only for Staff; `StaffBranchStore.ensure()` is called by the gate. No branch means no appointment request. The claim can lag a branch move by up to 60 minutes, which is accepted (see the README's Known gaps).
+- **Times.** `HH:mm` (24-hour) in the branch zone through `timeHm`; a branch without a zone is UTC with "Times in UTC". The "Available from" state ticks through `createNowSignal` with the injected `CLOCK`, never `setInterval`.
+- **Staff accounts.** Backend texts are mapped in `features/admin/staff/staff-error.ts` and `staff-messages.ts` and tested against the MSW model `src/testing/staff-accounts-backend.ts`; `src/testing/branch-day-backend.ts` models the day list.
+- **E2E.** `e2e/support/mock-staff-api.ts` (`mockStaffApi`; a Staff token with `branchId`, or `null` for the not-linked state) and `mock-staff-accounts-api.ts` (on top of `mockAdminApi`). To stack a mock over another, pass `fallthrough: true` so unknown requests fall to the earlier mock (`e2e/support/admin-appointments.ts` does this). F7's port lane is 4307. The light `--destructive` token is `#c81e1e` because the tinted destructive button failed contrast at `#dc2626`; the contrast spec checks it.
+- `pnpm size:staff` checks the staff chunks (55 kB gzipped, `MAX_GZIP_KB_STAFF`, measured 49.0 at F7); the admin budget is 140 kB (measured 135.3), so little headroom remains.
+
 ### Backend contract
 
 - The SPA talks to the YARP gateway only (`APP_CONFIG.apiBaseUrl`); it never calls Auth, Availability or Booking directly, and `/internal/**` does not exist for it.
@@ -151,11 +163,9 @@ Angular rules:
 
 ## Working with Claude Code subagents
 
-When delegating work to a subagent (the `Agent` tool), run it on **Sonnet** — pass `model: "sonnet"`
-explicitly on every spawn rather than letting it inherit the parent session's model. Sonnet is the
-project's chosen subagent model because delegated tasks (codebase searches, spec drafting, focused
-refactors) don't need the larger model and run faster and cheaper on it. The intended model is
-**Sonnet 5.5**; the `sonnet` alias resolves to the latest Sonnet release, so it picks up Sonnet 5.5
-without pinning a version-specific model ID.
+When delegating work to a subagent (the `Agent` tool), always pass `model` explicitly rather than letting it inherit the parent session's model.
+
+- **Implementation, review and spec drafting run on Sonnet** (`model: "sonnet"`): focused refactors, features, tests and reviews. The intended model is **Sonnet 5.5**; the `sonnet` alias resolves to the latest Sonnet release, so it picks up Sonnet 5.5 without pinning a version-specific model ID.
+- **Exploration-only, low-reasoning helpers run on Haiku** (`model: "haiku"`): searching the codebase, reading files and listing what they find, with no edits and no judgement calls. Anything that writes code or decides something stays on Sonnet.
 
 Phase work is delegated one subagent per phase worktree, following the **Delegation** rules in `docs/WORKPLAN.md` (stay inside the worktree, one commit per task, stop at the first task that cannot be finished, never push or edit the work plan, use the phase's e2e port lane). The main session updates the work plan from each agent's report.

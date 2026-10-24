@@ -2,7 +2,7 @@
 
 The single place that says where the build stands and what happens next. Read it first when picking the work up again; update it whenever a task changes status.
 
-Last updated: 18/10/2026 6:19pm
+Last updated: 24/10/2026 12:56pm
 
 ## How to resume
 
@@ -22,11 +22,11 @@ Last updated: 18/10/2026 6:19pm
 
 ## Delegation
 
-- One subagent per phase worktree at a time (`model: "sonnet"`, as CLAUDE.md requires), working only inside `C:/Users/sajit/source/repos/saw-wt/<branch>`. Phases in different worktrees can run in parallel.
+- One subagent per phase worktree at a time (`model: "sonnet"`, as CLAUDE.md requires; exploration-only helpers that search and read without editing run on `model: "haiku"`), working only inside `C:/Users/sajit/source/repos/saw-wt/<branch>`. Phases in different worktrees can run in parallel.
 - Take the `_Done:_` time with `date "+%d/%m/%Y %-I:%M%P"` immediately before `git commit`, after the gate has passed.
 - The agent works through its assigned tasks in order, one commit per task (Conventional Commits, the commit attribution line, the tick and `_Done:_` line in the same commit), and stops at the first task it cannot finish, leaving a note under that task in `tasks.md`.
 - Agents never push, open PRs, edit another worktree, edit this file or do `user` tasks. The main session updates this file from each agent's report.
-- Port lanes so parallel Playwright runs do not collide (serve the built output with `pnpm exec sirv dist/smart-appointments-web/browser --single --port <port>` and run `E2E_BASE_URL=http://localhost:<port> pnpm e2e`): F2 4302, F3 4303, F4 4304, F5 4305. Never `pnpm start` on 4200 from an agent.
+- Port lanes so parallel Playwright runs do not collide (serve the built output with `pnpm exec sirv dist/smart-appointments-web/browser --single --port <port>` and run `E2E_BASE_URL=http://localhost:<port> pnpm e2e`): F2 4302, F3 4303, F4 4304, F5 4305, F7 4307. Never `pnpm start` on 4200 from an agent.
 
 ## Phases and merge order
 
@@ -36,8 +36,9 @@ Last updated: 18/10/2026 6:19pm
 | F3 Booking      | `f3-booking` / `saw-wt/f3-booking`           | `main` (F1)      | 2nd         | #6 merged   |
 | F4 Appointments | `f4-appointments` / `saw-wt/f4-appointments` | `main` merged in | after F3    | #7 merged   |
 | F5 Admin        | `f5-admin` / `saw-wt/f5-admin`               | `main` merged in | after F2    | #5 merged   |
-| F6 Redesign     | `f6-redesign` / `saw-wt/f6-redesign`         | `main` after F4  | after F4    | raised      |
-| F7 Polish       | not created                                  | —                | after F6    | not specced |
+| F6 Redesign     | `f6-redesign` / `saw-wt/f6-redesign`         | `main` after F4  | after F4    | #8 merged   |
+| F7 Staff        | `f7-staff` / `saw-wt/f7-staff`               | `main` after F6  | after F6    | not raised  |
+| F8 Polish       | not created                                  | —                | after F7    | not specced |
 
 The `backup-*` and `backup2-*` branches are old snapshots from earlier rebases; keep them until their phase is merged, then delete.
 
@@ -50,7 +51,7 @@ Tasks 1 to 14 done before this plan.
 | F2-T15 | Chunk budget check                      | done 10/10/2026 9:41am | main  | `2f5c841`; public group 26.47 kB gzip of 50                                                                              |
 | F2-T16 | Documentation                           | done 10/10/2026 9:51am | agent | `822fe0f`; README gains "What F2 provides" and "Known gaps (F2)"                                                         |
 | F2-T17 | Manual verification against the gateway | done 18/10/2026 9:56am | user  | automated live pass 11/11 + API contract OK (17/10); Admin login, screen reader, keyboard and visual pass by you (18/10) |
-| F2-PR  | Raise the F2 pull request               | in progress            | main  | `main` (Nx workspace) merged into `f2-public` first (`5ef0b3b`, `404be46`)                                               |
+| F2-PR  | Raise the F2 pull request               | done (#4 merged)       | main  | `main` (Nx workspace) merged into `f2-public` first (`5ef0b3b`, `404be46`)                                               |
 
 ## F3 Booking (`f3-booking`)
 
@@ -72,7 +73,7 @@ Tasks 2 to 10 done before this plan.
 | F3-T21 | Chunk budget check                      | done 10/10/2026 10:48am | agent | `c891891`; `pnpm size:book`: 30.38 kB of 60                                                                                |
 | F3-T22 | Documentation                           | done 10/10/2026 10:51am | agent | `b7daf44`                                                                                                                  |
 | F3-T23 | Manual verification against the gateway | in progress             | user  | 18/10: booking end to end and viewing passed; retry, `409`, outage, `429`, no-schedule and accessibility steps not run yet |
-| F3-PR  | Raise the F3 pull request               | in progress             | main  | `main` merged in (`be21a22`); PR raised with T23 partial (your call)                                                       |
+| F3-PR  | Raise the F3 pull request               | done (#6 merged)        | main  | `main` merged in (`be21a22`); PR raised with T23 partial (your call)                                                       |
 
 ## F4 Appointments (`f4-appointments`)
 
@@ -105,7 +106,7 @@ Tasks 1 to 13 and 17 done before this plan.
 | F5-T23 | Playwright and accessibility suites     | done 10/10/2026 10:52am | agent | `2778d14`; 29/29 e2e on port 4305                                                                                                            |
 | F5-T24 | Documentation                           | done 10/10/2026 10:54am | agent | `ee5b79b`                                                                                                                                    |
 | F5-T25 | Manual verification against the gateway | done 18/10/2026 10:24am | user  | by you against the Compose gateway (web on :4200); API checks: `TimeOnly` as `HH:mm:ss`, `PUT` returns the branch body, duplicate code `409` |
-| F5-PR  | Raise the F5 pull request               | in progress             | main  | `main` merged in (`4f1b487`); admin size walker fixed (`5a0725e`, 90.03 kB)                                                                  |
+| F5-PR  | Raise the F5 pull request               | done (#5 merged)        | main  | `main` merged in (`4f1b487`); admin size walker fixed (`5a0725e`, 90.03 kB)                                                                  |
 
 ## F6 Redesign (`f6-redesign`)
 
@@ -128,15 +129,53 @@ Spec approved 18/10/2026 (requirements `b7e1669`, design `e29294e`, tasks). Task
 | F6-T13 | Full gate, budgets and e2e              | done                   | main  |
 | F6-T14 | Documentation                           | done 18/10/2026 5:46pm | agent |
 | F6-T15 | Manual verification against the gateway | done 18/10/2026 6:19pm | main  |
-| F6-PR  | Raise the F6 pull request               | done (raised)          | main  |
+| F6-PR  | Raise the F6 pull request               | done (#8 merged)       | main  |
+
+## F7 Staff workspace (`f7-staff`)
+
+Spec approved 24/10/2026 (`docs/specs/f7-staff/`). Foundation (T1 to T7) first, then chunks A (T8 to T12), C (T16 to T21) and D (T22, T23) in parallel in worktrees `saw-wt/f7-a`, `f7-c`, `f7-d`, then B (T13 to T15) and E (T24) once A was merged, then the integration tasks T25 to T30 on `f7-staff`. Playwright lane: 4307.
+
+| ID     | Task                                          | Status                  | Owner | Notes                                                                                                                                            |
+| ------ | --------------------------------------------- | ----------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| F7-T1  | Staff branch claim in the session             | done 24/10/2026 10:05am | agent | `4dbb645`                                                                                                                                        |
+| F7-T2  | Generated types, models and API methods       | done 24/10/2026 10:11am | agent | `d89524f`                                                                                                                                        |
+| F7-T3  | Shared moves, badge variant and tokens        | done 24/10/2026 10:14am | agent | `1d1ef78`                                                                                                                                        |
+| F7-T4  | Time helpers and the "now" signal             | done 24/10/2026 10:17am | agent | `8e48ff8`                                                                                                                                        |
+| F7-T5  | MSW backends                                  | done 24/10/2026 10:28am | agent | `6b674d6`                                                                                                                                        |
+| F7-T6  | Admin wiring with stub pages                  | done 24/10/2026 10:32am | agent | `47b44d8`                                                                                                                                        |
+| F7-T7  | E2E mock backends                             | done 24/10/2026 10:36am | agent | `faf28f7`                                                                                                                                        |
+| F7-T8  | Day parameters, row model and store           | done 24/10/2026 10:56am | agent | `bb0cb7e` (chunk A)                                                                                                                              |
+| F7-T9  | Date controls and status filter               | done 24/10/2026 11:00am | agent | `a98bbe1`                                                                                                                                        |
+| F7-T10 | Day list                                      | done 24/10/2026 11:06am | agent | `338a070`                                                                                                                                        |
+| F7-T11 | Row actions, marks and the no-show dialog     | done 24/10/2026 11:12am | agent | `e22411f`                                                                                                                                        |
+| F7-T12 | Appointment sheet                             | done 24/10/2026 11:21am | agent | `7ead2f5`                                                                                                                                        |
+| F7-T13 | Staff branch store and shell header           | done 24/10/2026 11:37am | agent | `d59ee57` (chunk B)                                                                                                                              |
+| F7-T14 | Staff gate and routes                         | done 24/10/2026 12:23pm | agent | `2d5a154`                                                                                                                                        |
+| F7-T15 | Staff day page                                | done 24/10/2026 12:27pm | agent | `dd31128`                                                                                                                                        |
+| F7-T16 | Staff store and error mapping                 | done 24/10/2026 10:56am | agent | `794f6a5` (chunk C, tasks 16 to 21 in one commit)                                                                                                |
+| F7-T17 | Staff list page                               | done 24/10/2026 11:05am | agent | `794f6a5`                                                                                                                                        |
+| F7-T18 | Create drawer                                 | done 24/10/2026 11:21am | agent | `794f6a5`                                                                                                                                        |
+| F7-T19 | Edit drawer                                   | done 24/10/2026 11:26am | agent | `794f6a5`                                                                                                                                        |
+| F7-T20 | Deactivate, reactivate and delete             | done 24/10/2026 11:33am | agent | `794f6a5`                                                                                                                                        |
+| F7-T21 | Palette staff records                         | done 24/10/2026 11:38am | agent | `794f6a5`                                                                                                                                        |
+| F7-T22 | Completed and no-show in the customer views   | done 24/10/2026 10:43am | agent | `e25518c` (chunk D)                                                                                                                              |
+| F7-T23 | Past-tab status filter                        | done 24/10/2026 10:53am | agent | `a984a6c`                                                                                                                                        |
+| F7-T24 | Admin appointments page                       | done 24/10/2026 11:35am | agent | `1a9fb64` (chunk E)                                                                                                                              |
+| F7-T25 | Playwright: staff day list, admin appts       | done 24/10/2026 12:39pm | agent | `31c410d`; light `--destructive` darkened to `#c81e1e` (axe 4.13:1 on the destructive confirm button); `fallthrough` option in `mock-backend.ts` |
+| F7-T26 | Playwright: staff accounts, customer statuses | done 24/10/2026 12:47pm | agent | `9a7858d`                                                                                                                                        |
+| F7-T27 | Size group and budgets                        | done 24/10/2026 12:49pm | agent | `4e4ee04`; staff 49.00 kB (budget set to 55, not the proposed 40), admin 135.28 of the approved 140                                              |
+| F7-T28 | Full gate                                     | done 24/10/2026 12:55pm | agent | `5f3c11e`; 173 files and 2484 unit tests, 134 e2e on port 4307, every size group and `test:scripts` pass                                         |
+| F7-T29 | Documentation                                 | done 24/10/2026 12:59pm | agent | README, CLAUDE.md (Haiku for exploration-only helpers), `docs/specs/README.md`, this file, design deviations                                     |
+| F7-T30 | Manual verification against the gateway       | todo                    | user  | needs the Compose stack on `master`; the orchestrator runs it, then the PR                                                                       |
+| F7-PR  | Raise the F7 pull request                     | todo                    | main  | after T30; the PR description records the manual result                                                                                          |
 
 ## Next up
 
-F2, F3 and F5 are merged (PRs #4, #6, #5; the Nx workspace is #3). F4 is complete and its PR is raised.
+F2 to F6 are merged (PRs #4, #6, #7, #5 and #8; the Nx workspace is #3). F7 (staff workspace) is built on `f7-staff` and its automated gate has passed.
 
-1. Review and merge the F4 PR. Then move the main checkout off the merged `build/nx-workspace` branch onto `main`, and delete the `backup-*` and `backup2-*` branches.
-2. F6 Redesign (agreed 18/10/2026): an Indigo + Lavender theme in light and dark, plus the mockup's layouts: the landing hero and "Why choose us" tiles, the split register page with a gradient panel, the numbered wizard stepper, a month calendar with a time grid inside the 14-day window, the booking-summary review and the success reference card. Illustrations are inline SVG only. The spec goes in `docs/specs/f6-redesign/` (requirements, then design, then tasks, each approved by you).
-3. F7 Polish takes over the old F6 items: unify the size scripts, the `size:admin` "shared" label, and revisiting the admin budget.
+1. F7-T30: run the manual check against the Compose gateway on `master` (staff day list, marks, admin appointments, staff accounts, customer Past filter), record the result in the PR description, then raise the F7 PR. The `saw-wt/f7-a` to `f7-e` worktrees and branches can be removed after the merge.
+2. F8 Polish (not specced): accessibility audit, motion, empty and error states, Lighthouse budgets, unify the size scripts and the `size:admin` "shared" label. The admin group has only about 4.7 kB of headroom under its 140 kB budget, so the next admin feature needs a decision on the budget or on splitting the group.
+3. Housekeeping: delete the `backup-*` and `backup2-*` branches if any remain.
 
 ## Decisions for you
 
@@ -171,6 +210,8 @@ F2, F3 and F5 are merged (PRs #4, #6, #5; the Nx workspace is #3). F4 is complet
 - F5 changed shared code: `ToastService.showSuccess` takes an optional action; `tsconfig.json` `paths` is now Prettier-formatted (this also clears F4's format warning once merged).
 
 ## Log
+
+- 24/10/2026 12:56pm: F7 integration done on `f7-staff`: T25 to T29 (`31c410d`, `9a7858d`, `4e4ee04`, `5f3c11e`, docs). Full gate passed (173 files, 2484 unit tests; 134 e2e on port 4307; every size group within budget: initial 167.73, public 33.76, book 39.52, appointments 29.80, admin 135.28 of 140, staff 49.00 of 55). Axe found the tinted destructive button at 4.13:1, fixed by darkening the light `--destructive` to `#c81e1e`. No known flaky spec failed in the full run. F7-T30 (manual check) and the PR are next; no agents running.
 
 - 18/10/2026 6:19pm: F6 complete: chunks A to E merged into `f6-redesign`, polish fixes and docs (T14), full gate (T13: 96/96 e2e, every size within budget) and the live check (T15) passed; the F6 PR is raised. The `saw-wt/f6-a` to `f6-e` worktrees and branches can be removed after the merge.
 

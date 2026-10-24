@@ -207,7 +207,8 @@ Rules (from the template):
   - Result on the merged branch (24/10/2026): `pnpm lint`, `typecheck`, `build`, every `size:*` group (initial 167.73 of 250, public 33.76 of 50, book 39.52 of 60, appointments 29.80 of 40, admin 135.28 of 140, staff 49.00 of 55) and `test:scripts` (36 tests) pass; unit tests 173 files, 2484 tests pass; `pnpm e2e` on port 4307: 134 passed (all flows and the axe suites in both themes). `format:check` failed only on `docs/specs/f7-staff/requirements.md` (blank lines), fixed with Prettier. None of the four known load-sensitive specs failed in this run. Fixes made while integrating: the light `--destructive` token darkened to `#c81e1e` (axe: the tinted destructive confirm button measured 4.13:1) and a `fallthrough` option in `e2e/mock-backend.ts` so `mockStaffApi` can stack on `mockAdminApi`.
   - _Requirements: 11.3, 11.4, 11.5_
 
-- [ ] 29. Documentation
+- [x] 29. Documentation
+  - _Done: 24/10/2026 12:59pm_
   - `README.md`: F7 row (Implemented), the Polish row renumbered to F8, "What F7 provides" and "Known gaps (F7)" (token branch lag up to 60 minutes; staff see "Unavailable service" for a deactivated service), the stale PR/status text for F2, F3, F5, F6 corrected (all merged, #4, #6, #5, #8).
   - `CLAUDE.md`: the F7 feature description, the new size script, the shared folders, and the "Working with Claude Code subagents" section updated to say that exploration-only helpers (searches, file reading, no edits) run on Haiku (`model: "haiku"`) while implementation and review stay on Sonnet.
   - `docs/specs/README.md`: F7 row, Polish as F8 "Not specced". `docs/WORKPLAN.md`: F7 section with these tasks, the 4307 lane, Polish renumbered F8, the phase table corrected (F2 #4, F3 #6, F4 #7, F5 #5, F6 #8 all merged; "Next up" rewritten), Last updated line.

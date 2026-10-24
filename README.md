@@ -4,29 +4,32 @@
 
 The Angular web client for [SmartAppointments](https://github.com/sajithdilhan/SmartAppointments), a .NET microservices portfolio project: a smart appointment and queue management system. The backend owns the business rules; this repository is the single-page app that customers, staff and administrators will use, and it talks to the backend only through its API gateway.
 
-> **Status: F0 scaffold, F1 core, F2 public pages, the F3 booking wizard, the F4 my-appointments and profile screens and the F5 admin console and the F6 redesign are built.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register), the five-step booking wizard at `/book` and the admin console under `/admin` (see "What F3 provides" and "What F5 provides"), the customer's appointments list, detail with cancel and profile (see "What F4 provides"), with a placeholder page behind the staff route. The roadmap below is the plan.
+> **Status: F0 scaffold, F1 core, F2 public pages, the F3 booking wizard, the F4 my-appointments and profile screens, the F5 admin console, the F6 redesign and the F7 staff workspace are built.** The repository holds the production-shaped foundation (tooling, theme, runtime configuration, container image, CI), the core every screen stands on (typed API layer, HTTP pipeline, auth session with silent refresh, guards, application shells, 404 page, time utilities), the public pages (landing, login, register), the five-step booking wizard at `/book` and the admin console under `/admin` (see "What F3 provides" and "What F5 provides"), the customer's appointments list, detail with cancel and profile (see "What F4 provides"), and the staff workspace: the branch's day list with Complete and No-show for staff, the same list for admins at `/admin/appointments`, and staff account management under `/admin/staff` (see "What F7 provides"). The roadmap below is the plan.
 
 ## What it will do
 
-| Role                                 | Planned capabilities                                                                             | Phase |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------ | ----- |
-| Visitor                              | Landing page, register, sign in                                                                  | F2    |
-| Customer                             | Find a free slot, book an appointment (with `.ics` export), view, cancel, edit the profile       | F3-F4 |
-| Admin                                | Manage branches and weekly schedules, service types, slot generation, dashboard, command palette | F5    |
-| Staff, queue, notifications, reports | Wait for their backend services; not planned here                                                | -     |
+| Role                          | Planned capabilities                                                                             | Phase |
+| ----------------------------- | ------------------------------------------------------------------------------------------------ | ----- |
+| Visitor                       | Landing page, register, sign in                                                                  | F2    |
+| Customer                      | Find a free slot, book an appointment (with `.ics` export), view, cancel, edit the profile       | F3-F4 |
+| Admin                         | Manage branches and weekly schedules, service types, slot generation, dashboard, command palette | F5    |
+| Staff                         | See their branch's day, mark appointments Completed or No-show                                   | F7    |
+| Admin (staff work)            | Any branch's day list and marks; create, move, deactivate and delete staff accounts              | F7    |
+| Queue, notifications, reports | Wait for their backend services; not planned here                                                | -     |
 
 ## Roadmap
 
-| Phase | Scope                                                                                              | State                                    |
-| ----- | -------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                              |
-| F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending) |
-| F2    | Public pages: landing, login, register                                                             | Implemented                              |
-| F3    | Booking wizard, success page, calendar export                                                      | Implemented (live check partly run)      |
-| F4    | My appointments, detail, cancel, profile                                                           | Implemented                              |
-| F5    | Admin console                                                                                      | Implemented                              |
-| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Implemented                              |
-| F7    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not started                              |
+| Phase | Scope                                                                                              | State                                             |
+| ----- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| F0    | Scaffold and tooling: workspace, theme, runtime config, quality gates, Docker, CI                  | Implemented                                       |
+| F1    | Core: API types, error normaliser, auth store and token refresh, guards, layout shells             | Implemented (live-gateway check pending)          |
+| F2    | Public pages: landing, login, register                                                             | Implemented (PR #4 merged)                        |
+| F3    | Booking wizard, success page, calendar export                                                      | Implemented (PR #6 merged; live check partly run) |
+| F4    | My appointments, detail, cancel, profile                                                           | Implemented (PR #7 merged)                        |
+| F5    | Admin console                                                                                      | Implemented (PR #5 merged)                        |
+| F6    | Redesign: Indigo + Lavender theme and the new landing, auth and booking layouts                    | Implemented (PR #8 merged)                        |
+| F7    | Staff workspace: day list and marks, admin appointments, staff accounts, customer status badges    | Implemented (manual check pending)                |
+| F8    | Polish: accessibility audit, motion, empty and error states, end-to-end suites, Lighthouse budgets | Not specced                                       |
 
 Specs for every phase live in [`docs/specs/`](docs/specs/README.md).
 
@@ -51,7 +54,7 @@ Versions are the ones installed at scaffold time (see `package.json` and `pnpm-l
 
 ```
 src/app/
-  core/            non-visual: config, theme, api (typed services), http (pipeline, AppError, outage),
+  core/            non-visual: config, theme, api (typed services), branch (the staff member's branch), http (pipeline, AppError, outage),
                    auth (session store, refresh, cross-tab, guards), notify (toasts), routing (titles),
                    time (UTC parsing, zone maths), util (clock, safe storage, viewport), ui (palette launcher)
   shared/ui/       Spartan helm components and small app primitives (theme toggle, rate-limit notice)
@@ -60,8 +63,9 @@ src/app/
   shared/forms/    form primitives: field view and form field, field a11y directive, form alert, generic
                    validators, phone normaliser, first-invalid focus
   shared/a11y/     heading focus directive
-  features/        one folder per area (public, customer, admin, staff), lazy routes; admin and customer are built, the
-                   staff area still shows a placeholder page
+  shared/branch-day/   the day-list engine used by /staff and /admin/appointments (store, URL state, list, sheet)
+  shared/appointments/ the appointment status badge shared by the customer, staff and admin screens
+  features/        one folder per area (public, customer, admin, staff), lazy routes; all four are built
     public/          landing/ (hero, value props, how it works, call-to-action band), login/, register/
                      (with the password checklist), auth/ (auth layout, illustration, password field),
                      validation/ (password rules and messages), public.routes.ts, titles.ts
@@ -69,7 +73,7 @@ src/testing/       MSW server, a stateful mock of the auth endpoints, fake timer
 public/            config.json (dev default), theme-init.js (pre-paint theme script)
 docker/            nginx config, entrypoint that renders config.json and the CSP
 e2e/               Playwright specs (routes mocked, no backend needed)
-scripts/           size.mjs (gzip budgets, incl. `--group admin`), gen-api.mjs (OpenAPI types)
+scripts/           size.mjs (gzip budgets, incl. `--group admin` and `--group staff`), gen-api.mjs (OpenAPI types)
 docs/specs/        spec-driven development: requirements, design, tasks per feature
 ```
 
@@ -98,23 +102,24 @@ pnpm exec playwright install chromium
 
 ### Scripts
 
-| Script                             | What it does                                                                         |
-| ---------------------------------- | ------------------------------------------------------------------------------------ |
-| `pnpm start`                       | Dev server on port 4200                                                              |
-| `pnpm build`                       | Production build into `dist/smart-appointments-web/browser`, with budgets            |
-| `pnpm test`                        | Unit tests, single run (`pnpm test --coverage` writes `coverage/`)                   |
-| `pnpm test:watch`                  | Unit tests in watch mode                                                             |
-| `pnpm lint`                        | ESLint, zero warnings allowed                                                        |
-| `pnpm format`, `pnpm format:check` | Prettier write and check                                                             |
-| `pnpm typecheck`                   | `tsc` over the app and spec projects                                                 |
-| `pnpm size`                        | Gzip size of the initial bundle; fails above 250 kB                                  |
-| `pnpm size:public`                 | Gzip size of the public feature chunks (needs a build); fails above 50 kB            |
-| `pnpm size:admin`                  | Gzip size of the admin lazy group (shared chunks counted once); fails above 120 kB   |
-| `pnpm size:book`                   | Gzip size of the booking wizard's lazy chunks; fails above 60 kB                     |
-| `pnpm size:appointments`           | Gzip size of the F4 lazy chunks (appointments, profile); fails above 40 kB           |
-| `pnpm test:scripts`                | Node tests of `scripts/` (the generator, the date lint rules)                        |
-| `pnpm e2e`                         | Playwright tests, routes mocked (starts `pnpm start`, or uses `E2E_BASE_URL`)        |
-| `pnpm gen:api`                     | Regenerates `src/app/core/api/generated/*.d.ts` from the gateway's OpenAPI documents |
+| Script                             | What it does                                                                          |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm start`                       | Dev server on port 4200                                                               |
+| `pnpm build`                       | Production build into `dist/smart-appointments-web/browser`, with budgets             |
+| `pnpm test`                        | Unit tests, single run (`pnpm test --coverage` writes `coverage/`)                    |
+| `pnpm test:watch`                  | Unit tests in watch mode                                                              |
+| `pnpm lint`                        | ESLint, zero warnings allowed                                                         |
+| `pnpm format`, `pnpm format:check` | Prettier write and check                                                              |
+| `pnpm typecheck`                   | `tsc` over the app and spec projects                                                  |
+| `pnpm size`                        | Gzip size of the initial bundle; fails above 250 kB                                   |
+| `pnpm size:public`                 | Gzip size of the public feature chunks (needs a build); fails above 50 kB             |
+| `pnpm size:admin`                  | Gzip size of the admin lazy group (shared chunks counted once); fails above 140 kB    |
+| `pnpm size:book`                   | Gzip size of the booking wizard's lazy chunks; fails above 60 kB                      |
+| `pnpm size:appointments`           | Gzip size of the F4 lazy chunks (appointments, profile); fails above 40 kB            |
+| `pnpm size:staff`                  | Gzip size of the staff feature chunks (shared chunks counted once); fails above 55 kB |
+| `pnpm test:scripts`                | Node tests of `scripts/` (the generator, the date lint rules)                         |
+| `pnpm e2e`                         | Playwright tests, routes mocked (starts `pnpm start`, or uses `E2E_BASE_URL`)         |
+| `pnpm gen:api`                     | Regenerates `src/app/core/api/generated/*.d.ts` from the gateway's OpenAPI documents  |
 
 ## What F1 provides
 
@@ -172,10 +177,10 @@ The admin console, under `src/app/features/admin/`, behind `authGuard` and `role
 | `/admin/slots`                    | Slot generation for a branch and service, dates read in the branch zone, live local estimate |
 
 Ctrl or Cmd plus K opens a command palette (navigation, create, edit-record and settings commands).
-The admin API has no appointments, staff or reports endpoints, so none of those screens exist.
+F7 later added the appointments and staff screens (see "What F7 provides"); there is no reports endpoint, so no reports screen exists.
 
 - **Contract fixture.** The Availability validation rules live once in `src/testing/fixtures/availability-contract.json` (copied from the backend's C# validators); the client messages, the server-message tables and the MSW admin backend are all tested against it. `src/testing/fixtures/README.md` explains how to update it and how to regenerate `slot-planner-vectors.json` (manual, CI does not check drift).
-- **Bundle.** The admin area is one lazy group; `pnpm size:admin` reports it (limit `MAX_GZIP_KB_ADMIN`, default 120) and CI runs it after `pnpm size`.
+- **Bundle.** The admin area is one lazy group; `pnpm size:admin` reports it (limit `MAX_GZIP_KB_ADMIN`, default 140 since F7) and CI runs it after `pnpm size`.
 - **Tests.** Vitest with a stateful MSW model of the admin endpoints; Playwright (`e2e/admin.spec.ts`, `e2e/admin.a11y.spec.ts`) against `e2e/support/mock-admin-api.ts`, with axe checks in both themes.
 
 ## What F6 provides
@@ -189,6 +194,28 @@ The visual redesign, with no change to routes, URL state, API calls or accessibl
 - **Deviations.** The list of places where the build differs from the design is at the end of `docs/specs/f6-redesign/design.md`.
 - **Size.** Measured gzipped: public 32.9 kB (budget 50), admin 93.8 kB (120), booking wizard 39.3 kB (60), appointments 20.0 kB (40).
 - **Manual check** (needs the Compose stack; task 15 of the F6 tasks): landing, register, book to success, my appointments and the admin console at 1280 and 390 px, light and dark, plus a keyboard pass of the calendar.
+
+## What F7 provides
+
+The staff workspace. Specs: `docs/specs/f7-staff/`.
+
+- **Staff day list (`/staff`).** A Staff token carries the `branch_id` claim; `StaffBranchStore` reads that branch once (`GET /api/branches/{id}`) and the header shows "Name (CODE)". The page lists the branch's appointments for one branch-local day (`?date=` and `?status=` in the URL; Previous day, Next day, Today, a date field and a status filter; "Times in UTC" is shown when the branch has no time zone). Rows show time, customer, phone link, service and status, with Load more, Refresh, an inline retry on errors and a notice when customer names are unavailable.
+- **Complete and No-show.** Both are offered only for Booked rows and are disabled until the start has passed, with an "Available from ..." hint that flips exactly at the start (one timer, no polling). Complete is one click; No-show asks first ("Keep as booked" has the initial focus). The list is reloaded after every mark; a `409` shows the server's own text and a `404` "This appointment is no longer available.".
+- **Detail sheet.** A row's time or name opens a side sheet (full width below 1024 px) with customer, phone, service and duration, date, time, status, the booked, cancelled, completed or no-show times, and the id with a Copy button. It has no route, so Back leaves the page.
+- **No branch.** A Staff token without a usable branch shows "No branch linked" with Sign out and sends no appointment request; a branch that cannot be read shows the error state with Retry.
+- **Admin appointments (`/admin/appointments`).** The same list and marks for any branch, chosen in a `?branch=` select (inactive branches marked); changing the branch resets the day to today in the new branch's zone.
+- **Staff accounts (`/admin/staff`).** A server-paged list with branch and status filters in the URL, a create drawer (`/admin/staff/new`, with the password checklist) and an edit drawer (`/admin/staff/:id`) that moves the member to another branch (their sessions end). Deactivate and Delete ask first, Reactivate does not; a reactivate refused because the branch is inactive shows a banner with an "Edit" link. Staff records are also in the command palette.
+- **Customer views.** "Completed" and "No-show" badges and detail rows, and a status filter on the Past tab (`?pstatus=`).
+- **Shared code.** `shared/branch-day/` (the engine both hosts use), `shared/appointments/` (the status badge, moved from the customer feature), `shared/forms/` (the password field, checklist and rules, moved from `features/public/`), `core/branch/`, `core/util/now-signal.ts` and `guid.ts`, and `core/time/time-hm.ts` (24-hour `HH:mm` and long date labels).
+- **Size.** Measured gzipped on the merged build: initial 167.7 kB (budget 250), public 33.8 (50), booking wizard 39.5 (60), appointments 29.8 (40), admin 135.3 (140, raised from 120 for F7), staff 49.0 (55). The staff group counts the shared chunks its entry imports, which is why it exceeds the 40 kB first proposed.
+- **Tests.** Vitest with stateful MSW models of the day list and the staff endpoints; Playwright (`e2e/staff.spec.ts`, `staff.a11y.spec.ts`, `admin-appointments.spec.ts`, `admin-staff.spec.ts` and extensions of the admin, appointments and axe specs) against `e2e/support/mock-staff-api.ts` and `mock-staff-accounts-api.ts`, with axe checks in both themes. Axe found the tinted destructive button at 4.13:1, so the light `--destructive` token is now `#c81e1e`.
+- **Manual check** (needs the Compose stack on `master`; task 30 of the F7 tasks): a Staff account created in the UI, a customer with started and future appointments, the staff day list at 1280 and 390 px in both themes, Complete and No-show, Load more, the detail sheet, another branch's `403`, admin appointments, staff create, move, deactivate, reactivate and delete, the customer Past filter.
+
+### Known gaps (F7)
+
+- **A branch move reaches the token late.** A staff member's branch comes from their access token, so after an administrator moves them the old branch can stay in a token for up to 60 minutes (their refresh sessions are revoked, so they are signed out when it lapses).
+- **Staff see "Unavailable service" for a deactivated service.** Staff list services through `GET /api/services`, which hides inactive ones for them; admins see the real name.
+- **One day at a time.** The list shows a single day with a status filter; there is no search and no appointment route.
 
 ## Docker
 
@@ -220,7 +247,7 @@ Design tokens live in `src/styles.css` as CSS custom properties exposed through 
 ## Quality gates
 
 - **Bundle budgets:** initial 600 kB warning and 700 kB error (raw), component styles 4 kB and 8 kB. `pnpm size` additionally enforces the real target, under 250 kB gzipped for the initial bundle (about 150 kB at F1; the raw warning is 600 kB).
-- **Accessibility target:** WCAG 2.2 AA; automated and manual audits come in F6.
+- **Accessibility target:** WCAG 2.2 AA; automated and manual audits come in F8.
 - **Security headers:** nginx sends a CSP (scripts `'self'` only), `nosniff`, a referrer policy, a permissions policy, `X-Frame-Options: DENY` and COOP on every response. `style-src 'unsafe-inline'` is a recorded known gap.
 - **Commits:** Conventional Commits, enforced by commitlint through a Husky hook.
 - **CI** ([`ci.yml`](.github/workflows/ci.yml)): `lint` (lint, format check, typecheck) then `test` (with coverage), `build` (budgets, size, no baked-in API URL, no MSW in the bundle), `e2e` (Playwright against the built output), `docker` (build the image and `curl` the config, health, deep link and headers).
