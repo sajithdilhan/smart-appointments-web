@@ -70,7 +70,8 @@ Rules (from the template):
 
 ## Chunk A: the day-list engine (`shared/branch-day`; worktree `saw-wt/f7-a`)
 
-- [ ] 8. Day parameters, row model and store
+- [x] 8. Day parameters, row model and store
+  - _Done: 24/10/2026 10:56am_
   - `day-params.ts` (`parseDayParams`, `STATUS_FILTERS`, `toQuery`), `day-row.ts` (`toRow`), `day-errors.ts`, `mark-error.ts`, `branch-day.store.ts` (`open`, `loadMore`, `refresh`, `mark`, computed `rows`, `countLabel`, announcements; stale-response and double-send guards), `day-url-state.ts`.
   - Specs: `day-params.spec` (absent, malformed, impossible date, unknown status), `day-row.spec` (names, null customer, service fallback, `canMark`), `mark-error.spec`, `branch-day.store.spec` against `branch-day-backend` (query, Load more, dedupe, stale drop, refresh keeps rows, mark success and `409`/`404` reload, repeat ignored while in flight, `customersUnavailable`), `day-url-state.spec` (normalising `replaceUrl`, history entries, `resetDate`).
   - _Requirements: 2.1, 2.3, 2.5, 2.7, 2.8, 2.9, 3.3, 3.5, 3.6_
