@@ -3,6 +3,7 @@ import { AdminFrame } from './admin-frame.component';
 import { BranchesStore } from './data/branches.store';
 import { branchCrumb, scheduleCrumbs, serviceCrumb, staffCrumb } from './data/resolvers';
 import { ServicesStore } from './data/services.store';
+import { StaffAccountsStore } from './data/staff-accounts.store';
 import { SlotActivityStore } from './data/slot-activity.store';
 import { unsavedChangesGuard } from './shared/dirty/unsaved-changes.guard';
 import { TITLES } from './titles';
@@ -31,7 +32,7 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: '',
     component: AdminFrame,
-    providers: [BranchesStore, ServicesStore, SlotActivityStore],
+    providers: [BranchesStore, ServicesStore, SlotActivityStore, StaffAccountsStore],
     children: [
       {
         path: '',

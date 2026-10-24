@@ -119,32 +119,38 @@ Rules (from the template):
 
 ## Chunk C: staff accounts (worktree `saw-wt/f7-c`)
 
-- [ ] 16. Staff store and error mapping
+- [x] 16. Staff store and error mapping
+  - _Done: 24/10/2026 10:56am_
   - `data/staff-accounts.store.ts` (`load`, `loadMore`, `reload` of loaded pages, `reset`, recovery hook), added to the `staff` route `providers` and to `AdminFrame`'s reset; `staff/staff-error.ts` (`mapStaffSaveError`, `mapStaffActionError`), `staff/staff-messages.ts`.
   - Specs: `staff-accounts.store.spec` against the MSW backend (filters in the query, `pageSize=100`, append, reload keeps loaded pages, failure keeps items), `staff-error.spec` table-driven on every status and known text.
   - _Requirements: 6.2, 6.4, 6.6, 7.3, 8.4, 9.2, 9.4_
 
-- [ ] 17. Staff list page
+- [x] 17. Staff list page
+  - _Done: 24/10/2026 11:05am_
   - `staff/staff.page.ts` (replaces the stub): table or cards, branch and status filters in the URL, Load more, empty and no-match states, skeleton, error with Retry, row actions menu, drawer outlet.
   - Specs: `staff.page.spec` (columns, "Unknown branch", badges, filter to URL and request, unknown values to All, empty states and "Clear filters", Load more, error and recovery, card layout via stubbed viewport).
   - _Requirements: 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
 
-- [ ] 18. Create drawer
+- [x] 18. Create drawer
+  - _Done: 24/10/2026 11:21am_
   - `staff/staff-create-drawer.component.ts` and `staff.form.ts`: fields, F2 validators, password field and checklist, active-branch select, double-submit guard, password cleared after the request, success toast and list reload, errors per mapping, unsaved-changes guard.
   - Specs: `staff-create-drawer.spec` (validation messages, phone normalisation, checklist, submit body, success path, duplicate email on the Email field, `422` on Branch with branch reload, `503` alert with values kept, other `400` to the alert, double submit sends once, password control empty afterwards, dirty form prompts).
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 19. Edit drawer
+- [x] 19. Edit drawer
+  - _Done: 24/10/2026 11:26am_
   - `staff/staff-edit-drawer.component.ts`: `getStaff`, read-only fields, active-branch select (current inactive branch shown), notice text, Save disabled when unchanged or pending, success toast "{Name} moved to {branch}." and reload, `422`, `503`, `404`.
   - Specs: `staff-edit-drawer.spec` (fields, notice, disabled Save for the same branch, move request body, success, each error, `404` message and list reload, non-GUID id shows not-found without a request, guard).
   - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 20. Deactivate, reactivate and delete
+- [x] 20. Deactivate, reactivate and delete
+  - _Done: 24/10/2026 11:33am_
   - `staff/staff-actions.ts` using `ConfirmService`; pending set; reactivate `422` banner with the Edit link; `404` toast and reload.
   - Specs: `staff-actions.spec` (exact dialog wording and labels, initial focus on Cancel for delete, busy confirm button, success toasts and reload, no dialog for reactivate, `422` banner and its link, `503` outage text, `404` for each action, row actions disabled while pending).
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 21. Palette staff records
+- [x] 21. Palette staff records
+  - _Done: 24/10/2026 11:38am_
   - `command-registry.ts` `buildCommands` takes `staff`; `command-palette.component.ts` passes `StaffAccountsStore.items()`; record entries "Edit {name}" with keywords (name, email, branch).
   - Specs: `command-registry.spec` (staff entries, filter by name and email, 50-record cap still applies), `command-palette.spec` (entry navigates to `/admin/staff/{id}`).
   - _Requirements: 6.1_
