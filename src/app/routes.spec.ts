@@ -127,7 +127,7 @@ describe('route table', () => {
   it('shows /staff to Staff', async () => {
     expect(await visit('Staff', '/staff')).toMatchObject({
       url: '/staff',
-      heading: 'Staff workspace',
+      heading: 'No branch linked',
     });
   });
 

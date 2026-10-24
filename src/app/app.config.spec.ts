@@ -65,7 +65,7 @@ describe('the real application configuration', () => {
   it.each([
     ['Customer', '/book', 'Book an appointment'],
     ['Admin', '/admin', 'Dashboard'],
-    ['Staff', '/staff', 'Staff workspace'],
+    ['Staff', '/staff', 'No branch linked'],
   ] as const)(
     'restores a stored %s session with one refresh and lands on %s',
     async (role, landing, expected) => {

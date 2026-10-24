@@ -108,7 +108,8 @@ Rules (from the template):
   - Specs: `staff-branch.store.spec` (single request for repeated `ensure`, new branch loads again, no claim means no request, `404`, network error then recovery, sign-out resets), `staff-shell.spec` (header text, absent while loading).
   - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.6_
 
-- [ ] 14. Staff gate and routes
+- [x] 14. Staff gate and routes
+  - _Done: 24/10/2026 12:23pm_
   - `features/staff/staff-gate.component.ts` (not-linked message with Sign out, error state with Retry and reload on `OutageState.recovered`, content when ready), `staff.routes.ts` rewritten, `titles.ts`; delete `staff-placeholder.ts` and its spec.
   - Specs: `staff-gate.spec` (each of the three states, no appointment request when not linked, Retry, recovery).
   - _Requirements: 1.3, 1.4, 11.2_
