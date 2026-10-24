@@ -201,8 +201,10 @@ Rules (from the template):
   - Measured on the merged build (gzip): initial 167.73 of 250 kB, public 33.76 of 50, book 39.52 of 60, appointments 29.80 of 40, admin 135.28 of 140 (raised from 120 with the user's approval), staff 49.00. The staff group counts every chunk its entry imports statically (shared vendor and UI chunks included, each once), so it exceeded the proposed 40 kB; its default budget is set to 55 kB instead (about 12 percent headroom), `size:staff` is in `package.json` and CI. Admin has little headroom left (4.72 kB).
   - _Requirements: 11.5_
 
-- [ ] 28. Full gate
+- [x] 28. Full gate
+  - _Done: 24/10/2026 12:55pm_
   - `pnpm lint`, `format:check`, `typecheck`, `test`, `build`, every `size:*` group, `test:scripts` and `pnpm e2e` (all flows and axe suites, both themes) on the merged branch; fix what fails; record the results.
+  - Result on the merged branch (24/10/2026): `pnpm lint`, `typecheck`, `build`, every `size:*` group (initial 167.73 of 250, public 33.76 of 50, book 39.52 of 60, appointments 29.80 of 40, admin 135.28 of 140, staff 49.00 of 55) and `test:scripts` (36 tests) pass; unit tests 173 files, 2484 tests pass; `pnpm e2e` on port 4307: 134 passed (all flows and the axe suites in both themes). `format:check` failed only on `docs/specs/f7-staff/requirements.md` (blank lines), fixed with Prettier. None of the four known load-sensitive specs failed in this run. Fixes made while integrating: the light `--destructive` token darkened to `#c81e1e` (axe: the tinted destructive confirm button measured 4.13:1) and a `fallthrough` option in `e2e/mock-backend.ts` so `mockStaffApi` can stack on `mockAdminApi`.
   - _Requirements: 11.3, 11.4, 11.5_
 
 - [ ] 29. Documentation

@@ -3,12 +3,14 @@
 ## Introduction
 
 This spec builds four things.
+
 - **The staff workspace** at `/staff`: a branch day list, marking appointments `Completed` or `NoShow`, and an appointment detail panel. It lives under `src/app/features/staff/` in the F1 staff shell.
 - **An admin appointments page**, `/admin/appointments`, for any branch's day.
 - **Admin staff account management** at `/admin/staff`: list, create, move to another branch, deactivate and reactivate, delete. It lives under `src/app/features/admin/` in the F5 admin console.
 - **Customer support for the two new statuses** in the F4 screens.
 
 It serves these backend requirements:
+
 - `FR-BKG-004` (staff view branch appointments).
 - `FR-BKG-006` (complete and no-show).
 - `FR-AUTH-006` (manage staff: create, list, read, move, deactivate, reactivate and delete).
@@ -18,6 +20,7 @@ It serves these backend requirements:
 F7 takes the phase number the work plan had reserved for Polish, which becomes F8.
 
 F7 **consumes** F1 to F6 and does not redefine them:
+
 - From F1: `ApiClient` and the generated types, `AppError` and its `kind`, `ToastService`, `OutageState`, `SessionStore`, `authGuard`/`roleGuard`, the staff and admin shells, the zone-aware utilities in `core/time/` (`todayInZone`, `addDays`, `formatInZone`, `parseUtc`), and the MSW server and test helpers.
 - From F2: the form conventions and the password rules and checklist.
 - From F4: the status badge and the appointment view model.
@@ -95,6 +98,7 @@ Agreed on 2026-10-24:
    - The status badge.
 
    Below 640 px the rows SHALL become stacked cards, with no horizontal scroll down to 320 px.
+
 5. A status filter SHALL offer All, Booked, Completed, No-show and Cancelled. It SHALL be kept in `?status=`, and an unknown value SHALL fall back to All.
 6. The page SHALL show the count for the filter, for example "8 appointments". IF the day has none, THEN it SHALL show "No appointments on this day." (or "No {status} appointments on this day." when a filter is set) and no table. While loading, it SHALL show skeleton rows with `aria-busy="true"`.
 7. IF `customersUnavailable` is true, THEN the page SHALL show a non-blocking notice: "Customer names are unavailable right now. Refresh to try again." Rows SHALL show "Name unavailable" and no phone number. IF `customer` is null for one row only, THEN only that row SHALL show "Name unavailable".
@@ -160,6 +164,7 @@ Agreed on 2026-10-24:
    - An actions menu.
 
    Below 640 px the table SHALL become cards.
+
 3. A branch filter (All, or each branch) and a status filter (All, Active, Inactive) SHALL be kept in `?branch=` and `?status=`. Unknown values SHALL fall back to All.
 4. IF `totalCount` is greater than the items loaded, THEN **Load more** SHALL fetch the next page.
 5. IF there are no staff accounts, THEN the page SHALL show "No staff accounts yet." with a "New staff member" link. IF the filters match none, THEN it SHALL show "No staff match these filters." and a "Clear filters" button.
