@@ -114,6 +114,7 @@ export const SessionStore = signalStore(
           id: claims.sub,
           email: claims.email,
           role: claims.role,
+          ...(claims.role === 'Staff' && claims.branchId ? { branchId: claims.branchId } : {}),
           ...(sameUser ? { firstName: previous.firstName, lastName: previous.lastName } : {}),
         },
         ...(sameUser ? {} : { profile: null, profileStatus: 'idle' as const }),

@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
-import { createFieldView } from '../../../shared/forms/field-view';
+import { createFieldView } from './field-view';
 import { PasswordFieldComponent } from './password-field.component';
 
 @Component({

@@ -1,4 +1,4 @@
-import type { Branch, ServiceType } from '../../../core/api/models';
+import type { Branch, ServiceType, StaffAccount } from '../../../core/api/models';
 
 export type CommandGroup = 'Navigate' | 'Create' | 'Records' | 'Settings';
 
@@ -57,12 +57,28 @@ const STATIC_COMMANDS: readonly Command[] = [
     'scissors',
   ),
   go(
+    'go-staff',
+    'Go to staff',
+    '/admin/staff',
+    'Navigate',
+    ['staff members', 'users', 'accounts'],
+    'users',
+  ),
+  go(
     'go-slots',
     'Go to Slot generation',
     '/admin/slots',
     'Navigate',
     ['slots', 'calendar'],
     'calendar-plus',
+  ),
+  go(
+    'go-appointments',
+    'Go to appointments',
+    '/admin/appointments',
+    'Navigate',
+    ['bookings', 'schedule', 'day'],
+    'calendar-check',
   ),
   go(
     'new-branch',
@@ -78,6 +94,14 @@ const STATIC_COMMANDS: readonly Command[] = [
     '/admin/services/new',
     'Create',
     ['add', 'create', 'service type'],
+    'plus',
+  ),
+  go(
+    'new-staff',
+    'New staff member',
+    '/admin/staff/new',
+    'Create',
+    ['add', 'create', 'staff', 'user', 'account'],
     'plus',
   ),
   go(
@@ -106,10 +130,14 @@ const STATIC_COMMANDS: readonly Command[] = [
   },
 ];
 
-/** The static commands plus an edit entry for every branch and service already in memory. */
+/**
+ * The static commands plus an edit entry for every branch, service and staff member already in
+ * memory. `staff` may be left out (nothing loaded).
+ */
 export function buildCommands(ctx: {
   branches: readonly Branch[];
   services: readonly ServiceType[];
+  staff?: readonly StaffAccount[];
 }): Command[] {
   const records: Command[] = [];
   for (const b of ctx.branches) {
@@ -134,6 +162,19 @@ export function buildCommands(ctx: {
         'service',
         s.code,
         s.name,
+        'edit',
+      ]),
+    );
+  }
+  for (const m of ctx.staff ?? []) {
+    const name = `${m.firstName} ${m.lastName}`;
+    const branch = ctx.branches.find((b) => b.id === m.branchId);
+    records.push(
+      go(`staff-${m.id}`, `Edit ${name}`, `/admin/staff/${m.id}`, 'Records', [
+        'staff',
+        name,
+        m.email,
+        ...(branch ? [branch.name] : []),
         'edit',
       ]),
     );

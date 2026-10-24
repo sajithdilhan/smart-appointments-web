@@ -7,6 +7,8 @@ export interface AccessTokenOptions {
   expiresInSeconds: number;
   /** Issue time; defaults to `Date.now()` (which fake timers control). */
   nowMs?: number;
+  /** Written as the `branch_id` claim when given (a Staff token carries one). */
+  branchId?: string;
 }
 
 function base64Url(json: unknown): string {
@@ -27,6 +29,7 @@ export function makeAccessToken(options: AccessTokenOptions): string {
     iat: nowSeconds,
     jti: crypto.randomUUID(),
     exp: nowSeconds + options.expiresInSeconds,
+    ...(options.branchId === undefined ? {} : { branch_id: options.branchId }),
   };
   return `${base64Url(header)}.${base64Url(payload)}.test-signature`;
 }

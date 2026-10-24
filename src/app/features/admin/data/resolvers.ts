@@ -4,11 +4,9 @@ import type { Crumb } from '../../../shared/layout/breadcrumb-trail';
 import { BranchesStore } from './branches.store';
 import { ServicesStore } from './services.store';
 
-const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+import { isGuid } from '../../../core/util/guid';
 
-export function isGuid(value: string | null | undefined): value is string {
-  return typeof value === 'string' && GUID.test(value);
-}
+export { isGuid };
 
 /**
  * Breadcrumb data: the record's name from the store (fetching it once if needed), or a fallback
@@ -34,6 +32,9 @@ export const serviceCrumb: ResolveFn<string> = async (route) => {
     return 'Service';
   }
 };
+
+/** Breadcrumb of `staff/:id`; the id is not looked up (the drawer shows the name). */
+export const staffCrumb: ResolveFn<string> = () => 'Staff member';
 
 /**
  * Breadcrumbs of `branches/:id/schedule`, one route spanning three levels: Branches, the branch's

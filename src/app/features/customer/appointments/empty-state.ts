@@ -29,12 +29,20 @@ import type { AppointmentTab } from './tab-params';
 })
 export class EmptyState {
   readonly tab = input.required<AppointmentTab>();
+  /** The Past status filter is set, so the list is empty because of it. */
+  readonly filtered = input(false);
   protected readonly heading = computed(() =>
-    this.tab() === 'upcoming' ? 'No upcoming appointments' : 'No past appointments',
+    this.filtered()
+      ? 'No matching appointments'
+      : this.tab() === 'upcoming'
+        ? 'No upcoming appointments'
+        : 'No past appointments',
   );
   protected readonly sentence = computed(() =>
-    this.tab() === 'upcoming'
-      ? 'When you book an appointment it will appear here.'
-      : 'Appointments that have taken place will appear here.',
+    this.filtered()
+      ? 'No past appointments have this status. Try another one.'
+      : this.tab() === 'upcoming'
+        ? 'When you book an appointment it will appear here.'
+        : 'Appointments that have taken place will appear here.',
   );
 }

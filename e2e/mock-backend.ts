@@ -8,13 +8,15 @@ type Role = 'Customer' | 'Staff' | 'Admin';
 const b64url = (value: object) => Buffer.from(JSON.stringify(value)).toString('base64url');
 
 /** An unsigned JWT with the claims the SPA reads (it never verifies a signature). */
-export function makeJwt(role: Role, expiresInSeconds = 3600): string {
+export function makeJwt(role: Role, expiresInSeconds = 3600, branchId?: string): string {
   const exp = Math.floor(Date.now() / 1000) + expiresInSeconds;
   return `${b64url({ alg: 'HS256', typ: 'JWT' })}.${b64url({
     sub: 'user-1',
     email: 'ann@example.com',
     role,
     exp,
+    // A Staff token carries the branch it works at.
+    ...(branchId === undefined ? {} : { branch_id: branchId }),
   })}.sig`;
 }
 
@@ -25,8 +27,16 @@ export interface MockBackend {
 
 export interface MockOptions {
   role?: Role;
+  /** Written as the `branch_id` claim of every access token this backend issues (Staff). */
+  branchId?: string;
   /** When set, the refresh endpoint answers with this status and a problem body. */
   refreshStatus?: number;
+  /**
+   * For stacking this backend on top of another mock (e.g. `mockStaffApi` after `mockAdminApi`):
+   * a request this backend does not know goes on to the mock registered before it instead of
+   * answering `404`.
+   */
+  fallthrough?: boolean;
 }
 
 export const CORS = {
@@ -69,7 +79,7 @@ export async function mockBackend(page: Page, options: MockOptions = {}): Promis
         });
       }
       return json(route, 200, {
-        accessToken: makeJwt(role),
+        accessToken: makeJwt(role, 3600, options.branchId),
         refreshToken: `rt_${refreshCalls + 1}`,
         accessTokenExpiresAtUtc: new Date(Date.now() + 3_600_000).toISOString(),
       });
@@ -82,6 +92,7 @@ export async function mockBackend(page: Page, options: MockOptions = {}): Promis
         phoneNumber: null,
       });
     }
+    if (options.fallthrough) return route.fallback();
     return json(route, 404, { status: 404, detail: 'Not mocked.' });
   });
 

@@ -9,7 +9,7 @@ import { AppointmentsSkeleton } from './appointments-skeleton';
 import { EmptyState } from './empty-state';
 import { InlineError } from './inline-error';
 import { LoadMore } from './load-more';
-import { AppointmentStatusBadge } from './status-badge';
+import { AppointmentStatusBadge } from '../../../shared/appointments/appointment-status-badge';
 
 const NOW = new Date('2026-10-04T12:00:00Z');
 const view = (start: string, over: { tab?: 'upcoming' | 'past'; zone?: string | null } = {}) =>
@@ -39,9 +39,21 @@ describe('AppointmentStatusBadge', () => {
     expect(screen.getByText('Cancelled').getAttribute('data-variant')).toBe('muted');
   });
 
+  it('Completed is success, with an icon', async () => {
+    const { container } = await render(AppointmentStatusBadge, { inputs: { status: 'Completed' } });
+    expect(screen.getByText('Completed').getAttribute('data-variant')).toBe('success');
+    expect(container.querySelector('ng-icon')).toBeTruthy();
+  });
+
+  it('No-show is warning, with an icon', async () => {
+    const { container } = await render(AppointmentStatusBadge, { inputs: { status: 'NoShow' } });
+    expect(screen.getByText('No-show').getAttribute('data-variant')).toBe('warning');
+    expect(container.querySelector('ng-icon')).toBeTruthy();
+  });
+
   it('an unknown status renders its own text, neutral', async () => {
-    await render(AppointmentStatusBadge, { inputs: { status: 'NoShow' } });
-    expect(screen.getByText('NoShow').getAttribute('data-variant')).toBe('muted');
+    await render(AppointmentStatusBadge, { inputs: { status: 'Archived' } });
+    expect(screen.getByText('Archived').getAttribute('data-variant')).toBe('muted');
   });
 
   it('the cancelling state reads "Cancelling…" and the spinner is motion-safe', async () => {

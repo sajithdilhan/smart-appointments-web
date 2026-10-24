@@ -23,15 +23,16 @@ Templates live in [`_templates/`](_templates/).
 
 ## Index
 
-| Feature                                                                                           | Status      | FR-IDs                                             | Spec                                            |
-| ------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------- | ----------------------------------------------- |
-| F0 Scaffold and tooling                                                                           | Implemented | — (no FR-ID)                                       | [requirements](f0-scaffold/requirements.md)     |
-| F1 Core (runtime config use, API types, error normalizer, auth store and refresh, guards, shells) | Built       | FR-AUTH-002, FR-AUTH-003, FR-AUTH-004, FR-AUTH-005 | [requirements](f1-core/requirements.md)         |
-| F2 Public (landing, login, register)                                                              | Implemented | FR-AUTH-001, FR-AUTH-002                           | [requirements](f2-public/requirements.md)       |
-| F3 Booking wizard, success and .ics                                                               | Built       | FR-AVL-004, FR-BKG-001                             | [requirements](f3-booking/requirements.md)      |
-| F4 My appointments, detail, cancel, profile                                                       | Implemented | FR-BKG-002, FR-BKG-003, FR-BKG-005, FR-AUTH-003    | [requirements](f4-appointments/requirements.md) |
-| F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette)      | Implemented | FR-AVL-001, FR-AVL-002, FR-AVL-003                 | [requirements](f5-admin/requirements.md)        |
-| F6 Redesign (Indigo + Lavender theme, landing, auth and booking layouts)                          | Implemented | — (no FR-ID)                                       | [requirements](f6-redesign/requirements.md)     |
-| F7 Polish (a11y audit, motion, empty and error states, Playwright suites, Lighthouse budgets)     | Not specced | — (no FR-ID)                                       | —                                               |
+| Feature                                                                                              | Status      | FR-IDs                                                       | Spec                                            |
+| ---------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------ | ----------------------------------------------- |
+| F0 Scaffold and tooling                                                                              | Implemented | — (no FR-ID)                                                 | [requirements](f0-scaffold/requirements.md)     |
+| F1 Core (runtime config use, API types, error normalizer, auth store and refresh, guards, shells)    | Built       | FR-AUTH-002, FR-AUTH-003, FR-AUTH-004, FR-AUTH-005           | [requirements](f1-core/requirements.md)         |
+| F2 Public (landing, login, register)                                                                 | Implemented | FR-AUTH-001, FR-AUTH-002                                     | [requirements](f2-public/requirements.md)       |
+| F3 Booking wizard, success and .ics                                                                  | Built       | FR-AVL-004, FR-BKG-001                                       | [requirements](f3-booking/requirements.md)      |
+| F4 My appointments, detail, cancel, profile                                                          | Implemented | FR-BKG-002, FR-BKG-003, FR-BKG-005, FR-AUTH-003              | [requirements](f4-appointments/requirements.md) |
+| F5 Admin console (branches, schedule, services, slot generation, dashboard, command palette)         | Implemented | FR-AVL-001, FR-AVL-002, FR-AVL-003                           | [requirements](f5-admin/requirements.md)        |
+| F6 Redesign (Indigo + Lavender theme, landing, auth and booking layouts)                             | Implemented | — (no FR-ID)                                                 | [requirements](f6-redesign/requirements.md)     |
+| F7 Staff workspace (staff day list and marks, admin appointments, staff accounts, customer statuses) | Implemented | FR-BKG-004, FR-BKG-006, FR-AUTH-006, FR-AUTH-003, FR-BKG-003 | [requirements](f7-staff/requirements.md)        |
+| F8 Polish (a11y audit, motion, empty and error states, Playwright suites, Lighthouse budgets)        | Not specced | — (no FR-ID)                                                 | —                                               |
 
-Backend-dependent features (queue, staff workspace, notifications, reports) wait for their backends and are not planned here.
+Backend-dependent features (queue, notifications, reports) wait for their backends and are not planned here.

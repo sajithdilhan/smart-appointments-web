@@ -4,7 +4,11 @@ import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { screen, waitFor, within } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
-import { provideAdminApi, useAdminBackend } from '../../../../testing/admin-test-setup';
+import {
+  provideStaffApi,
+  staffBackend,
+  useStaffBackends,
+} from '../../../../testing/staff-test-setup';
 import { seedBranch, seedService, state } from '../../../../testing/availability-admin-backend';
 import {
   createFakeSession,
@@ -18,6 +22,7 @@ import { AdminFrame } from '../admin-frame.component';
 import { BranchesStore } from '../data/branches.store';
 import { ServicesStore } from '../data/services.store';
 import { SlotActivityStore } from '../data/slot-activity.store';
+import { StaffAccountsStore } from '../data/staff-accounts.store';
 
 @Component({
   selector: 'app-page-stub',
@@ -32,7 +37,7 @@ class OtherStub {}
 let session: FakeSession;
 
 beforeEach(() => {
-  useAdminBackend();
+  useStaffBackends();
   session = createFakeSession('authenticated', 'Admin');
 });
 afterEach(() => {
@@ -51,13 +56,15 @@ async function open(url = '/admin') {
             { path: '', component: PageStub },
             { path: 'branches', component: OtherStub },
             { path: 'services/new', component: OtherStub },
+            { path: 'staff/:id', component: OtherStub },
           ],
         },
       ]),
-      ...provideAdminApi(),
+      ...provideStaffApi(),
       BranchesStore,
       ServicesStore,
       SlotActivityStore,
+      StaffAccountsStore,
       ...provideFakeSession(session, createFakeToast()),
     ],
   });
@@ -109,9 +116,12 @@ describe('command palette', () => {
       'Go to Dashboard',
       'Go to Branches',
       'Go to Services',
+      'Go to staff',
       'Go to Slot generation',
+      'Go to appointments',
       'New branch',
       'New service',
+      'New staff member',
       'Generate slots',
       'Toggle theme',
       'Sign out',
@@ -149,7 +159,7 @@ describe('command palette', () => {
     await chord('Control');
     await palette();
     await userEvent.type(input(), 'new');
-    await waitFor(() => expect(screen.getByText('2 results')).toBeInTheDocument(), {
+    await waitFor(() => expect(screen.getByText('3 results')).toBeInTheDocument(), {
       timeout: 2000,
     });
   });
@@ -162,11 +172,11 @@ describe('command palette', () => {
     await userEvent.keyboard('{ArrowDown}{ArrowDown}');
     expect(active()).toBe(2);
     await userEvent.keyboard('{End}');
-    expect(active()).toBe(8);
+    expect(active()).toBe(11);
     await userEvent.keyboard('{ArrowDown}');
     expect(active()).toBe(0);
     await userEvent.keyboard('{ArrowUp}');
-    expect(active()).toBe(8);
+    expect(active()).toBe(11);
     await userEvent.keyboard('{Home}');
     expect(active()).toBe(0);
     expect(input()).toHaveFocus();
@@ -275,6 +285,44 @@ describe('command palette', () => {
       within(screen.getByRole('group', { name: 'Records' })).getAllByRole('option'),
     ).toHaveLength(1);
     expect(state.requests).toHaveLength(0);
+  });
+
+  it('offers an "Edit {name}" entry for loaded staff, which opens that member', async () => {
+    const branch = seedBranch({ name: 'Kandy', code: 'KDY' });
+    const ana = staffBackend.addStaff({
+      firstName: 'Ana',
+      lastName: 'Perera',
+      email: 'ana@example.com',
+      branchId: branch.id,
+    });
+    staffBackend.addStaff({ firstName: 'Ben', lastName: 'Silva', email: 'ben@example.com' });
+    const { router } = await open();
+    const staff = TestBed.inject(StaffAccountsStore);
+    await staff.load();
+    TestBed.inject(BranchesStore).upsert(branch);
+    await chord('Control');
+    await palette();
+    await userEvent.type(input(), 'perera');
+    expect(optionNames()).toEqual(['Edit Ana Perera']);
+    await userEvent.clear(input());
+    await userEvent.type(input(), 'ben@example');
+    expect(optionNames()).toEqual(['Edit Ben Silva']);
+    await userEvent.clear(input());
+    await userEvent.type(input(), 'kandy');
+    expect(optionNames()).toContain('Edit Ana Perera');
+    await userEvent.clear(input());
+    await userEvent.type(input(), 'edit ana{Enter}');
+    await waitFor(() => expect(router.url).toBe(`/admin/staff/${ana.id}`));
+  });
+
+  it('has no staff entries until the staff list is loaded, and issues no staff request itself', async () => {
+    staffBackend.addStaff({ firstName: 'Ana', lastName: 'Perera' });
+    await open();
+    await chord('Control');
+    await palette();
+    await userEvent.type(input(), 'perera');
+    expect(screen.queryAllByRole('option')).toHaveLength(0);
+    expect(staffBackend.state.requests).toHaveLength(0);
   });
 
   it('has no record entries while the stores are empty', async () => {

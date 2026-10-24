@@ -11,7 +11,7 @@ import {
   PHONE_MESSAGES,
   REGISTER_PASSWORD_MESSAGES,
 } from '../validation/messages';
-import { strongPasswordValidator } from '../validation/password-validator';
+import { strongPasswordValidator } from '../../../shared/forms/password-validator';
 
 const NAME_MAX = 50;
 

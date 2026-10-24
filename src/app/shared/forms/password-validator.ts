@@ -1,5 +1,5 @@
-import { FieldRule } from '../../../shared/forms/field-rules';
-import { firstFailing } from '../../../shared/forms/validators';
+import { FieldRule } from './field-rules';
+import { firstFailing } from './validators';
 import { passwordIsValid } from './password-rules';
 
 /** The password rule: 'weak' when any requirement is unmet. Empty passes (pair with required). */

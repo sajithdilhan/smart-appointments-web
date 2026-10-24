@@ -68,7 +68,32 @@ test('groupFiles accepts Windows separators in keys and entry points', () => {
   assert.deepEqual([...files], ['a.js']);
 });
 
-test('admin is a known group with its own 120 kB default, handled by the size-group walker', () => {
-  assert.equal(GROUP_DEFAULTS.admin, 120);
+test('admin is a known group with its own 140 kB default, handled by the size-group walker', () => {
+  assert.equal(GROUP_DEFAULTS.admin, 140);
   assert.equal(typeof reportAdmin, 'function');
+});
+
+test('staff is a known group with a 55 kB default, measured by the generic groupFiles', () => {
+  assert.equal(GROUP_DEFAULTS.staff, 55);
+  const stats = {
+    outputs: {
+      [`${outDir}/main.js`]: out('src/main.ts'),
+      [`${outDir}/staff.js`]: out('src/app/features/staff/staff.routes.ts', [
+        ['gate.js', 'dynamic-import'],
+        ['branch-day.js', 'import-statement'],
+      ]),
+      [`${outDir}/gate.js`]: out('src/app/features/staff/staff-gate.component.ts', [
+        ['branch-day.js', 'import-statement'],
+        ['main.js', 'import-statement'],
+      ]),
+      [`${outDir}/branch-day.js`]: out(undefined),
+      [`${outDir}/admin.js`]: out('src/app/features/admin/admin.routes.ts'),
+    },
+  };
+  const files = groupFiles(stats, {
+    entryPrefix: 'src/app/features/staff/',
+    outDir,
+    initial: new Set(['main.js']),
+  });
+  assert.deepEqual([...files].sort(), ['branch-day.js', 'gate.js', 'staff.js']);
 });

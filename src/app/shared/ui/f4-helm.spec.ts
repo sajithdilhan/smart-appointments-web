@@ -20,6 +20,7 @@ import { HlmSwitchImports } from '@app/shared/ui/switch';
     <span hlmBadge variant="outline">Other</span>
     <span hlmBadge variant="success">Active</span>
     <span hlmBadge variant="muted">Inactive</span>
+    <span hlmBadge variant="warning">Attention</span>
   `,
 })
 class BadgeHost {}
@@ -85,11 +86,14 @@ describe('helm components used by F4', () => {
       ['Other', 'outline'],
       ['Active', 'success'],
       ['Inactive', 'muted'],
+      ['Attention', 'warning'],
     ]) {
       expect(screen.getByText(text).getAttribute('data-variant')).toBe(variant);
     }
     expect(screen.getByText('Active').className).toContain('bg-success-soft');
     expect(screen.getByText('Inactive').className).toContain('bg-muted');
+    expect(screen.getByText('Attention').className).toContain('bg-warning-soft');
+    expect(screen.getByText('Attention').className).toContain('text-warning-soft-foreground');
   });
 
   it('skeleton is a block that pulses only when motion is allowed', async () => {

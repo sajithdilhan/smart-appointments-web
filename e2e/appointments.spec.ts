@@ -46,6 +46,26 @@ test('switches to Past and Back leaves the page', async ({ page }) => {
   await expect(page).toHaveURL(/\/book$/);
 });
 
+test('the Past tab shows Completed and No-show badges and filters by status', async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await setup(page, { upcoming: 1, pastStatuses: ['Completed', 'NoShow', 'Cancelled'] });
+  await page.goto('/appointments?tab=past');
+  await expect(cards(page)).toHaveCount(3);
+  await expect(cards(page).filter({ hasText: 'Completed' })).toHaveCount(1);
+  await expect(cards(page).filter({ hasText: 'No-show' })).toHaveCount(1);
+  await expect(cards(page).filter({ hasText: 'Cancelled' })).toHaveCount(1);
+
+  await page.getByLabel('Status').selectOption({ label: 'No-show' });
+  await expect(page).toHaveURL(/pstatus=NoShow/);
+  await expect(cards(page)).toHaveCount(1);
+  await expect(cards(page).first()).toContainText('No-show');
+
+  // The filter belongs to the Past tab: Upcoming has none and drops it from the URL.
+  await page.getByRole('tab', { name: 'Upcoming' }).click();
+  await expect(page).not.toHaveURL(/pstatus/);
+  await expect(page.getByLabel('Status')).toHaveCount(0);
+});
+
 test('Load more appends the second page', async ({ page }) => {
   await page.setViewportSize(DESKTOP);
   await setup(page, { upcoming: 25, past: 0 });

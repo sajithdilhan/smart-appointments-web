@@ -13,9 +13,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideEye, lucideEyeOff } from '@ng-icons/lucide';
 import { HlmInput } from '@app/shared/ui/input';
-import { FieldA11yDirective } from '../../../shared/forms/field-a11y.directive';
-import { FieldView } from '../../../shared/forms/field-view';
-import { FormFieldComponent } from '../../../shared/forms/form-field.component';
+import { FieldA11yDirective } from './field-a11y.directive';
+import { FieldView } from './field-view';
+import { FormFieldComponent } from './form-field.component';
 
 /** A password input with a show/hide button. The value stays in the control, never in a signal. */
 @Component({

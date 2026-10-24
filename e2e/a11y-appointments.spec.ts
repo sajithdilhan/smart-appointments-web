@@ -56,6 +56,17 @@ for (const theme of ['light', 'dark'] as const) {
       expect(await violations(page)).toEqual([]);
     });
 
+    test('the Past tab with Completed and No-show badges has none', async ({ page }) => {
+      await mockAppointments(page, {
+        upcoming: 1,
+        pastStatuses: ['Completed', 'NoShow', 'Cancelled', 'Booked'],
+      });
+      await page.goto('/appointments?tab=past');
+      await expect(page.getByRole('link', { name: /Health check.*No-show/ })).toBeVisible();
+      await expect(page.getByRole('link', { name: /Health check.*Completed/ })).toBeVisible();
+      expect(await violations(page)).toEqual([]);
+    });
+
     test('/profile has none', async ({ page }) => {
       await page.goto('/profile');
       await expect(page.locator('dd', { hasText: 'Ann Example' })).toBeVisible();

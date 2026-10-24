@@ -33,9 +33,9 @@ import { normalizePhone } from '../../../shared/forms/phone';
 import { RateLimitNotice } from '../../../shared/ui/rate-limit-notice';
 import { AuthLayoutComponent } from '../auth/auth-layout.component';
 import { Outcome, toAppError } from '../auth/outcome';
-import { PasswordFieldComponent } from '../auth/password-field.component';
-import { evaluatePasswordRules } from '../validation/password-rules';
-import { PasswordChecklistComponent } from './password-checklist.component';
+import { PasswordFieldComponent } from '../../../shared/forms/password-field.component';
+import { evaluatePasswordRules } from '../../../shared/forms/password-rules';
+import { PasswordChecklistComponent } from '../../../shared/forms/password-checklist.component';
 import { EMAIL_TAKEN_MESSAGE, mapRegisterError } from './register-error';
 import { createRegisterForm, REGISTER_MESSAGES } from './register.form';
 

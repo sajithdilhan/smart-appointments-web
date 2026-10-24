@@ -11,12 +11,14 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBuilding2,
+  lucideCalendarCheck,
   lucideCalendarRange,
   lucideLayoutDashboard,
   lucideListChecks,
   lucideMenu,
   lucidePanelLeft,
   lucideSearch,
+  lucideUsers,
 } from '@ng-icons/lucide';
 import { BrandMark } from '@app/shared/ui/brand-mark';
 import { HlmButtonImports } from '@app/shared/ui/button';
@@ -68,12 +70,14 @@ function platformIsApple(): boolean {
   providers: [
     provideIcons({
       lucideBuilding2,
+      lucideCalendarCheck,
       lucideCalendarRange,
       lucideLayoutDashboard,
       lucideListChecks,
       lucideMenu,
       lucidePanelLeft,
       lucideSearch,
+      lucideUsers,
     }),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -209,7 +213,14 @@ export class AdminShell {
     { label: 'Dashboard', href: '/admin', icon: 'lucideLayoutDashboard', exact: true },
     { label: 'Branches', href: '/admin/branches', icon: 'lucideBuilding2', exact: false },
     { label: 'Services', href: '/admin/services', icon: 'lucideListChecks', exact: false },
+    { label: 'Staff', href: '/admin/staff', icon: 'lucideUsers', exact: false },
     { label: 'Slot generation', href: '/admin/slots', icon: 'lucideCalendarRange', exact: false },
+    {
+      label: 'Appointments',
+      href: '/admin/appointments',
+      icon: 'lucideCalendarCheck',
+      exact: false,
+    },
   ];
 
   constructor() {

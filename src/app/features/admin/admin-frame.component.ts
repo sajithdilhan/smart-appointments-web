@@ -15,12 +15,13 @@ import { PaletteLauncher } from '../../core/ui/palette-launcher';
 import { BranchesStore } from './data/branches.store';
 import { ServicesStore } from './data/services.store';
 import { SlotActivityStore } from './data/slot-activity.store';
+import { StaffAccountsStore } from './data/staff-accounts.store';
 import { CommandPalette } from './palette/command-palette.component';
 import { isPaletteShortcut } from './palette/shortcut';
 
 /**
  * The admin feature's root route component. It tells the F1 shell a palette exists, owns the
- * palette and its Ctrl/Cmd+K listener (both removed when it is destroyed), and resets the three
+ * palette and its Ctrl/Cmd+K listener (both removed when it is destroyed), and resets the
  * stores on destroy: route environment injectors outlive navigation, so without this a logout, or
  * a different admin signing in, would see the previous admin's lists.
  */
@@ -42,6 +43,7 @@ export class AdminFrame {
     const branches = inject(BranchesStore);
     const services = inject(ServicesStore);
     const activity = inject(SlotActivityStore);
+    const staff = inject(StaffAccountsStore);
     this.launcher.available.set(true);
 
     fromEvent<KeyboardEvent>(this.doc, 'keydown')
@@ -69,6 +71,7 @@ export class AdminFrame {
       branches.reset();
       services.reset();
       activity.reset();
+      staff.reset();
     });
   }
 

@@ -191,6 +191,48 @@ describe('AppointmentDetail cancel', () => {
     expect(screen.queryByRole('button', { name: 'Add to calendar' })).toBeNull();
   });
 
+  it('a Completed appointment shows Completed on, no Cancel and no Add to calendar', async () => {
+    await open(SHEET, {
+      setup: (b) => {
+        b.appointments[0].status = 'Completed';
+        b.appointments[0].completedAtUtc = '2026-10-05T16:00:00Z';
+      },
+    });
+    await screen.findByText('Completed on');
+    expect(screen.getByText('Completed', { selector: '[data-slot=badge]' })).toBeTruthy();
+    expect(screen.queryByText('Marked as no-show on')).toBeNull();
+    expect(screen.queryByText('Cancelled on')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Cancel appointment' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Add to calendar' })).toBeNull();
+  });
+
+  it('a NoShow appointment shows Marked as no-show on, no Cancel and no Add to calendar', async () => {
+    await open(SHEET, {
+      setup: (b) => {
+        b.appointments[0].status = 'NoShow';
+        b.appointments[0].noShowAtUtc = '2026-10-05T16:00:00Z';
+      },
+    });
+    await screen.findByText('Marked as no-show on');
+    expect(screen.getByText('No-show', { selector: '[data-slot=badge]' })).toBeTruthy();
+    expect(screen.queryByText('Completed on')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Cancel appointment' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Add to calendar' })).toBeNull();
+  });
+
+  it('an unknown status shows its own text and no extra date rows', async () => {
+    await open(SHEET, {
+      setup: (b) => {
+        (b.appointments[0] as { status: string }).status = 'Archived';
+      },
+    });
+    await screen.findByText('Booked on');
+    expect(screen.getByText('Archived', { selector: '[data-slot=badge]' })).toBeTruthy();
+    expect(screen.queryByText('Completed on')).toBeNull();
+    expect(screen.queryByText('Marked as no-show on')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Cancel appointment' })).toBeNull();
+  });
+
   it('the dialog opens with Keep focused; Escape keeps the appointment', async () => {
     const user = userEvent.setup();
     const { backend } = await open(SHEET);

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/angular';
-import { evaluatePasswordRules } from '../validation/password-rules';
+import { evaluatePasswordRules } from './password-rules';
 import { PasswordChecklistComponent } from './password-checklist.component';
 
 const setup = (password: string) =>

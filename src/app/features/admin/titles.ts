@@ -9,4 +9,8 @@ export const TITLES = {
   newService: 'New service',
   editService: 'Edit service',
   slots: 'Generate slots',
+  appointments: 'Appointments',
+  staff: 'Staff',
+  newStaff: 'New staff member',
+  editStaff: 'Edit staff member',
 } as const;

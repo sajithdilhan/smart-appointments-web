@@ -20,7 +20,9 @@ const routes: Routes = [
       { path: '', pathMatch: 'full', data: { breadcrumb: 'Dashboard' }, component: Page },
       { path: 'branches', data: { breadcrumb: 'Branches' }, component: Page },
       { path: 'services', data: { breadcrumb: 'Services' }, component: Page },
+      { path: 'staff', data: { breadcrumb: 'Staff' }, component: Page },
       { path: 'slots', data: { breadcrumb: 'Slot generation' }, component: Page },
+      { path: 'appointments', data: { breadcrumb: 'Appointments' }, component: Page },
     ],
   },
 ];
@@ -48,10 +50,17 @@ describe('AdminShell', () => {
   });
 
   describe('from 1024 px', () => {
-    it('shows the labelled admin navigation with the four destinations', async () => {
+    it('shows the labelled admin navigation with the six destinations', async () => {
       await renderShell(1280);
       const nav = screen.getByRole('navigation', { name: 'Admin' });
-      for (const name of ['Dashboard', 'Branches', 'Services', 'Slot generation']) {
+      for (const name of [
+        'Dashboard',
+        'Branches',
+        'Services',
+        'Staff',
+        'Slot generation',
+        'Appointments',
+      ]) {
         expect(within(nav).getByRole('link', { name })).toBeTruthy();
       }
       expect(screen.getAllByRole('main')).toHaveLength(1);
@@ -103,6 +112,32 @@ describe('AdminShell', () => {
       const { user } = await renderShell(1280);
       await user.click(toggle());
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('lists the destinations in order: Staff before Slot generation, Appointments last', async () => {
+      await renderShell(1280);
+      const nav = screen.getByRole('navigation', { name: 'Admin' });
+      expect(
+        within(nav)
+          .getAllByRole('link')
+          .map((a) => a.textContent?.trim()),
+      ).toEqual(['Dashboard', 'Branches', 'Services', 'Staff', 'Slot generation', 'Appointments']);
+    });
+
+    it.each([
+      ['/admin/staff', 'Staff'],
+      ['/admin/appointments', 'Appointments'],
+    ])('marks %s as the current page and no other link', async (url, name) => {
+      await renderShell(1280);
+      await TestBed.inject(Router).navigateByUrl(url);
+      await vi.waitFor(() =>
+        expect(screen.getByRole('link', { name }).getAttribute('aria-current')).toBe('page'),
+      );
+      const nav = screen.getByRole('navigation', { name: 'Admin' });
+      const current = within(nav)
+        .getAllByRole('link')
+        .filter((a) => a.getAttribute('aria-current') === 'page');
+      expect(current).toHaveLength(1);
     });
 
     it('marks only the current destination with aria-current', async () => {
@@ -158,6 +193,8 @@ describe('AdminShell', () => {
       ['/admin/branches', ['Admin', 'Branches']],
       ['/admin/services', ['Admin', 'Services']],
       ['/admin/slots', ['Admin', 'Slot generation']],
+      ['/admin/staff', ['Admin', 'Staff']],
+      ['/admin/appointments', ['Admin', 'Appointments']],
     ])('on %s shows %j', async (url, expected) => {
       await renderShell(1280);
       await TestBed.inject(Router).navigateByUrl(url);

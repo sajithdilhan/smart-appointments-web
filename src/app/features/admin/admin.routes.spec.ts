@@ -4,7 +4,7 @@ import { Router, TitleStrategy, provideRouter, withComponentInputBinding } from 
 import { RouterTestingHarness } from '@angular/router/testing';
 import { screen } from '@testing-library/angular';
 import { createFakeSession, provideFakeSession } from '../../../testing/fake-session';
-import { provideAdminApi, useAdminBackend } from '../../../testing/admin-test-setup';
+import { provideStaffApi, staffBackend, useStaffBackends } from '../../../testing/staff-test-setup';
 import { seedBranch, seedService, state } from '../../../testing/availability-admin-backend';
 import { routes } from '../../app.routes';
 import { crumbsOf } from '../../shared/layout/breadcrumb-trail';
@@ -12,9 +12,10 @@ import type { Role } from '../../core/auth/session.model';
 import { AppTitleStrategy } from '../../core/routing/app-title.strategy';
 import { PaletteLauncher } from '../../core/ui/palette-launcher';
 import { BranchesStore } from './data/branches.store';
+import { StaffAccountsStore } from './data/staff-accounts.store';
 import { AdminFrame } from './admin-frame.component';
 
-beforeEach(useAdminBackend);
+beforeEach(useStaffBackends);
 
 async function open(url: string, role: Role = 'Admin') {
   TestBed.configureTestingModule({
@@ -22,7 +23,7 @@ async function open(url: string, role: Role = 'Admin') {
       provideRouter(routes, withComponentInputBinding()),
       { provide: TitleStrategy, useClass: AppTitleStrategy },
       ...provideFakeSession(createFakeSession('authenticated', role)),
-      ...provideAdminApi(role),
+      ...provideStaffApi(role),
     ],
   });
   const harness = await RouterTestingHarness.create();
@@ -39,6 +40,8 @@ describe('admin route table', () => {
     ['/admin/branches', 'Branches', 'Branches | Smart Appointments'],
     ['/admin/services', 'Services', 'Services | Smart Appointments'],
     ['/admin/slots', 'Slot generation', 'Generate slots | Smart Appointments'],
+    ['/admin/staff', 'Staff', 'Staff | Smart Appointments'],
+    ['/admin/appointments', 'Appointments', 'Appointments | Smart Appointments'],
   ])('%s resolves with its heading and title', async (url, heading, title) => {
     const result = await open(url);
     expect(result.router.url).toBe(url);
@@ -72,6 +75,48 @@ describe('admin route table', () => {
       { label: 'Colombo Central', url: `/admin/branches/${branch.id}` },
       { label: 'Schedule', url: `/admin/branches/${branch.id}/schedule` },
     ]);
+  });
+
+  it('staff/new is the create drawer, not the edit drawer taking "new" for an id', async () => {
+    const { router, title } = await open('/admin/staff/new');
+    expect(screen.getByRole('heading', { level: 1, name: 'Staff' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'New staff member' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Edit staff member' })).not.toBeInTheDocument();
+    expect(title).toBe('New staff member | Smart Appointments');
+    expect(crumbsOf(router.routerState.snapshot.root).map((c) => c.label)).toEqual([
+      'Admin',
+      'Staff',
+      'New staff member',
+    ]);
+  });
+
+  it('staff/:id is the edit drawer, with the "Staff member" crumb and no request', async () => {
+    const { router, title } = await open(`/admin/staff/${GHOST}`);
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Edit staff member' }),
+    ).toBeInTheDocument();
+    expect(title).toBe('Edit staff member | Smart Appointments');
+    expect(crumbsOf(router.routerState.snapshot.root)).toEqual([
+      { label: 'Admin', url: '/admin' },
+      { label: 'Staff', url: '/admin/staff' },
+      { label: 'Staff member', url: `/admin/staff/${GHOST}` },
+    ]);
+    // Only the branch list the staff page loads for itself: the crumb resolver asks for nothing.
+    expect(state.requests.filter((r) => !/\/Branches$/i.test(r.path))).toEqual([]);
+  });
+
+  it('the staff drawers leave a pristine form without asking (unsavedChangesGuard)', async () => {
+    const { harness, router } = await open('/admin/staff/new');
+    await harness.navigateByUrl('/admin/staff');
+    expect(router.url).toBe('/admin/staff');
+  });
+
+  it('sends a Staff member and a Customer away from /admin/staff and /admin/appointments', async () => {
+    const staff = await open('/admin/appointments', 'Staff');
+    expect(staff.router.url).not.toBe('/admin/appointments');
+    TestBed.resetTestingModule();
+    const customer = await open('/admin/staff', 'Customer');
+    expect(customer.router.url).toBe('/book');
   });
 
   it('the resolver supplies the record name as the breadcrumb', async () => {
@@ -114,8 +159,13 @@ describe('AdminFrame', () => {
     const store = frame.injector.get(BranchesStore);
     store.upsert(seedBranch());
     expect(store.items()).toHaveLength(1);
+    staffBackend.addStaff();
+    const staff = frame.injector.get(StaffAccountsStore);
+    await staff.load();
+    expect(staff.items()).toHaveLength(1);
     await TestBed.inject(Router).navigateByUrl('/');
     expect(launcher.available()).toBe(false);
     expect(store.items()).toEqual([]);
+    expect(staff.items()).toEqual([]);
   });
 });

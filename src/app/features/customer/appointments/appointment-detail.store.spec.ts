@@ -108,7 +108,7 @@ describe('AppointmentDetailStore load', () => {
   it('starts ready from the list item and re-GETs behind it', async () => {
     const { store, target, backend } = setup({ withList: true });
     const list = TestBed.inject(AppointmentsStore);
-    await list.setFilter({ tab: 'upcoming', showCancelled: false });
+    await list.setFilter({ tab: 'upcoming', showCancelled: false, pastStatus: 'all' });
     const pending = store.init(target.id);
     expect(store.load()).toBe('ready');
     expect(store.appointment()?.id).toBe(target.id);
@@ -268,7 +268,7 @@ describe('AppointmentDetailStore cancel', () => {
   it('404 turns the detail into not-found and refreshes the list', async () => {
     const { store, target } = setup({ withList: true });
     const list = TestBed.inject(AppointmentsStore);
-    await list.setFilter({ tab: 'upcoming', showCancelled: false });
+    await list.setFilter({ tab: 'upcoming', showCancelled: false, pastStatus: 'all' });
     await store.init(target.id);
     server.use(
       http.post(`${BASE}/api/appointments/:id/cancel`, () =>
@@ -306,7 +306,7 @@ describe('AppointmentDetailStore cancel', () => {
   it('marks the list item pending while cancelling and clears it afterwards', async () => {
     const { store, target } = setup({ withList: true });
     const list = TestBed.inject(AppointmentsStore);
-    await list.setFilter({ tab: 'upcoming', showCancelled: false });
+    await list.setFilter({ tab: 'upcoming', showCancelled: false, pastStatus: 'all' });
     await store.init(target.id);
     store.openCancel();
     const pending = store.confirm();

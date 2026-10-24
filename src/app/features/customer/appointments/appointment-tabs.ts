@@ -7,7 +7,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { HlmSwitchImports } from '@app/shared/ui/switch';
-import type { AppointmentTab } from './tab-params';
+import { PAST_STATUSES, type AppointmentTab, type PastStatus } from './tab-params';
 
 const TABS: readonly { value: AppointmentTab; label: string }[] = [
   { value: 'upcoming', label: 'Upcoming' },
@@ -57,6 +57,19 @@ const TABS: readonly { value: AppointmentTab; label: string }[] = [
             Also lists upcoming appointments you cancelled.
           </span>
         </div>
+      } @else {
+        <label class="flex flex-col gap-1 text-sm font-medium">
+          Status
+          <select
+            class="h-11 rounded-md border border-input bg-background px-2.5 text-sm"
+            [value]="pastStatus()"
+            (change)="pastStatusChange.emit($any($event.target).value)"
+          >
+            @for (s of pastStatuses; track s.value) {
+              <option [value]="s.value" [selected]="s.value === pastStatus()">{{ s.label }}</option>
+            }
+          </select>
+        </label>
       }
     </div>
   `,
@@ -64,12 +77,16 @@ const TABS: readonly { value: AppointmentTab; label: string }[] = [
 export class AppointmentTabs {
   readonly tab = input.required<AppointmentTab>();
   readonly showCancelled = input(false);
+  /** The Past tab's status filter. */
+  readonly pastStatus = input<PastStatus>('all');
   /** The id of the tabpanel the page labels with the selected tab. */
   readonly panelId = input('appointments-panel');
   readonly tabChange = output<AppointmentTab>();
   readonly showCancelledChange = output<boolean>();
+  readonly pastStatusChange = output<PastStatus>();
 
   protected readonly tabs = TABS;
+  protected readonly pastStatuses = PAST_STATUSES;
   private readonly buttons = viewChildren<ElementRef<HTMLButtonElement>>('tabButton');
 
   protected onKeydown(event: KeyboardEvent, index: number): void {

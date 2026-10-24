@@ -1,4 +1,4 @@
-import type { Branch, ServiceType } from '../../../core/api/models';
+import type { Branch, ServiceType, StaffAccount } from '../../../core/api/models';
 import { buildCommands, type Command, filterCommands, RECORD_LIMIT } from './command-registry';
 import { isPaletteShortcut, platformKeyLabel } from './shortcut';
 
@@ -26,6 +26,19 @@ const service = (n: number, name = `Service ${n}`): ServiceType => ({
   updatedAtUtc: null,
 });
 
+const member = (n: number, over: Partial<StaffAccount> = {}): StaffAccount => ({
+  id: `m-${n}`,
+  firstName: `First${n}`,
+  lastName: `Last${n}`,
+  email: `member${n}@example.com`,
+  phoneNumber: '+94771234567',
+  role: 'Staff',
+  branchId: 'b-1',
+  isActive: true,
+  registeredAtUtc: '2026-10-01T00:00:00Z',
+  ...over,
+});
+
 const labels = (r: ReturnType<typeof filterCommands>) =>
   r.groups.flatMap((g) => g.items.map((i) => i.label));
 
@@ -36,9 +49,12 @@ describe('buildCommands', () => {
       'Go to Dashboard',
       'Go to Branches',
       'Go to Services',
+      'Go to staff',
       'Go to Slot generation',
+      'Go to appointments',
       'New branch',
       'New service',
+      'New staff member',
       'Generate slots',
       'Toggle theme',
       'Sign out',
@@ -50,6 +66,43 @@ describe('buildCommands', () => {
     expect(all.find((c) => c.label === 'Toggle theme')?.run).toEqual({ kind: 'theme' });
     expect(all.find((c) => c.label === 'Sign out')?.run).toEqual({ kind: 'signOut' });
     expect(new Set(all.map((c) => c.id)).size).toBe(all.length);
+  });
+
+  it('has the staff and appointments commands, each navigating to its admin page', () => {
+    const all = buildCommands({ branches: [], services: [] });
+    const entry = (label: string) => all.find((c) => c.label === label);
+    expect(entry('Go to appointments')).toMatchObject({
+      group: 'Navigate',
+      run: { kind: 'navigate', url: '/admin/appointments' },
+    });
+    expect(entry('Go to staff')).toMatchObject({
+      group: 'Navigate',
+      run: { kind: 'navigate', url: '/admin/staff' },
+    });
+    expect(entry('New staff member')).toMatchObject({
+      group: 'Create',
+      run: { kind: 'navigate', url: '/admin/staff/new' },
+    });
+  });
+
+  it('adds an "Edit {name}" entry for each loaded staff member, to the edit drawer', () => {
+    const all = buildCommands({
+      branches: [branch(1, 'Kandy')],
+      services: [],
+      staff: [member(1, { firstName: 'Ana', lastName: 'Perera' })],
+    });
+    const entry = all.find((c) => c.id === 'staff-m-1')!;
+    expect(entry.label).toBe('Edit Ana Perera');
+    expect(entry.group).toBe('Records');
+    expect(entry.run).toEqual({ kind: 'navigate', url: '/admin/staff/m-1' });
+    expect(entry.keywords).toEqual(
+      expect.arrayContaining(['Ana Perera', 'member1@example.com', 'Kandy']),
+    );
+  });
+
+  it('leaves the branch keyword out when the staff member branch is not loaded', () => {
+    const all = buildCommands({ branches: [], services: [], staff: [member(1)] });
+    expect(all.find((c) => c.id === 'staff-m-1')!.keywords).not.toContain('Kandy');
   });
 
   it('adds edit entries for loaded branches and services', () => {
@@ -77,7 +130,9 @@ describe('filterCommands', () => {
       'Go to Dashboard',
       'Go to Branches',
       'Go to Services',
+      'Go to staff',
       'Go to Slot generation',
+      'Go to appointments',
     ]);
     expect(r.groups[2].items[0].label).toBe('Edit branch: Kandy');
   });
@@ -111,6 +166,23 @@ describe('filterCommands', () => {
     expect(r.groups.map((g) => g.group)).toEqual(['Navigate', 'Create', 'Records']);
   });
 
+  it('finds staff by name, by email and by branch name', () => {
+    const all = buildCommands({
+      branches: [branch(1, 'Kandy')],
+      services: [],
+      staff: [
+        member(1, { firstName: 'Ana', lastName: 'Perera', email: 'ana@clinic.lk' }),
+        member(2, { firstName: 'Ben', lastName: 'Silva', email: 'ben@clinic.lk', branchId: 'x' }),
+      ],
+    });
+    expect(labels(filterCommands(all, 'perera'))).toEqual(['Edit Ana Perera']);
+    expect(labels(filterCommands(all, 'ben@clinic'))).toEqual(['Edit Ben Silva']);
+    expect(labels(filterCommands(all, 'edit ana'))).toEqual(['Edit Ana Perera']);
+    expect(labels(filterCommands(all, 'kandy')).filter((l) => l.includes('Ana'))).toEqual([
+      'Edit Ana Perera',
+    ]);
+  });
+
   it('finds records by name and by code', () => {
     expect(labels(filterCommands(all, 'kandy'))).toEqual([
       'Edit branch: Kandy',
@@ -131,11 +203,21 @@ describe('filterCommands', () => {
     const r = filterCommands(many, '');
     const records = r.groups.find((g) => g.group === 'Records')!.items;
     expect(records).toHaveLength(RECORD_LIMIT);
-    expect(r.count).toBe(9 + RECORD_LIMIT);
+    expect(r.count).toBe(12 + RECORD_LIMIT);
     expect(
       filterCommands(many, '', 5).groups.find((g) => g.group === 'Records')!.items,
     ).toHaveLength(5);
-    expect(filterCommands(many, 'go to').count).toBe(4); // statics untouched by the cap
+    expect(filterCommands(many, 'go to').count).toBe(6); // statics untouched by the cap
+  });
+
+  it(`caps staff entries with the other records at ${RECORD_LIMIT}`, () => {
+    const many = buildCommands({
+      branches: [],
+      services: [],
+      staff: Array.from({ length: 80 }, (_, i) => member(i)),
+    });
+    const records = filterCommands(many, '').groups.find((g) => g.group === 'Records')!.items;
+    expect(records).toHaveLength(RECORD_LIMIT);
   });
 
   it('group headings are group names, never commands', () => {

@@ -10,4 +10,6 @@ export interface SessionUser {
   role: Role;
   firstName?: string;
   lastName?: string;
+  /** The Staff member's branch (the `branch_id` claim); never set for Customer or Admin. */
+  branchId?: string;
 }

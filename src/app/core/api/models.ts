@@ -7,6 +7,14 @@ export type LoginRequest = components['schemas']['UserLoginRequest'];
 export type RefreshRequest = components['schemas']['RefreshTokenRequest'];
 export type LogoutRequest = components['schemas']['LogoutRequest'];
 export type TokenResponse = components['schemas']['TokenResponse'];
+export type CreateStaffBody = components['schemas']['CreateStaffRequest'];
+export type MoveStaffBody = components['schemas']['AssignStaffBranchRequest'];
+/** The generated page counters are `number | string`; the service sends numbers. */
+export type StaffAccount = components['schemas']['StaffResponse'];
+export type StaffPage = Omit<
+  components['schemas']['StaffPage'],
+  'page' | 'pageSize' | 'totalCount'
+> & { page: number; pageSize: number; totalCount: number };
 
 /*
  * Temporary extensions (Req 1.6): the generated Auth document declares no response body for
@@ -81,7 +89,7 @@ export interface SlotResponse {
   availableCapacity: number;
 }
 
-export type AppointmentStatus = 'Booked' | 'Cancelled';
+export type AppointmentStatus = 'Booked' | 'Cancelled' | 'Completed' | 'NoShow';
 
 export interface AppointmentResponse {
   id: string;
@@ -96,6 +104,8 @@ export interface AppointmentResponse {
   createdAtUtc: string;
   updatedAtUtc: string;
   cancelledAtUtc?: string | null;
+  completedAtUtc?: string | null;
+  noShowAtUtc?: string | null;
 }
 
 export interface MyAppointmentsPage {
@@ -103,6 +113,30 @@ export interface MyAppointmentsPage {
   page: number;
   pageSize: number;
   totalCount: number;
+}
+
+/*
+ * Temporary extensions (Req 11.1): the generated Booking document still declares no response
+ * body for the branch day list (`GET /api/appointments/branch/{branchId}`) or the marks. Delete
+ * each in the commit that regenerates the types once the backend documents it.
+ */
+export interface BranchAppointmentCustomer {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+}
+
+/** `customer` is null when Auth's lookup failed or did not know the user. */
+export type BranchAppointment = AppointmentResponse & {
+  customer: BranchAppointmentCustomer | null;
+};
+
+export interface BranchAppointmentsPage {
+  items: BranchAppointment[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  customersUnavailable: boolean;
 }
 
 export interface SlotSearchParams {

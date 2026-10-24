@@ -295,3 +295,80 @@ describe('SessionStore proactive refresh', () => {
     expect(backend.state.counters.refresh).toBe(1);
   });
 });
+
+describe('SessionStore branch claim', () => {
+  const BRANCH_A = '3f2a1c9e-7b4d-4e6a-9c1f-0a2b3c4d5e6f';
+  const BRANCH_B = '9b8c7d6e-1a2b-4c3d-8e4f-5a6b7c8d9e0f';
+
+  afterEach(() => {
+    TestBed.inject(TokenStorage).clear();
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  function tokenFor(
+    userId: string,
+    role: 'Customer' | 'Staff' | 'Admin',
+    branchId: string | undefined,
+  ) {
+    return makeAccessToken({
+      sub: userId,
+      email: 'ann@example.com',
+      role,
+      expiresInSeconds: 600,
+      branchId,
+    });
+  }
+
+  function loginReturning(token: () => string, refreshToken = 'rt_branch') {
+    server.use(
+      http.post(`${TEST_API_BASE}/api/Auth/login`, () =>
+        HttpResponse.json({ accessToken: token(), refreshToken }),
+      ),
+    );
+  }
+
+  it('gives a Staff user the branch from the token', async () => {
+    const { store, user } = setup();
+    loginReturning(() => tokenFor(user.id, 'Staff', BRANCH_A));
+    await store.login('ann@example.com', 'pw');
+    expect(store.user()?.branchId).toBe(BRANCH_A);
+  });
+
+  it('replaces the branch when a refresh carries another branch_id', async () => {
+    const { store, user } = setup();
+    let current = BRANCH_A;
+    loginReturning(() => tokenFor(user.id, 'Staff', current));
+    await store.login('ann@example.com', 'pw');
+    current = BRANCH_B;
+    server.use(
+      http.post(`${TEST_API_BASE}/api/Auth/refresh`, () =>
+        HttpResponse.json({
+          accessToken: tokenFor(user.id, 'Staff', BRANCH_B),
+          refreshToken: 'rt_branch_2',
+        }),
+      ),
+    );
+    // A 401 for the held token makes the coordinator refresh although it is still fresh.
+    await store.refreshAfterUnauthorized(store.accessToken()!);
+    expect(store.user()?.branchId).toBe(BRANCH_B);
+  });
+
+  it('gives a Staff user without a usable claim no branch', async () => {
+    const { store, user } = setup();
+    loginReturning(() => tokenFor(user.id, 'Staff', 'not-a-guid'));
+    await store.login('ann@example.com', 'pw');
+    expect(store.user()?.branchId).toBeUndefined();
+  });
+
+  it('ignores the claim on Customer and Admin tokens', async () => {
+    for (const role of ['Customer', 'Admin'] as const) {
+      const { store, user } = setup();
+      loginReturning(() => tokenFor(user.id, role, BRANCH_A));
+      await store.login('ann@example.com', 'pw');
+      expect(store.user()?.role).toBe(role);
+      expect(store.user()?.branchId).toBeUndefined();
+      TestBed.resetTestingModule();
+    }
+  });
+});

@@ -8,7 +8,8 @@
 //
 // `--group admin` is the exception: it dispatches to the walker in size-group.mjs, which follows
 // dynamic imports too (every lazy file reachable from the admin route chunk, shared chunks counted
-// once and listed apart), against MAX_GZIP_KB_ADMIN (default 120).
+// once and listed apart), against MAX_GZIP_KB_ADMIN (default 140; raised from 120 for F7, which adds the staff accounts
+// screens and the appointments page).
 //
 // `--group book` is the other exception: it dispatches to groupChunks in size-book.mjs, which sums
 // the booking wizard's lazy chunks (entry points under src/app/features/customer/book/ plus the
@@ -18,6 +19,11 @@
 // `--group appointments` is the third: it dispatches to appointmentsGroup in size-appointments.mjs
 // (the chunks holding the appointments and profile components plus the chunks only they import),
 // against MAX_GZIP_KB_APPOINTMENTS (default 40).
+//
+// `--group staff` is the generic one above (F7): the outputs entered under src/app/features/staff/
+// and their static chunks (the shared branch-day code lands here when only staff imports it),
+// against MAX_GZIP_KB_STAFF (default 55; measured 49.00 kB on the merged F7 build, shared
+// chunks included).
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,7 +32,7 @@ import { appointmentsGroup } from './size-appointments.mjs';
 import { groupChunks } from './size-book.mjs';
 import { adminGroup, initialClosure } from './size-group.mjs';
 
-export const GROUP_DEFAULTS = { public: 50, admin: 120, book: 60, appointments: 40 };
+export const GROUP_DEFAULTS = { public: 50, admin: 140, book: 60, appointments: 40, staff: 55 };
 
 /** Files referenced by script, modulepreload and stylesheet tags of index.html. */
 export function initialFiles(html) {

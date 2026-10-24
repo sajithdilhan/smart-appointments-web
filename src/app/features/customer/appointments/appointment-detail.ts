@@ -29,7 +29,7 @@ import { AppointmentDetailStore } from './appointment-detail.store';
 import { CancelDialog } from './cancel-dialog';
 import { DetailHost } from './detail-host';
 import { InlineError } from './inline-error';
-import { AppointmentStatusBadge } from './status-badge';
+import { AppointmentStatusBadge } from '../../../shared/appointments/appointment-status-badge';
 
 const RETRYABLE_MESSAGE =
   'We could not cancel right now. Nothing was changed. Try again in a moment.';
@@ -137,6 +137,14 @@ function browserZone(): string {
 
             @if (cancelledOn(); as when) {
               <dt class="text-muted-foreground">Cancelled on</dt>
+              <dd>{{ when }}</dd>
+            }
+            @if (completedOn(); as when) {
+              <dt class="text-muted-foreground">Completed on</dt>
+              <dd>{{ when }}</dd>
+            }
+            @if (noShowOn(); as when) {
+              <dt class="text-muted-foreground">Marked as no-show on</dt>
               <dd>{{ when }}</dd>
             }
           </dl>
@@ -295,6 +303,17 @@ export class AppointmentDetail {
     return a?.status === 'Cancelled' && a.cancelledAtUtc
       ? this.accountTime(a.cancelledAtUtc)
       : null;
+  });
+
+  protected readonly completedOn = computed(() => {
+    const a = this.store.appointment();
+    return a?.status === 'Completed' && a.completedAtUtc
+      ? this.accountTime(a.completedAtUtc)
+      : null;
+  });
+  protected readonly noShowOn = computed(() => {
+    const a = this.store.appointment();
+    return a?.status === 'NoShow' && a.noShowAtUtc ? this.accountTime(a.noShowAtUtc) : null;
   });
 
   protected readonly slotMayBeDelayed = computed(() => {
