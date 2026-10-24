@@ -143,9 +143,22 @@ describe('toViewModel', () => {
     it('Cancelled stays Cancelled; an unknown status shows its own text', () => {
       const cancelled = toViewModel(at('2026-10-05T15:00:00Z', undefined, 'Cancelled'), ctx());
       expect(cancelled.statusLabel).toBe('Cancelled');
-      const v = toViewModel(at('2026-10-05T15:00:00Z', undefined, 'NoShow'), ctx());
-      expect(v.statusLabel).toBe('NoShow');
-      expect(v.a11yName.endsWith(', NoShow')).toBe(true);
+      const v = toViewModel(at('2026-10-05T15:00:00Z', undefined, 'Archived'), ctx());
+      expect(v.statusLabel).toBe('Archived');
+      expect(v.a11yName.endsWith(', Archived')).toBe(true);
+      expect(v.canCancel).toBe(false);
+    });
+
+    it('Completed and NoShow read "Completed" and "No-show" and cannot be cancelled', () => {
+      const completed = toViewModel(at('2026-10-05T15:00:00Z', undefined, 'Completed'), ctx());
+      expect(completed.statusLabel).toBe('Completed');
+      expect(completed.canCancel).toBe(false);
+      expect(completed.canAddToCalendar).toBe(false);
+      expect(completed.a11yName.endsWith(', Completed')).toBe(true);
+      const noShow = toViewModel(at('2026-10-05T15:00:00Z', undefined, 'NoShow'), ctx());
+      expect(noShow.statusLabel).toBe('No-show');
+      expect(noShow.canCancel).toBe(false);
+      expect(noShow.a11yName.endsWith(', No-show')).toBe(true);
     });
   });
 });

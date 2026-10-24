@@ -26,7 +26,7 @@ import { DetailHost } from './detail-host';
 import { EmptyState } from './empty-state';
 import { InlineError } from './inline-error';
 import { LoadMore } from './load-more';
-import { parseTab, type AppointmentTab } from './tab-params';
+import { PAST_STATUSES, parseTab, type AppointmentTab, type PastStatus } from './tab-params';
 
 /**
  * `/appointments`: the tabs (URL state), the timeline of the active tab and its paging. The
@@ -64,8 +64,10 @@ import { parseTab, type AppointmentTab } from './tab-params';
         <app-appointment-tabs
           [tab]="filter().tab"
           [showCancelled]="filter().showCancelled"
+          [pastStatus]="filter().pastStatus"
           (tabChange)="selectTab($event)"
           (showCancelledChange)="selectShowCancelled($event)"
+          (pastStatusChange)="selectPastStatus($event)"
         />
 
         <p role="status" class="text-sm text-muted-foreground">{{ countText() }}</p>
@@ -94,7 +96,7 @@ import { parseTab, type AppointmentTab } from './tab-params';
               </a>
             }
           } @else if (store.isEmpty()) {
-            <app-empty-state [tab]="filter().tab" />
+            <app-empty-state [tab]="filter().tab" [filtered]="filter().pastStatus !== 'all'" />
           } @else {
             <app-appointment-timeline [groups]="groups()" [pendingIds]="pendingIds()" />
             @if (store.status() === 'more-error') {
@@ -130,7 +132,11 @@ export class AppointmentsPage {
     initialValue: this.route.snapshot.queryParamMap,
   });
   protected readonly filter = computed(() =>
-    parseTab({ tab: this.query().get('tab'), cancelled: this.query().get('cancelled') }),
+    parseTab({
+      tab: this.query().get('tab'),
+      cancelled: this.query().get('cancelled'),
+      pstatus: this.query().get('pstatus'),
+    }),
   );
 
   protected readonly landing = computed(() => {
@@ -177,7 +183,10 @@ export class AppointmentsPage {
     if (total === null || status === 'idle' || status === 'loading-first' || status === 'error') {
       return '';
     }
-    return total === 1 ? '1 appointment' : `${total} appointments`;
+    const count = total === 1 ? '1 appointment' : `${total} appointments`;
+    const pastStatus = this.filter().pastStatus;
+    if (pastStatus === 'all') return count;
+    return `${count}, ${PAST_STATUSES.find((s) => s.value === pastStatus)?.label}`;
   });
 
   constructor() {
@@ -193,14 +202,20 @@ export class AppointmentsPage {
   }
 
   protected selectTab(tab: AppointmentTab): void {
+    const stays = tab === 'past' && this.filter().tab === 'past';
     void this.navigate({
       tab,
       cancelled: tab === 'upcoming' && this.filter().showCancelled ? '1' : null,
+      pstatus: stays && this.filter().pastStatus !== 'all' ? this.filter().pastStatus : null,
     });
   }
 
+  protected selectPastStatus(status: PastStatus): void {
+    void this.navigate({ tab: 'past', cancelled: null, pstatus: status === 'all' ? null : status });
+  }
+
   protected selectShowCancelled(on: boolean): void {
-    void this.navigate({ tab: 'upcoming', cancelled: on ? '1' : null });
+    void this.navigate({ tab: 'upcoming', cancelled: on ? '1' : null, pstatus: null });
   }
 
   protected retryLookup(): void {

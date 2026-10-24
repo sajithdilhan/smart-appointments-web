@@ -11,7 +11,7 @@ import { AppointmentsStore, MAX_REFRESH } from './appointments.store';
 
 const BASE = 'http://gw.test:5290';
 const NOW = Date.parse('2026-10-04T12:00:00Z');
-const UPCOMING = { tab: 'upcoming', showCancelled: false } as const;
+const UPCOMING = { tab: 'upcoming', showCancelled: false, pastStatus: 'all' } as const;
 
 function many(count: number, status: 'Booked' | 'Cancelled' = 'Booked') {
   return Array.from({ length: count }, (_, i) =>
@@ -163,14 +163,51 @@ describe('AppointmentsStore', () => {
         return HttpResponse.json({ items: [], page: 1, pageSize: 20, totalCount: 0 });
       }),
     );
-    const slow = store.setFilter({ tab: 'upcoming', showCancelled: true });
-    const past = store.setFilter({ tab: 'past', showCancelled: false });
+    const slow = store.setFilter({ tab: 'upcoming', showCancelled: true, pastStatus: 'all' });
+    const past = store.setFilter({ tab: 'past', showCancelled: false, pastStatus: 'all' });
     release();
     await Promise.all([slow, past]);
     // The late "upcoming" answer must not render in the Past tab.
     expect(store.filter().tab).toBe('past');
     expect(store.items()).toHaveLength(0);
     expect(store.status()).toBe('ready');
+  });
+
+  describe('Past status filter', () => {
+    it('sends the status on Past, and Load more repeats it', async () => {
+      const { backend, store } = setup(0);
+      backend.add(
+        ...many(25, 'Cancelled').map((x) => ({ ...x, startUtc: '2026-09-01T10:00:00Z' })),
+      );
+      await store.setFilter({ tab: 'past', showCancelled: false, pastStatus: 'Cancelled' });
+      expect(store.items()).toHaveLength(20);
+      await store.loadMore();
+      expect(store.items()).toHaveLength(25);
+      expect(backend.listCalls.map((c) => [c.status, c.when, c.page])).toEqual([
+        ['Cancelled', 'past', '1'],
+        ['Cancelled', 'past', '2'],
+      ]);
+    });
+
+    it('changing only the status reloads; the same filter is a no-op', async () => {
+      const { backend, store } = setup(0);
+      await store.setFilter({ tab: 'past', showCancelled: false, pastStatus: 'Completed' });
+      await store.setFilter({ tab: 'past', showCancelled: false, pastStatus: 'Completed' });
+      await store.setFilter({ tab: 'past', showCancelled: false, pastStatus: 'NoShow' });
+      expect(backend.listCalls.map((c) => c.status)).toEqual(['Completed', 'NoShow']);
+    });
+
+    it('switching to Upcoming drops the status', async () => {
+      const { backend, store } = setup(0);
+      await store.setFilter({ tab: 'past', showCancelled: false, pastStatus: 'Cancelled' });
+      await store.setFilter(UPCOMING);
+      expect(backend.listCalls[1]).toEqual({
+        status: 'Booked',
+        when: 'upcoming',
+        page: '1',
+        pageSize: '20',
+      });
+    });
   });
 
   describe('quietRefresh', () => {
@@ -255,7 +292,7 @@ describe('AppointmentsStore', () => {
 
     it('keeps it with its new status when Show cancelled is on', async () => {
       const { backend, store } = setup(3);
-      await store.setFilter({ tab: 'upcoming', showCancelled: true });
+      await store.setFilter({ tab: 'upcoming', showCancelled: true, pastStatus: 'all' });
       const target = store.items()[1];
       backend.cancel(target.id);
       await store.applyCancelled({ ...target, status: 'Cancelled' });

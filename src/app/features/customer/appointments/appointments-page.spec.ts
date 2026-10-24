@@ -108,6 +108,77 @@ describe('AppointmentsPage', () => {
     await screen.findByText('No past appointments');
   });
 
+  it('the Status select exists on Past only', async () => {
+    const user = userEvent.setup();
+    await open(1);
+    await vi.waitFor(() => expect(cards()).toHaveLength(1));
+    expect(screen.queryByRole('combobox', { name: 'Status' })).toBeNull();
+    await user.click(screen.getByRole('tab', { name: 'Past' }));
+    const select = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'Status' });
+    expect(Array.from(select.options).map((o) => o.text)).toEqual([
+      'All',
+      'Completed',
+      'No-show',
+      'Cancelled',
+      'Booked',
+    ]);
+    expect(select.value).toBe('all');
+    await user.click(screen.getByRole('tab', { name: 'Upcoming' }));
+    await vi.waitFor(() => expect(screen.queryByRole('combobox', { name: 'Status' })).toBeNull());
+  });
+
+  it('choosing a status updates the URL and the request, and All clears it', async () => {
+    const user = userEvent.setup();
+    const { router, backend } = await open(1, '/appointments?tab=past', (b) => {
+      b.add(makeAppointment({ startUtc: '2026-09-01T10:00:00Z', status: 'Cancelled' }));
+    });
+    const select = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'Status' });
+    await user.selectOptions(select, 'Cancelled');
+    await vi.waitFor(() => expect(router.url).toBe('/appointments?tab=past&pstatus=Cancelled'));
+    await vi.waitFor(() => expect(backend.listCalls).toHaveLength(2));
+    expect(backend.listCalls[1]).toEqual({
+      status: 'Cancelled',
+      when: 'past',
+      page: '1',
+      pageSize: '20',
+    });
+    await vi.waitFor(() => expect(screen.getByText('1 appointment, Cancelled')).toBeTruthy());
+    await user.selectOptions(select, 'All');
+    await vi.waitFor(() => expect(router.url).toBe('/appointments?tab=past'));
+    await vi.waitFor(() => expect(backend.listCalls).toHaveLength(3));
+    expect(backend.listCalls[2]).toMatchObject({ status: null, when: 'past' });
+  });
+
+  it('reads pstatus from the URL; No-show is sent as NoShow', async () => {
+    const { backend } = await open(1, '/appointments?tab=past&pstatus=NoShow');
+    await vi.waitFor(() => expect(backend.listCalls).toHaveLength(1));
+    expect(backend.listCalls[0]).toMatchObject({ status: 'NoShow', when: 'past' });
+    const select = await screen.findByRole<HTMLSelectElement>('combobox', { name: 'Status' });
+    expect(select.value).toBe('NoShow');
+  });
+
+  it('an unknown pstatus is All, and pstatus is ignored on Upcoming', async () => {
+    const { backend } = await open(1, '/appointments?tab=past&pstatus=Archived');
+    await vi.waitFor(() => expect(backend.listCalls).toHaveLength(1));
+    expect(backend.listCalls[0]).toMatchObject({ status: null, when: 'past' });
+  });
+
+  it('Upcoming ignores pstatus and its request is unchanged', async () => {
+    const { backend } = await open(1, '/appointments?pstatus=Completed');
+    await vi.waitFor(() => expect(backend.listCalls).toHaveLength(1));
+    expect(backend.listCalls[0]).toEqual({
+      status: 'Booked',
+      when: 'upcoming',
+      page: '1',
+      pageSize: '20',
+    });
+  });
+
+  it('a filtered empty Past list says no appointments match', async () => {
+    await open(0, '/appointments?tab=past&pstatus=Cancelled');
+    await screen.findByText('No matching appointments');
+  });
+
   it('Show cancelled drops the status filter and is held in the URL', async () => {
     const user = userEvent.setup();
     const { router, backend } = await open(1);

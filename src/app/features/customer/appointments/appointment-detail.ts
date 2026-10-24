@@ -139,6 +139,14 @@ function browserZone(): string {
               <dt class="text-muted-foreground">Cancelled on</dt>
               <dd>{{ when }}</dd>
             }
+            @if (completedOn(); as when) {
+              <dt class="text-muted-foreground">Completed on</dt>
+              <dd>{{ when }}</dd>
+            }
+            @if (noShowOn(); as when) {
+              <dt class="text-muted-foreground">Marked as no-show on</dt>
+              <dd>{{ when }}</dd>
+            }
           </dl>
 
           <div class="flex flex-col gap-3">
@@ -295,6 +303,17 @@ export class AppointmentDetail {
     return a?.status === 'Cancelled' && a.cancelledAtUtc
       ? this.accountTime(a.cancelledAtUtc)
       : null;
+  });
+
+  protected readonly completedOn = computed(() => {
+    const a = this.store.appointment();
+    return a?.status === 'Completed' && a.completedAtUtc
+      ? this.accountTime(a.completedAtUtc)
+      : null;
+  });
+  protected readonly noShowOn = computed(() => {
+    const a = this.store.appointment();
+    return a?.status === 'NoShow' && a.noShowAtUtc ? this.accountTime(a.noShowAtUtc) : null;
   });
 
   protected readonly slotMayBeDelayed = computed(() => {
